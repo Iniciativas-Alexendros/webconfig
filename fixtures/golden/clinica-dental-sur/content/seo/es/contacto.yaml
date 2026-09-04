@@ -1,55 +1,55 @@
-canonical: "https://clinicadentalsur.es/contacto"
-description: "Contacta con Clínica Dental Sur en Madrid. Pide tu cita online o llámanos al +34 912 345 678. Calle Mayor 45, Madrid. Horario L-V 9-20h, S 9-14h."
+canonical: https://clinicadentalsur.es/contacto
+description: Contacta con Clínica Dental Sur en Madrid. Pide tu cita online o llámanos al +34 912 345 678. Calle Mayor 45, Madrid. Horario L-V 9-20h, S 9-14h.
 jsonLd:
-  "@context": "https://schema.org"
-  "@type": "ContactPage"
-  name: "Contacto - Clínica Dental Sur"
-  description: "Formulario de contacto, teléfono, dirección y horario de Clínica Dental Sur en Madrid"
-  url: "https://clinicadentalsur.es/contacto"
+  "@context": https://schema.org
+  "@type": ContactPage
+  description: Formulario de contacto, teléfono, dirección y horario de Clínica Dental Sur en Madrid
   mainEntity:
-    "@type": "Dentist"
-    name: "Clínica Dental Sur"
-    telephone: "+34 912 345 678"
-    email: "info@clinicadentalsur.es"
+    "@type": Dentist
     address:
-      "@type": "PostalAddress"
-      streetAddress: "Calle Mayor, 45"
-      addressLocality: "Madrid"
+      "@type": PostalAddress
+      addressCountry: ES
+      addressLocality: Madrid
       postalCode: "28013"
-      addressCountry: "ES"
+      streetAddress: Calle Mayor, 45
+    email: info@clinicadentalsur.es
+    name: Clínica Dental Sur
     openingHoursSpecification:
-      - "@type": "OpeningHoursSpecification"
+      - "@type": OpeningHoursSpecification
+        closes: 20:00
         dayOfWeek:
-          - "Monday"
-          - "Tuesday"
-          - "Wednesday"
-          - "Thursday"
-          - "Friday"
-        opens: "09:00"
-        closes: "20:00"
-      - "@type": "OpeningHoursSpecification"
-        dayOfWeek: "Saturday"
-        opens: "09:00"
-        closes: "14:00"
+          - Monday
+          - Tuesday
+          - Wednesday
+          - Thursday
+          - Friday
+        opens: 09:00
+      - "@type": OpeningHoursSpecification
+        closes: 14:00
+        dayOfWeek: Saturday
+        opens: 09:00
+    telephone: +34 912 345 678
+  name: Contacto - Clínica Dental Sur
+  url: https://clinicadentalsur.es/contacto
 keywords:
-  - "contacto dentista Madrid"
-  - "pedir cita dentista"
-  - "clínica dental Madrid centro"
-  - "urgencias dentales Madrid"
-noIndex: false
+  - contacto dentista Madrid
+  - pedir cita dentista
+  - clínica dental Madrid centro
+  - urgencias dentales Madrid
 noFollow: false
+noIndex: false
 openGraph:
-  description: "Contacta con Clínica Dental Sur. Pide tu cita online o llámanos. Calle Mayor 45, Madrid."
+  description: Contacta con Clínica Dental Sur. Pide tu cita online o llámanos. Calle Mayor 45, Madrid.
   images:
-    - alt: "Contacto Clínica Dental Sur"
-      url: "https://clinicadentalsur.es/assets/media/images/og-contacto.jpg"
-  title: "Contacto | Clínica Dental Sur"
-  type: "website"
-robots: "index,follow"
-title: "Contacto | Clínica Dental Sur - Pide tu Cita en Madrid"
+    - alt: Contacto Clínica Dental Sur
+      url: https://clinicadentalsur.es/assets/media/images/og-contacto.jpg
+  title: Contacto | Clínica Dental Sur
+  type: website
+robots: index,follow
+title: Contacto | Clínica Dental Sur - Pide tu Cita en Madrid
 twitter:
-  card: "summary_large_image"
-  description: "Contacta con Clínica Dental Sur. Pide tu cita online o llámanos. Calle Mayor 45, Madrid."
+  card: summary_large_image
+  description: Contacta con Clínica Dental Sur. Pide tu cita online o llámanos. Calle Mayor 45, Madrid.
   images:
-    - "https://clinicadentalsur.es/assets/media/images/twitter-contacto.jpg"
-  title: "Contacto | Clínica Dental Sur"
+    - https://clinicadentalsur.es/assets/media/images/twitter-contacto.jpg
+  title: Contacto | Clínica Dental Sur

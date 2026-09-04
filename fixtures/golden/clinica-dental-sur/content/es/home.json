@@ -4,86 +4,95 @@
       "id": "hero-home",
       "type": "hero",
       "values": {
-        "headline": "Sonrisas que transforman vidas",
-        "subheadline": "Clínica Dental Sur: Odontología de vanguardia con trato humano y tecnología de última generación",
+        "background": {
+          "alt": "Equipo dental atendiendo a un paciente sonriente",
+          "src": "assets/media/images/hero-dental.jpg"
+        },
         "cta": {
-          "label": "Pide tu cita",
           "href": "/contacto",
+          "label": "Pide tu cita",
           "target": "_self"
         },
-        "background": {
-          "src": "assets/media/images/hero-dental.jpg",
-          "alt": "Equipo dental atendiendo a un paciente sonriente"
-        }
+        "headline": "Sonrisas que transforman vidas",
+        "subheadline": "Clínica Dental Sur: Odontología de vanguardia con trato humano y tecnología de última generación"
       }
     },
     {
       "id": "header-main",
       "type": "header",
       "values": {
+        "cta": {
+          "href": "/contacto",
+          "label": "Reservar cita",
+          "target": "_self"
+        },
         "logo": {
-          "src": "assets/brand/logo.svg",
           "alt": "Clínica Dental Sur",
-          "href": "/"
+          "href": "/",
+          "src": "assets/brand/logo.svg"
         },
         "navigation": [
-          { "label": "Inicio", "href": "/" },
-          { "label": "Servicios", "href": "/servicios" },
-          { "label": "Contacto", "href": "/contacto" }
-        ],
-        "cta": {
-          "label": "Reservar cita",
-          "href": "/contacto",
-          "target": "_self"
-        }
+          {
+            "href": "/",
+            "label": "Inicio"
+          },
+          {
+            "href": "/servicios",
+            "label": "Servicios"
+          },
+          {
+            "href": "/contacto",
+            "label": "Contacto"
+          }
+        ]
       }
     },
     {
       "id": "services-grid",
       "type": "card-grid",
       "values": {
-        "columns": 3,
         "cards": [
           {
-            "title": "Implantología",
             "description": "Implantes dentales de titanio con carga inmediata. Recupera tu sonrisa en un solo día.",
             "image": {
-              "src": "assets/media/images/implantes.jpg",
-              "alt": "Implante dental"
+              "alt": "Implante dental",
+              "src": "assets/media/images/implantes.jpg"
             },
             "link": {
-              "label": "Ver detalles",
               "href": "/servicios#implantes",
+              "label": "Ver detalles",
               "target": "_self"
-            }
+            },
+            "title": "Implantología"
           },
           {
-            "title": "Ortodoncia Invisible",
             "description": "Alineadores transparentes para corregir tu sonrisa sin brackets metálicos.",
             "image": {
-              "src": "assets/media/images/ortodoncia.jpg",
-              "alt": "Alineadores transparentes"
+              "alt": "Alineadores transparentes",
+              "src": "assets/media/images/ortodoncia.jpg"
             },
             "link": {
-              "label": "Ver detalles",
               "href": "/servicios#ortodoncia",
+              "label": "Ver detalles",
               "target": "_self"
-            }
+            },
+            "title": "Ortodoncia Invisible"
           },
           {
-            "title": "Estética Dental",
             "description": "Carillas de porcelana, blanqueamiento y reconstrucciones para una sonrisa perfecta.",
             "image": {
-              "src": "assets/media/images/estetica.jpg",
-              "alt": "Carillas dentales"
+              "alt": "Carillas dentales",
+              "src": "assets/media/images/estetica.jpg"
             },
             "link": {
-              "label": "Ver detalles",
               "href": "/servicios#estetica",
+              "label": "Ver detalles",
               "target": "_self"
-            }
+            },
+            "title": "Estética Dental"
           }
-        ]
+        ],
+        "columns": 3
       }
     },
     {
@@ -91,10 +100,22 @@
       "type": "icon-list",
       "values": {
         "items": [
-          { "icon": "check-circle", "text": "Equipo médico con 20+ años de experiencia" },
-          { "icon": "award", "text": "Tecnología 3D y escáner intraoral" },
-          { "icon": "shield", "text": "Garantía de 10 años en implantes" },
-          { "icon": "clock", "text": "Horario ampliado y urgencias 24h" }
+          {
+            "icon": "check-circle",
+            "text": "Equipo médico con 20+ años de experiencia"
+          },
+          {
+            "icon": "award",
+            "text": "Tecnología 3D y escáner intraoral"
+          },
+          {
+            "icon": "shield",
+            "text": "Garantía de 10 años en implantes"
+          },
+          {
+            "icon": "clock",
+            "text": "Horario ampliado y urgencias 24h"
+          }
         ]
       }
     },
@@ -102,15 +123,15 @@
       "id": "testimonials",
       "type": "testimonial",
       "values": {
-        "avatar": {
-          "src": "assets/media/images/paciente-maria.jpg",
-          "alt": "María González"
-        },
-        "quote": "El trato fue excepcional. Me colocaron 4 implantes en un día y no sentí dolor. Ahora sonrío con confianza.",
         "author": {
           "name": "María González",
           "role": "Paciente de Implantología"
-        }
+        },
+        "avatar": {
+          "alt": "María González",
+          "src": "assets/media/images/paciente-maria.jpg"
+        },
+        "quote": "El trato fue excepcional. Me colocaron 4 implantes en un día y no sentí dolor. Ahora sonrío con confianza."
       }
     },
     {
@@ -127,13 +148,30 @@
       "values": {
         "copyright": "© 2026 Clínica Dental Sur. Todos los derechos reservados.",
         "links": [
-          { "label": "Aviso Legal", "href": "/aviso-legal" },
-          { "label": "Política de Privacidad", "href": "/politica-privacidad" },
-          { "label": "Contacto", "href": "/contacto" }
+          {
+            "href": "/aviso-legal",
+            "label": "Aviso Legal"
+          },
+          {
+            "href": "/politica-privacidad",
+            "label": "Política de Privacidad"
+          },
+          {
+            "href": "/contacto",
+            "label": "Contacto"
+          }
         ],
         "social": [
-          { "label": "Facebook", "href": "https://facebook.com/clinicadentalsur", "icon": "facebook" },
-          { "label": "Instagram", "href": "https://instagram.com/clinicadentalsur", "icon": "instagram" }
+          {
+            "href": "https://facebook.com/clinicadentalsur",
+            "icon": "facebook",
+            "label": "Facebook"
+          },
+          {
+            "href": "https://instagram.com/clinicadentalsur",
+            "icon": "instagram",
+            "label": "Instagram"
+          }
         ]
       }
     }

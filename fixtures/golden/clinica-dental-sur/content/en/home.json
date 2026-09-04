@@ -4,38 +4,47 @@
       "id": "hero-home",
       "type": "hero",
       "values": {
-        "headline": "Smiles that transform lives",
-        "subheadline": "Clínica Dental Sur: Cutting-edge dentistry with human touch and latest technology",
+        "background": {
+          "alt": "Dental team caring for a smiling patient",
+          "src": "assets/media/images/hero-dental.jpg"
+        },
         "cta": {
-          "label": "Book your appointment",
           "href": "/contacto",
+          "label": "Book your appointment",
           "target": "_self"
         },
-        "background": {
-          "src": "assets/media/images/hero-dental.jpg",
-          "alt": "Dental team caring for a smiling patient"
-        }
+        "headline": "Smiles that transform lives",
+        "subheadline": "Clínica Dental Sur: Cutting-edge dentistry with human touch and latest technology"
       }
     },
     {
       "id": "header-main",
       "type": "header",
       "values": {
+        "cta": {
+          "href": "/contacto",
+          "label": "Book Appointment",
+          "target": "_self"
+        },
         "logo": {
-          "src": "assets/brand/logo.svg",
           "alt": "Clínica Dental Sur",
-          "href": "/"
+          "href": "/",
+          "src": "assets/brand/logo.svg"
         },
         "navigation": [
-          { "label": "Home", "href": "/" },
-          { "label": "Services", "href": "/servicios" },
-          { "label": "Contact", "href": "/contacto" }
-        ],
-        "cta": {
-          "label": "Book Appointment",
-          "href": "/contacto",
-          "target": "_self"
-        }
+          {
+            "href": "/",
+            "label": "Home"
+          },
+          {
+            "href": "/servicios",
+            "label": "Services"
+          },
+          {
+            "href": "/contacto",
+            "label": "Contact"
+          }
+        ]
       }
     },
     {
@@ -44,13 +53,30 @@
       "values": {
         "copyright": "© 2026 Clínica Dental Sur. All rights reserved.",
         "links": [
-          { "label": "Legal Notice", "href": "/aviso-legal" },
-          { "label": "Privacy Policy", "href": "/politica-privacidad" },
-          { "label": "Contact", "href": "/contacto" }
+          {
+            "href": "/aviso-legal",
+            "label": "Legal Notice"
+          },
+          {
+            "href": "/politica-privacidad",
+            "label": "Privacy Policy"
+          },
+          {
+            "href": "/contacto",
+            "label": "Contact"
+          }
         ],
         "social": [
-          { "label": "Facebook", "href": "https://facebook.com/clinicadentalsur", "icon": "facebook" },
-          { "label": "Instagram", "href": "https://instagram.com/clinicadentalsur", "icon": "instagram" }
+          {
+            "href": "https://facebook.com/clinicadentalsur",
+            "icon": "facebook",
+            "label": "Facebook"
+          },
+          {
+            "href": "https://instagram.com/clinicadentalsur",
+            "icon": "instagram",
+            "label": "Instagram"
+          }
         ]
       }
     }

@@ -50,17 +50,17 @@ Deliver a complete, tested, and documented implementation following the 7-phase 
 - [x] Golden fixture: well-formed (parses correctly, structure present) — **validation is Phase 4 checkpoint**
 - [ ] Commit: "feat: add JSON schemas and golden fixture"
 
-### Phase 3: Canonicalize + Integrity [PENDING]
+### Phase 3: Canonicalize + Integrity ✅ COMPLETE
 **Objective**: Deterministic serializers + integrity hashing + normalize CLI
-- [ ] `src/canonicalize.ts`: YAML serializer (recursive sortKeys, 2-space indent, LF, no anchors, UTF-8 no BOM)
-- [ ] `src/canonicalize.ts`: JSON serializer (recursive key sort, 2-space indent, no trailing space)
-- [ ] Property test: parse(bytes) → serialize() = identical bytes
-- [ ] Property test: different key insertion order → identical bytes
-- [ ] `src/integrity.ts`: sha256 per file + global hash (concatenated sorted hex values)
-- [ ] CLI: `webconfig normalize <dir> [--check] [--write]`
+- [x] `src/canonicalize.ts`: YAML serializer (recursive sortKeys, 2-space indent, LF, no anchors, UTF-8 no BOM)
+- [x] `src/canonicalize.ts`: JSON serializer (recursive key sort, 2-space indent, no trailing space)
+- [x] Property test: parse(bytes) → serialize() = identical bytes
+- [x] Property test: different key insertion order → identical bytes
+- [x] `src/integrity.ts`: sha256 per file + global hash (concatenated sorted hex values)
+- [x] CLI: `webconfig normalize <dir> [--check] [--write]`
   - --check: exit 1 if non-canonical, no write
   - --write: normalize in-place
-- [ ] Tests for canonicalization idempotency (double pass = byte-identical)
+- [x] Tests for canonicalization idempotency (double pass = byte-identical)
 - [ ] Commit: "feat: canonicalize and integrity"
 
 ### Phase 4: Validator [PENDING]
@@ -137,7 +137,7 @@ Deliver a complete, tested, and documented implementation following the 7-phase 
 - [ ] Commit: "chore: final verification"
 
 ## Next Step
-Begin Phase 3: Canonicalize + Integrity - Deterministic serializers + integrity hashing + normalize CLI.
+Begin Phase 4: Validator - Syntax (AJV) + Semantic (all error codes) + DS catalog loader.
 
 ## Decisions Made (Frozen Answers from Spec)
 | Date | Decision | Alternatives | Reason |
@@ -161,15 +161,15 @@ Begin Phase 3: Canonicalize + Integrity - Deterministic serializers + integrity 
 ## Files Created/Modified
 | File | Status |
 |------|--------|
-| task_plan.md | ✅ Phase 2 complete |
+| task_plan.md | ✅ Phase 3 complete |
 | findings.md | ✅ Created |
-| progress.md | ✅ Phase 2 complete |
+| progress.md | ✅ Phase 3 complete |
 | package.json | ✅ Done |
 | tsconfig.json | ✅ Done |
 | src/ | ✅ Done |
 | schemas/ | ✅ Done (5 schemas) |
 | fixtures/ | ✅ Done (golden fixture complete) |
-| tests/ | ✅ Done |
+| tests/ | ✅ Done (canonicalize tests) |
 | .npmrc | ✅ Done |
 | .nvmrc | ✅ Done |
 | DECISIONS.md | ✅ Done |
@@ -180,3 +180,7 @@ Begin Phase 3: Canonicalize + Integrity - Deterministic serializers + integrity 
 | schemas/composition.schema.json | ✅ Done |
 | schemas/content.schema.json | ✅ Done |
 | schemas/seo.schema.json | ✅ Done |
+| src/canonicalize.ts | ✅ Done |
+| src/integrity.ts | ✅ Done |
+| src/normalize.ts | ✅ Done |
+| src/cli.ts | ✅ Done |

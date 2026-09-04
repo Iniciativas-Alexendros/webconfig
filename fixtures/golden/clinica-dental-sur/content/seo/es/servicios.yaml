@@ -1,67 +1,67 @@
-canonical: "https://clinicadentalsur.es/servicios"
+canonical: https://clinicadentalsur.es/servicios
 description: "Servicios dentales en Clínica Dental Sur: Implantología All-on-4, Invisalign, carillas de porcelana, blanqueamiento. Precios transparentes. ¡Consúltanos!"
 jsonLd:
-  "@context": "https://schema.org"
-  "@type": "WebPage"
-  name: "Servicios Odontológicos - Clínica Dental Sur"
+  "@context": https://schema.org
+  "@type": WebPage
   description: "Todos nuestros tratamientos: implantes, ortodoncia, estética dental. Precios y detalles."
-  url: "https://clinicadentalsur.es/servicios"
   mainEntity:
-    "@type": "ItemList"
+    "@type": ItemList
     itemListElement:
-      - "@type": "Service"
-        name: "Implantología"
-        description: "Implantes dentales de titanio con carga inmediata"
-        provider:
-          "@type": "Dentist"
-          name: "Clínica Dental Sur"
+      - "@type": Service
+        description: Implantes dentales de titanio con carga inmediata
+        name: Implantología
         offers:
-          "@type": "Offer"
+          "@type": Offer
+          availability: https://schema.org/InStock
           price: "1200"
-          priceCurrency: "EUR"
-          availability: "https://schema.org/InStock"
-      - "@type": "Service"
-        name: "Ortodoncia Invisible"
-        description: "Alineadores transparentes Invisalign"
+          priceCurrency: EUR
         provider:
-          "@type": "Dentist"
-          name: "Clínica Dental Sur"
+          "@type": Dentist
+          name: Clínica Dental Sur
+      - "@type": Service
+        description: Alineadores transparentes Invisalign
+        name: Ortodoncia Invisible
         offers:
-          "@type": "Offer"
+          "@type": Offer
+          availability: https://schema.org/InStock
           price: "3200"
-          priceCurrency: "EUR"
-          availability: "https://schema.org/InStock"
-      - "@type": "Service"
-        name: "Estética Dental"
-        description: "Carillas, blanqueamiento, reconstrucciones"
+          priceCurrency: EUR
         provider:
-          "@type": "Dentist"
-          name: "Clínica Dental Sur"
+          "@type": Dentist
+          name: Clínica Dental Sur
+      - "@type": Service
+        description: Carillas, blanqueamiento, reconstrucciones
+        name: Estética Dental
         offers:
-          "@type": "Offer"
+          "@type": Offer
+          availability: https://schema.org/InStock
           price: "299"
-          priceCurrency: "EUR"
-          availability: "https://schema.org/InStock"
+          priceCurrency: EUR
+        provider:
+          "@type": Dentist
+          name: Clínica Dental Sur
+  name: Servicios Odontológicos - Clínica Dental Sur
+  url: https://clinicadentalsur.es/servicios
 keywords:
-  - "implantes dentales Madrid"
-  - "Invisalign Madrid"
-  - "carillas porcelana"
-  - "blanqueamiento dental"
-  - "precios dentista"
-noIndex: false
+  - implantes dentales Madrid
+  - Invisalign Madrid
+  - carillas porcelana
+  - blanqueamiento dental
+  - precios dentista
 noFollow: false
+noIndex: false
 openGraph:
   description: "Servicios dentales en Clínica Dental Sur: Implantología, Ortodoncia, Estética. Precios transparentes."
   images:
-    - alt: "Servicios dentales Clínica Dental Sur"
-      url: "https://clinicadentalsur.es/assets/media/images/og-servicios.jpg"
-  title: "Servicios | Clínica Dental Sur"
-  type: "website"
-robots: "index,follow"
-title: "Servicios Dentales | Clínica Dental Sur - Implantes, Ortodoncia, Estética"
+    - alt: Servicios dentales Clínica Dental Sur
+      url: https://clinicadentalsur.es/assets/media/images/og-servicios.jpg
+  title: Servicios | Clínica Dental Sur
+  type: website
+robots: index,follow
+title: Servicios Dentales | Clínica Dental Sur - Implantes, Ortodoncia, Estética
 twitter:
-  card: "summary_large_image"
+  card: summary_large_image
   description: "Servicios dentales en Clínica Dental Sur: Implantología, Ortodoncia, Estética. Precios transparentes."
   images:
-    - "https://clinicadentalsur.es/assets/media/images/twitter-servicios.jpg"
-  title: "Servicios | Clínica Dental Sur"
+    - https://clinicadentalsur.es/assets/media/images/twitter-servicios.jpg
+  title: Servicios | Clínica Dental Sur

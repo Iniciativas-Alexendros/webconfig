@@ -1,6 +1,6 @@
-bundleVersion: "1.0.0"
-createdAt: "2026-09-04T10:00:00.000Z"
-description: "Sitio web de la Clínica Dental Sur - Servicios odontológicos integrales"
-name: "clinica-dental-sur"
-siteConfig: "site.config.yaml"
-updatedAt: "2026-09-04T10:00:00.000Z"
+bundleVersion: 1.0.0
+createdAt: 2026-09-04T10:00:00.000Z
+description: Sitio web de la Clínica Dental Sur - Servicios odontológicos integrales
+name: clinica-dental-sur
+siteConfig: site.config.yaml
+updatedAt: 2026-09-04T10:00:00.000Z

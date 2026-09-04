@@ -4,38 +4,47 @@
       "id": "header-main",
       "type": "header",
       "values": {
+        "cta": {
+          "href": "/contacto",
+          "label": "Book Appointment",
+          "target": "_self"
+        },
         "logo": {
-          "src": "assets/brand/logo.svg",
           "alt": "Clínica Dental Sur",
-          "href": "/"
+          "href": "/",
+          "src": "assets/brand/logo.svg"
         },
         "navigation": [
-          { "label": "Home", "href": "/" },
-          { "label": "Services", "href": "/servicios" },
-          { "label": "Contact", "href": "/contacto" }
-        ],
-        "cta": {
-          "label": "Book Appointment",
-          "href": "/contacto",
-          "target": "_self"
-        }
+          {
+            "href": "/",
+            "label": "Home"
+          },
+          {
+            "href": "/servicios",
+            "label": "Services"
+          },
+          {
+            "href": "/contacto",
+            "label": "Contact"
+          }
+        ]
       }
     },
     {
       "id": "hero-contacto",
       "type": "hero",
       "values": {
-        "headline": "Book Your Appointment",
-        "subheadline": "We're here to help. Fill out the form and we'll contact you within 24h.",
+        "background": {
+          "alt": "Clinic reception",
+          "src": "assets/media/images/contacto-hero.jpg"
+        },
         "cta": {
-          "label": "Call Now",
           "href": "tel:+34912345678",
+          "label": "Call Now",
           "target": "_self"
         },
-        "background": {
-          "src": "assets/media/images/contacto-hero.jpg",
-          "alt": "Clinic reception"
-        }
+        "headline": "Book Your Appointment",
+        "subheadline": "We're here to help. Fill out the form and we'll contact you within 24h."
       }
     },
     {
@@ -44,13 +53,30 @@
       "values": {
         "copyright": "© 2026 Clínica Dental Sur. All rights reserved.",
         "links": [
-          { "label": "Legal Notice", "href": "/aviso-legal" },
-          { "label": "Privacy Policy", "href": "/politica-privacidad" },
-          { "label": "Contact", "href": "/contacto" }
+          {
+            "href": "/aviso-legal",
+            "label": "Legal Notice"
+          },
+          {
+            "href": "/politica-privacidad",
+            "label": "Privacy Policy"
+          },
+          {
+            "href": "/contacto",
+            "label": "Contact"
+          }
         ],
         "social": [
-          { "label": "Facebook", "href": "https://facebook.com/clinicadentalsur", "icon": "facebook" },
-          { "label": "Instagram", "href": "https://instagram.com/clinicadentalsur", "icon": "instagram" }
+          {
+            "href": "https://facebook.com/clinicadentalsur",
+            "icon": "facebook",
+            "label": "Facebook"
+          },
+          {
+            "href": "https://instagram.com/clinicadentalsur",
+            "icon": "instagram",
+            "label": "Instagram"
+          }
         ]
       }
     }
