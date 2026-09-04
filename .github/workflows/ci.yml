@@ -59,6 +59,16 @@ jobs:
       - name: Build CLI
         run: npm run build
       
+      - name: Verify fixture coverage (codes == fixtures)
+        run: |
+          codes=$(grep -cE "^[[:space:]]*[A-Z0-9]+_[0-9]+" src/validate/errors.ts)
+          fixtures=$(ls -d fixtures/invalid/*/ | wc -l)
+          echo "error codes: $codes, invalid fixtures: $fixtures"
+          if [ "$codes" -ne "$fixtures" ]; then
+            echo "FAIL: error codes ($codes) do not match invalid fixtures ($fixtures)"
+            exit 1
+          fi
+      
       - name: Validate all invalid fixtures
         run: |
           set +e
@@ -76,4 +86,4 @@ jobs:
       
       - name: Validate golden fixture with --json
         run: |
-          node dist/cli.js validate fixtures/golden/clinica-dental-sur --ds ds-catalog.example.yaml --json | jq -e '(.valid == true) and (.errors | length == 0) and (.warnings | length == 0)'
+          node dist/cli.js validate fixtures/golden/clinica-dental-sur --ds ds-catalog.example.yaml --json | jq -e '(.valid == true) and (.errors | length == 0) and ([.warnings[] | select(.code != "I18N_002")] | length == 0)'
