@@ -314,7 +314,17 @@ components:
         alt: "Test"
 COMP
 
-# ASSET_002 - unused asset (handled by base template)
+# ASSET_002 - unused asset (base template ships unreferenced logo/test assets)
+create_base "$BASE/ASSET_002" "ASSET_002"
+cat > "$BASE/ASSET_002/composition/home.yaml" <<COMP
+page: "home"
+components:
+  - id: "text"
+    type: "text-block"
+    parentId: null
+    props:
+      content: "Test content"
+COMP
 
 # RICHTEXT_001 - HTML in rich text
 create_base "$BASE/RICHTEXT_001" "RICHTEXT_001"
