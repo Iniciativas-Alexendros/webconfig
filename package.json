@@ -1,0 +1,35 @@
+{
+  "name": "webconfig",
+  "version": "1.0.0",
+  "description": "CLI validator and exporter for site.bundle v1.0.0 format",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "webconfig": "./dist/cli.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo 'no linter configured'"
+  },
+  "dependencies": {
+    "zod": "3.22.4",
+    "yaml": "2.3.4",
+    "ajv": "8.12.0",
+    "ajv-formats": "2.1.1",
+    "commander": "11.1.0",
+    "tar-stream": "3.1.6"
+  },
+  "devDependencies": {
+    "vitest": "1.2.0",
+    "tsup": "8.0.1",
+    "typescript": "5.3.3",
+    "@types/node": "20.11.0"
+  }
+}

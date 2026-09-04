@@ -1,0 +1,8 @@
+node_modules
+dist
+*.tar.gz
+package-lock.json
+.env
+*.log
+.DS_Store
+coverage
