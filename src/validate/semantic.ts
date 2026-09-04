@@ -65,28 +65,53 @@ async function loadBundleData(bundleDir: string): Promise<BundleData> {
 
   const contentDir = path.join(bundleDir, "content");
   try {
-    const locales = await fs.readdir(contentDir);
-    for (const locale of locales) {
+    const entries = await fs.readdir(contentDir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const locale = entry.name;
+      
+      // Read regular content files from content/<locale>/
       const localeDir = path.join(contentDir, locale);
-      const stat = await fs.stat(localeDir);
-      if (!stat.isDirectory()) continue;
-      const files = await fs.readdir(localeDir);
-      for (const file of files) {
-        if (!file.endsWith(".json") && !file.endsWith(".yaml") && !file.endsWith(".yml")) continue;
-        const filePath = path.join(localeDir, file);
-        const content = await fs.readFile(filePath, "utf-8");
-        let parsed: unknown;
-        if (file.endsWith(".json")) {
-          parsed = JSON.parse(content);
-        } else {
-          parsed = parse(content);
-        }
-        const key = `${locale}/${file}`;
-        if (filePath.includes("seo") || file.startsWith("seo")) {
-          data.seo.set(key, parsed as Record<string, unknown>);
-        } else {
+      try {
+        const files = await fs.readdir(localeDir);
+        for (const file of files) {
+          if (!file.endsWith(".json") && !file.endsWith(".yaml") && !file.endsWith(".yml")) continue;
+          const filePath = path.join(localeDir, file);
+          const stat = await fs.stat(filePath);
+          if (stat.isDirectory()) continue;
+          const content = await fs.readFile(filePath, "utf-8");
+          let parsed: unknown;
+          if (file.endsWith(".json")) {
+            parsed = JSON.parse(content);
+          } else {
+            parsed = parse(content);
+          }
+          const key = `${locale}/${file}`;
           data.content.set(key, parsed as Record<string, unknown>);
         }
+      } catch {
+      }
+      
+      // Read SEO files from content/seo/<locale>/
+      const seoLocaleDir = path.join(contentDir, "seo", locale);
+      try {
+        const seoFiles = await fs.readdir(seoLocaleDir);
+        for (const file of seoFiles) {
+          if (!file.endsWith(".json") && !file.endsWith(".yaml") && !file.endsWith(".yml")) continue;
+          const filePath = path.join(seoLocaleDir, file);
+          const stat = await fs.stat(filePath);
+          if (stat.isDirectory()) continue;
+          const content = await fs.readFile(filePath, "utf-8");
+          let parsed: unknown;
+          if (file.endsWith(".json")) {
+            parsed = JSON.parse(content);
+          } else {
+            parsed = parse(content);
+          }
+          const key = `${locale}/seo/${file}`;
+          data.seo.set(key, parsed as Record<string, unknown>);
+        }
+      } catch {
       }
     }
   } catch {
@@ -379,6 +404,7 @@ function checkContentRefs(
   file: string,
   pageSlugs: Set<string>,
   contentData: Map<string, Record<string, unknown>>,
+  locales: string[],
   issues: ValidationIssue[]
 ): void {
   for (const value of Object.values(obj)) {
@@ -390,34 +416,38 @@ function checkContentRefs(
       }
       const page = match[1] as string;
       const key = match[2] as string;
-      if (!pageSlugs.has(page)) {
+      // Extract page slug (last part after /)
+      const pageSlug = page.split("/").pop() || page;
+      if (!pageSlugs.has(pageSlug)) {
         issues.push(createIssue(EC.CONTENTREF_001, file, `Content reference points to non-existent page: ${page}`));
         continue;
       }
-      const contentKey = `${page}.json`;
-      const contentFile = contentData.get(contentKey);
-      if (!contentFile) {
-        issues.push(createIssue(EC.CONTENTREF_001, file, `Content reference points to non-existent page: ${page}`));
-        continue;
+      // Check all locales for the content file
+      let found = false;
+      for (const locale of locales) {
+        const contentKey = `${locale}/${pageSlug}.json`;
+        const contentFile = contentData.get(contentKey);
+        if (!contentFile) continue;
+        const blocks = contentFile["blocks"] as Array<Record<string, unknown>> | undefined;
+        if (!blocks) continue;
+        const block = blocks.find((b) => b["id"] === key);
+        if (block) {
+          found = true;
+          break;
+        }
       }
-      const blocks = contentFile["blocks"] as Array<Record<string, unknown>> | undefined;
-      if (!blocks) {
-        issues.push(createIssue(EC.CONTENTREF_003, file, `Content reference key not found: ${key}`));
-        continue;
-      }
-      const block = blocks.find((b) => b["id"] === key);
-      if (!block) {
+      if (!found) {
         issues.push(createIssue(EC.CONTENTREF_003, file, `Content reference key not found: ${key}`));
       }
     } else if (value && typeof value === "object") {
       if (Array.isArray(value)) {
         for (const item of value) {
           if (item && typeof item === "object") {
-            checkContentRefs(item as Record<string, unknown>, file, pageSlugs, contentData, issues);
+            checkContentRefs(item as Record<string, unknown>, file, pageSlugs, contentData, locales, issues);
           }
         }
       } else {
-        checkContentRefs(value as Record<string, unknown>, file, pageSlugs, contentData, issues);
+        checkContentRefs(value as Record<string, unknown>, file, pageSlugs, contentData, locales, issues);
       }
     }
   }
@@ -473,6 +503,20 @@ async function validateSemantic(
   const defaultLocale = (siteConfig["defaultLocale"] as string) || "es";
   const fallbackLocale = (siteConfig["fallbackLocale"] as string) || "es";
 
+  // Build a map of composition component IDs to their types for parent validation
+  const compositionComponentTypes = new Map<string, string>();
+  for (const [, composition] of data.compositions) {
+    const components = composition["components"] as Array<Record<string, unknown>> | undefined;
+    if (!components) continue;
+    for (const comp of components) {
+      const compId = comp["id"] as string;
+      const compType = comp["type"] as string;
+      if (compId && compType) {
+        compositionComponentTypes.set(compId, compType);
+      }
+    }
+  }
+
   const pageSlugs = extractPageSlugs(data.compositions);
 
   for (const [name, composition] of data.compositions) {
@@ -488,10 +532,13 @@ async function validateSemantic(
         issues.push(createIssue(EC.COMP_001, `composition/${name}.yaml`, `Component type "${compType}" not found in DS catalog`));
       }
 
-      if (parentId && !componentIndex.has(parentId)) {
+      if (parentId && !compositionComponentTypes.has(parentId)) {
         issues.push(createIssue(EC.PARENT_001, `composition/${name}.yaml`, `Component ${compId} references non-existent parent_id: ${parentId}`));
-      } else if (parentId && !layoutComponentIds.has(parentId)) {
-        issues.push(createIssue(EC.PARENT_002, `composition/${name}.yaml`, `parent_id must reference a layout component (category: layout), got: ${parentId}`));
+      } else if (parentId) {
+        const parentType = compositionComponentTypes.get(parentId);
+        if (parentType && !layoutComponentIds.has(parentType)) {
+          issues.push(createIssue(EC.PARENT_002, `composition/${name}.yaml`, `parent_id must reference a layout component (category: layout), got parent of type: ${parentType}`));
+        }
       }
 
       if (props) {
@@ -510,7 +557,7 @@ async function validateSemantic(
         checkImageAlt(props, `composition/${name}.yaml`, issues);
         checkImagesInObject(props, `composition/${name}.yaml`, issues);
         checkLinks(props, `composition/${name}.yaml`, pageSlugs, issues);
-        checkContentRefs(props, `composition/${name}.yaml`, pageSlugs, data.content, issues);
+        checkContentRefs(props, `composition/${name}.yaml`, pageSlugs, data.content, locales, issues);
       }
     }
   }
@@ -527,7 +574,7 @@ async function validateSemantic(
       checkPricesInObject(values, `content/${key}`, issues);
       checkImagesInObject(values, `content/${key}`, issues);
       checkLinks(values, `content/${key}`, pageSlugs, issues);
-      checkContentRefs(values, `content/${key}`, pageSlugs, data.content, issues);
+      checkContentRefs(values, `content/${key}`, pageSlugs, data.content, locales, issues);
     }
   }
 

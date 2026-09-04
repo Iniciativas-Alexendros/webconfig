@@ -1,0 +1,9 @@
+page: "home"
+components:
+  - id: "icon-list"
+    type: "icon-list"
+    parentId: null
+    props:
+      items:
+        - icon: "non-existent-icon"
+          text: "Test"

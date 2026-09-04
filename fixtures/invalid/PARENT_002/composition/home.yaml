@@ -1,0 +1,12 @@
+page: "home"
+components:
+  - id: "content-parent"
+    type: "text-block"
+    parentId: null
+    props:
+      content: "Test content"
+  - id: "child"
+    type: "text-block"
+    parentId: "content-parent"
+    props:
+      content: "Test content"

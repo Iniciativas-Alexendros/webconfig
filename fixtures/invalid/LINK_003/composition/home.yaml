@@ -1,0 +1,13 @@
+page: "home"
+components:
+  - id: "hero"
+    type: "hero"
+    parentId: null
+    props:
+      headline: "Test"
+      cta:
+        label: "Test"
+        href: "#NonExistentAnchor"
+      background:
+        src: "assets/media/images/test.jpg"
+        alt: "Test"

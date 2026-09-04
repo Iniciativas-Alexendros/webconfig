@@ -1,0 +1,14 @@
+canonical: "https://test.com/"
+description: "Test"
+jsonLd:
+  foo: "bar"
+keywords: ["test"]
+openGraph:
+  description: "Test"
+  title: "Test"
+  type: "website"
+title: "Test"
+twitter:
+  card: "summary"
+  description: "Test"
+  title: "Test"

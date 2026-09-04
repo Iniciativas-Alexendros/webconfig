@@ -1,0 +1,6 @@
+bundleVersion: "1.0.0"
+createdAt: "2026-09-04T10:00:00.000Z"
+description: "Test bundle for ICON_001"
+name: "ICON_001"
+siteConfig: "site.config.yaml"
+updatedAt: "2026-09-04T10:00:00.000Z"

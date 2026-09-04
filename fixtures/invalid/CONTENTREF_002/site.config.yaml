@@ -1,0 +1,14 @@
+defaultLocale: "es"
+fallbackLocale: "es"
+locales:
+  - "es"
+name: "CONTENTREF_002"
+navigation:
+  footer: []
+  header: []
+theme:
+  colorScheme: "light"
+  fontFamily: "Inter"
+  radius: "md"
+timezone: "UTC"
+version: "1.0.0"

@@ -1,0 +1,15 @@
+page: "home"
+components:
+  - id: "price-table"
+    type: "price-table"
+    parentId: null
+    props:
+      plans:
+        - name: "Test"
+          price:
+            amount: 100
+            # missing currency and period
+          features: []
+          cta:
+            label: "Test"
+            href: "/"

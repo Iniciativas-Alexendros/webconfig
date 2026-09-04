@@ -1,0 +1,15 @@
+canonical: "https://test.com/"
+description: "Test"
+jsonLd:
+  "@context": "https://schema.org"
+  "@type": "WebSite"
+keywords: ["test"]
+openGraph:
+  description: "Test"
+  title: "Test"
+  type: "website"
+title: "Test"
+twitter:
+  card: "summary"
+  description: "Test"
+  title: "Test"

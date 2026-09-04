@@ -1,0 +1,7 @@
+page: "home"
+components:
+  - id: "child"
+    type: "text-block"
+    parentId: "non-existent-parent"
+    props:
+      content: "Test content"

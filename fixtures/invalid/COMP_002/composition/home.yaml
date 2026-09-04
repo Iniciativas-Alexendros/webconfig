@@ -1,0 +1,8 @@
+page: "home"
+components:
+  - id: "hero"
+    type: "hero"
+    parentId: null
+    props:
+      headline: "Test"
+      # missing required cta and background

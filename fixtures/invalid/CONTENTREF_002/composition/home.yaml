@@ -1,0 +1,14 @@
+page: "home"
+components:
+  - id: "hero"
+    type: "hero"
+    parentId: null
+    props:
+      headline: "Test"
+      cta:
+        label: "Test"
+        href: "/"
+      background:
+        src: "assets/media/images/test.jpg"
+        alt: "Test"
+      contentRef: "invalid.json#/"

@@ -1,0 +1,6 @@
+page: "home"
+components:
+  - id: "unknown"
+    type: "non-existent-component"
+    parentId: null
+    props: {}
