@@ -1,6 +1,5 @@
 {
   "$id": "https://webconfig.dev/schemas/manifest.schema.json",
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Manifest",
   "version": "1.0.0",
   "type": "object",

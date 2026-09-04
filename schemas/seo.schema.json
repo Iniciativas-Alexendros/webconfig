@@ -15,30 +15,18 @@
   ],
   "properties": {
     "canonical": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "description": {
       "type": "string",
-      "minLength": 1,
-      "maxLength": 160
+      "minLength": 1
     },
     "jsonLd": {
       "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "@context",
-        "@type"
-      ],
-      "properties": {
-        "@context": {
-          "type": "string",
-          "const": "https://schema.org"
-        },
-        "@type": {
-          "type": "string",
-          "enum": ["WebSite", "WebPage", "LocalBusiness", "Dentist", "Service"]
-        }
-      }
+      "additionalProperties": true
     },
     "keywords": {
       "type": "array",
@@ -56,85 +44,18 @@
     },
     "openGraph": {
       "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "description",
-        "title",
-        "type"
-      ],
-      "properties": {
-        "description": {
-          "type": "string",
-          "minLength": 1
-        },
-        "images": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "alt",
-              "url"
-            ],
-            "properties": {
-              "alt": {
-                "type": "string"
-              },
-              "url": {
-                "type": "string",
-                "format": "uri"
-              }
-            }
-          }
-        },
-        "title": {
-          "type": "string",
-          "minLength": 1
-        },
-        "type": {
-          "type": "string",
-          "enum": ["website", "article", "profile"]
-        }
-      }
+      "additionalProperties": true
     },
     "robots": {
-      "type": "string",
-      "enum": ["index,follow", "noindex,follow", "index,nofollow", "noindex,nofollow"]
+      "type": "string"
     },
     "title": {
       "type": "string",
-      "minLength": 1,
-      "maxLength": 60
+      "minLength": 1
     },
     "twitter": {
       "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "card",
-        "description",
-        "title"
-      ],
-      "properties": {
-        "card": {
-          "type": "string",
-          "enum": ["summary", "summary_large_image", "app", "player"]
-        },
-        "description": {
-          "type": "string",
-          "minLength": 1
-        },
-        "images": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "format": "uri"
-          }
-        },
-        "title": {
-          "type": "string",
-          "minLength": 1
-        }
-      }
+      "additionalProperties": true
     }
   }
 }

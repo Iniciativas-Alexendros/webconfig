@@ -2,6 +2,7 @@
 import { program } from "commander";
 import { normalizeDirectory } from "./normalize.js";
 import { computeIntegrity } from "./integrity.js";
+import { validateBundle, formatValidationResult, getExitCode } from "./validate/index.js";
 import { resolve } from "node:path";
 
 program
@@ -52,6 +53,24 @@ program
     for (const file of integrity.files) {
       console.log(`${file.hash}  ${file.path}  (${file.size} bytes)`);
     }
+  });
+
+program
+  .command("validate <bundle>")
+  .description("Validate a site.bundle directory or .tar.gz")
+  .option("--ds <path>", "Path to ds-catalog.yaml (defaults to parent dir)")
+  .option("--strict", "Exit 1 on warnings as well")
+  .option("--json", "Output JSON for pipeline consumption")
+  .action(async (bundle: string, options: { ds?: string; strict?: boolean; json?: boolean }) => {
+    const result = await validateBundle({
+      bundlePath: resolve(bundle),
+      dsCatalogPath: options.ds ? resolve(options.ds) : undefined,
+      strict: options.strict,
+      json: options.json,
+    });
+
+    console.log(formatValidationResult(result, options.json));
+    process.exit(getExitCode(result, options.strict));
   });
 
 program.parse();

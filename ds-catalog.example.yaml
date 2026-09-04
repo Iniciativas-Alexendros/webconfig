@@ -101,6 +101,7 @@ components:
                 type: "string"
               icon:
                 type: "string"
+                enum: ["facebook", "instagram", "twitter", "linkedin", "youtube", "github"]
             required: ["label", "href", "icon"]
       required: ["copyright", "links"]
 
@@ -285,6 +286,7 @@ components:
             properties:
               icon:
                 type: "string"
+                enum: ["check-circle", "award", "shield", "clock", "map-pin", "phone", "mail", "star", "heart", "user", "home", "search", "menu", "close", "chevron-down", "chevron-up", "chevron-left", "chevron-right", "facebook", "instagram", "twitter", "linkedin", "youtube", "github"]
               text:
                 type: "string"
             required: ["icon", "text"]

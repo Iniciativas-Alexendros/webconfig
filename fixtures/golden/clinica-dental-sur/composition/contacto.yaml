@@ -1,3 +1,4 @@
+page: "contacto"
 components:
   - id: header-main
     parentId: null

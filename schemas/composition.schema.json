@@ -1,6 +1,5 @@
 {
   "$id": "https://webconfig.dev/schemas/composition.schema.json",
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Composition",
   "version": "1.0.0",
   "type": "object",
@@ -26,7 +25,10 @@
             "minLength": 1
           },
           "parentId": {
-            "type": ["string", "null"]
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "props": {
             "type": "object",
