@@ -38,6 +38,7 @@ export function computeIntegrity(bundleDir: string): BundleIntegrity {
   const fileIntegrities: FileIntegrity[] = [];
 
   for (const file of files) {
+    if (file === "manifest.yaml") continue;
     const fullPath = join(absoluteDir, file);
     const stats = statSync(fullPath);
     const hash = sha256File(fullPath);
@@ -48,8 +49,7 @@ export function computeIntegrity(bundleDir: string): BundleIntegrity {
     });
   }
 
-  const sortedHashes = fileIntegrities.map((f) => f.hash).sort();
-  const globalHash = createHash("sha256").update(sortedHashes.join("")).digest("hex");
+  const globalHash = createHash("sha256").update(fileIntegrities.map((f) => f.hash).join("")).digest("hex");
 
   return {
     files: fileIntegrities,

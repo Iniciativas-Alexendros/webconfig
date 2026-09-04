@@ -8,6 +8,7 @@
     "bundleVersion",
     "createdAt",
     "description",
+    "integrity",
     "name",
     "siteConfig",
     "updatedAt"
@@ -24,6 +25,27 @@
     "description": {
       "type": "string",
       "minLength": 1
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "files",
+        "global"
+      ],
+      "properties": {
+        "files": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "global": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
     },
     "name": {
       "type": "string",

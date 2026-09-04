@@ -1,7 +1,9 @@
+import { createHash } from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse } from "yaml";
+import { computeIntegrity } from "../integrity.js";
 import { loadDSCatalog, type DSComponent, type DSCatalog } from "./ds-catalog.js";
 import type { ValidationIssue, ErrorCode } from "./errors.js";
 import { createIssue, ErrorCode as EC, ErrorSeverity } from "./errors.js";
@@ -616,6 +618,34 @@ async function validateSemantic(
   const bundleVersion = manifest["bundleVersion"] as string | undefined;
   if (bundleVersion !== "1.0.0") {
     issues.push(createIssue(EC.MANIFEST_002, "manifest.yaml", `Manifest bundleVersion does not match schema version: ${bundleVersion}`));
+  }
+
+  const integrity = manifest["integrity"] as { files?: Record<string, string>; global?: string } | undefined;
+  if (integrity && typeof integrity === "object") {
+    const declaredFiles = integrity["files"] ?? {};
+    const actual = computeIntegrity(bundleDir);
+    const actualByPath = new Map(actual.files.map((f) => [f.path, f.hash]));
+
+    for (const [filePath, declaredHash] of Object.entries(declaredFiles)) {
+      const actualHash = actualByPath.get(filePath);
+      if (!actualHash || actualHash !== declaredHash) {
+        issues.push(createIssue(EC.INTEGRITY_001, "manifest.yaml", `File integrity hash mismatch for ${filePath}`));
+      }
+    }
+
+    for (const file of actual.files) {
+      if (!(file.path in declaredFiles)) {
+        issues.push(createIssue(EC.INTEGRITY_001, "manifest.yaml", `File integrity hash mismatch for ${file.path}`));
+      }
+    }
+
+    const declaredPaths = Object.keys(declaredFiles).sort();
+    const expectedGlobal = createHash("sha256")
+      .update(declaredPaths.map((p) => declaredFiles[p]).join(""))
+      .digest("hex");
+    if (integrity["global"] !== expectedGlobal) {
+      issues.push(createIssue(EC.INTEGRITY_002, "manifest.yaml", "Global integrity hash mismatch"));
+    }
   }
 
   return issues;
