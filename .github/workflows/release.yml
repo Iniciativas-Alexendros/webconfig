@@ -36,8 +36,8 @@ jobs:
       - name: Verify build and tests
         run: |
           npm run typecheck
-          npm test
           npm run build
+          npm test
       
       - name: Release
         uses: cycjimmy/semantic-release-action@v4
