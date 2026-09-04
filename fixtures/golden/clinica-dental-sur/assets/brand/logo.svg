@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60">
+  <text x="10" y="40" font-family="Inter, system-ui, sans-serif" font-size="24" font-weight="600" fill="#1e40af">Clínica Dental Sur</text>
+  <circle cx="180" cy="20" r="12" fill="#10b981"/>
+  <path d="M175 20 L178 23 L185 16" stroke="white" stroke-width="2" fill="none"/>
+</svg>

@@ -1,0 +1,115 @@
+components:
+  - id: "hero-home"
+    type: "hero"
+    parentId: null
+    props:
+      headline: "Sonrisas que transforman vidas"
+      subheadline: "Clínica Dental Sur: Odontología de vanguardia con trato humano y tecnología de última generación"
+      cta:
+        label: "Pide tu cita"
+        href: "/contacto"
+        variant: "primary"
+      background:
+        src: "assets/media/images/hero-dental.jpg"
+        alt: "Equipo dental atendiendo a un paciente sonriente"
+  - id: "header-main"
+    type: "header"
+    parentId: null
+    props:
+      logo:
+        src: "assets/brand/logo.svg"
+        alt: "Clínica Dental Sur"
+        href: "/"
+      navigation:
+        - label: "Inicio"
+          href: "/"
+        - label: "Servicios"
+          href: "/servicios"
+        - label: "Contacto"
+          href: "/contacto"
+      cta:
+        label: "Reservar cita"
+        href: "/contacto"
+        variant: "primary"
+  - id: "footer-main"
+    type: "footer"
+    parentId: null
+    props:
+      copyright: "© 2026 Clínica Dental Sur. Todos los derechos reservados."
+      links:
+        - label: "Aviso Legal"
+          href: "/aviso-legal"
+        - label: "Política de Privacidad"
+          href: "/politica-privacidad"
+        - label: "Contacto"
+          href: "/contacto"
+      social:
+        - label: "Facebook"
+          href: "https://facebook.com/clinicadentalsur"
+          icon: "facebook"
+        - label: "Instagram"
+          href: "https://instagram.com/clinicadentalsur"
+          icon: "instagram"
+  - id: "services-grid"
+    type: "card-grid"
+    parentId: null
+    props:
+      columns: 3
+      cards:
+        - title: "Implantología"
+          description: "Implantes dentales de titanio con carga inmediata. Recupera tu sonrisa en un solo día."
+          image:
+            src: "assets/media/images/implantes.jpg"
+            alt: "Implante dental"
+          link:
+            label: "Ver detalles"
+            href: "/servicios#implantes"
+            target: "_self"
+        - title: "Ortodoncia Invisible"
+          description: "Alineadores transparentes para corregir tu sonrisa sin brackets metálicos."
+          image:
+            src: "assets/media/images/ortodoncia.jpg"
+            alt: "Alineadores transparentes"
+          link:
+            label: "Ver detalles"
+            href: "/servicios#ortodoncia"
+            target: "_self"
+        - title: "Estética Dental"
+          description: "Carillas de porcelana, blanqueamiento y reconstrucciones para una sonrisa perfecta."
+          image:
+            src: "assets/media/images/estetica.jpg"
+            alt: "Carillas dentales"
+          link:
+            label: "Ver detalles"
+            href: "/servicios#estetica"
+            target: "_self"
+  - id: "why-choose-us"
+    type: "icon-list"
+    parentId: null
+    props:
+      items:
+        - icon: "check-circle"
+          text: "Equipo médico con 20+ años de experiencia"
+        - icon: "award"
+          text: "Tecnología 3D y escáner intraoral"
+        - icon: "shield"
+          text: "Garantía de 10 años en implantes"
+        - icon: "clock"
+          text: "Horario ampliado y urgencias 24h"
+  - id: "testimonials"
+    type: "testimonial"
+    parentId: null
+    props:
+      avatar:
+        src: "assets/media/images/paciente-maria.jpg"
+        alt: "María González"
+      quote: "El trato fue excepcional. Me colocaron 4 implantes en un día y no sentí dolor. Ahora sonrío con confianza."
+      author:
+        name: "María González"
+        role: "Paciente de Implantología"
+  - id: "cta-banner"
+    type: "text-block"
+    parentId: null
+    props:
+      content: "¿Listo para recuperar tu sonrisa? Nuestro equipo te espera para una primera consulta sin compromiso."
+      variant: "lead"

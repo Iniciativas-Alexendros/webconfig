@@ -1,0 +1,58 @@
+{
+  "blocks": [
+    {
+      "id": "hero-home",
+      "type": "hero",
+      "values": {
+        "headline": "Smiles that transform lives",
+        "subheadline": "Clínica Dental Sur: Cutting-edge dentistry with human touch and latest technology",
+        "cta": {
+          "label": "Book your appointment",
+          "href": "/contacto",
+          "target": "_self"
+        },
+        "background": {
+          "src": "assets/media/images/hero-dental.jpg",
+          "alt": "Dental team caring for a smiling patient"
+        }
+      }
+    },
+    {
+      "id": "header-main",
+      "type": "header",
+      "values": {
+        "logo": {
+          "src": "assets/brand/logo.svg",
+          "alt": "Clínica Dental Sur",
+          "href": "/"
+        },
+        "navigation": [
+          { "label": "Home", "href": "/" },
+          { "label": "Services", "href": "/servicios" },
+          { "label": "Contact", "href": "/contacto" }
+        ],
+        "cta": {
+          "label": "Book Appointment",
+          "href": "/contacto",
+          "target": "_self"
+        }
+      }
+    },
+    {
+      "id": "footer-main",
+      "type": "footer",
+      "values": {
+        "copyright": "© 2026 Clínica Dental Sur. All rights reserved.",
+        "links": [
+          { "label": "Legal Notice", "href": "/aviso-legal" },
+          { "label": "Privacy Policy", "href": "/politica-privacidad" },
+          { "label": "Contact", "href": "/contacto" }
+        ],
+        "social": [
+          { "label": "Facebook", "href": "https://facebook.com/clinicadentalsur", "icon": "facebook" },
+          { "label": "Instagram", "href": "https://instagram.com/clinicadentalsur", "icon": "instagram" }
+        ]
+      }
+    }
+  ]
+}

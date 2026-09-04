@@ -8,10 +8,10 @@ Deliver a complete, tested, and documented implementation following the 7-phase 
 
 ## Phases
 
-### Phase 1: Scaffolding [PENDING]
+### Phase 1: Scaffolding ✅ COMPLETE
 **Objective**: Initialize git repo, package.json (exact versions, private), tsconfig, dependencies, folder structure, config files
-- [ ] `git init` on main branch
-- [ ] Create `package.json` with:
+- [x] `git init` on main branch
+- [x] Create `package.json` with:
   - name: "webconfig"
   - bin: "webconfig"
   - engines: node >=20
@@ -19,24 +19,24 @@ Deliver a complete, tested, and documented implementation following the 7-phase 
   - private: true
   - dependencies: **EXACT versions (no ^)**: zod@3.22.4, yaml@2.3.4, ajv@8.12.0, ajv-formats@2.1.1, commander@11.1.0, tar-stream@3.1.6
   - devDependencies: **EXACT versions**: vitest@1.2.0, tsup@8.0.1, typescript@5.3.3, @types/node@20.11.0
-- [ ] Create `tsconfig.json` with strict mode
-- [ ] Create directory structure: `src/`, `schemas/`, `fixtures/golden/`, `fixtures/invalid/`, `tests/`
-- [ ] Create `.gitignore` (node_modules, dist, *.tar.gz)
-- [ ] Create `.npmrc` with `engine-strict=true`
-- [ ] Create `.nvmrc` with `20`
-- [ ] Create `DECISIONS.md` empty with header
-- [ ] Run `npm install` → generates `package-lock.json` (commit it)
-- [ ] Commit: "chore: bootstrap webconfig"
+- [x] Create `tsconfig.json` with strict mode
+- [x] Create directory structure: `src/`, `schemas/`, `fixtures/golden/`, `fixtures/invalid/`, `tests/`
+- [x] Create `.gitignore` (node_modules, dist, *.tar.gz)
+- [x] Create `.npmrc` with `engine-strict=true`
+- [x] Create `.nvmrc` with `20`
+- [x] Create `DECISIONS.md` empty with header
+- [x] Run `npm install` → generates `package-lock.json` (commit it)
+- [x] Commit: "chore: bootstrap webconfig" (1cde9b3)
 
-### Phase 2: Schemas & Golden Fixture [PENDING]
+### Phase 2: Schemas & Golden Fixture ✅ COMPLETE
 **Objective**: Create 5 JSON Schemas + well-formed golden fixture bundle (parseable, structure present)
-- [ ] JSON Schema for `manifest.yaml` (6 keys, exact structure, alpha order)
-- [ ] JSON Schema for `site.config.yaml` (8 keys, exact structure, alpha order)
-- [ ] JSON Schema for `composition/<page>.yaml`
-- [ ] JSON Schema for `content/<locale>/<page>.json`
-- [ ] JSON Schema for `content/seo/<locale>/<page>.yaml`
-- [ ] All schemas: $id, version "1.0.0", draft 2020-12
-- [ ] Create golden fixture: `fixtures/golden/clinica-dental-sur/`
+- [x] JSON Schema for `manifest.yaml` (6 keys, exact structure, alpha order)
+- [x] JSON Schema for `site.config.yaml` (8 keys, exact structure, alpha order)
+- [x] JSON Schema for `composition/<page>.yaml`
+- [x] JSON Schema for `content/<locale>/<page>.json`
+- [x] JSON Schema for `content/seo/<locale>/<page>.yaml`
+- [x] All schemas: $id, version "1.0.0", draft 2020-12
+- [x] Create golden fixture: `fixtures/golden/clinica-dental-sur/`
   - 3 pages: home, servicios, contacto
   - Locales: es (complete), en (partial for fallback demo)
   - SEO per page per locale
@@ -44,10 +44,10 @@ Deliver a complete, tested, and documented implementation following the 7-phase 
   - Realistic dental content with prices (amount/currency/period)
   - Icons from whitelist, autoplay+pauseControl
   - jsonLd with @context/@type
-- [ ] Create `ds-catalog.example.yaml` with component definitions
+- [x] Create `ds-catalog.example.yaml` with component definitions
   - **MANDATORY `category` per component**: closed enum (layout|nav|content|form|media)
   - Layout detection via `category: "layout"`, NOT by ID prefix
-- [ ] Golden fixture: well-formed (parses correctly, structure present) — **validation is Phase 4 checkpoint**
+- [x] Golden fixture: well-formed (parses correctly, structure present) — **validation is Phase 4 checkpoint**
 - [ ] Commit: "feat: add JSON schemas and golden fixture"
 
 ### Phase 3: Canonicalize + Integrity [PENDING]
@@ -137,7 +137,7 @@ Deliver a complete, tested, and documented implementation following the 7-phase 
 - [ ] Commit: "chore: final verification"
 
 ## Next Step
-Initialize the project with Phase 1 scaffolding (git, package.json with exact versions, tsconfig, folder structure, .npmrc, .nvmrc, DECISIONS.md).
+Begin Phase 3: Canonicalize + Integrity - Deterministic serializers + integrity hashing + normalize CLI.
 
 ## Decisions Made (Frozen Answers from Spec)
 | Date | Decision | Alternatives | Reason |
@@ -161,15 +161,22 @@ Initialize the project with Phase 1 scaffolding (git, package.json with exact ve
 ## Files Created/Modified
 | File | Status |
 |------|--------|
-| task_plan.md | ✅ Updated with rectifications + corrections A & B |
+| task_plan.md | ✅ Phase 2 complete |
 | findings.md | ✅ Created |
-| progress.md | ✅ Created |
-| package.json | ⏳ Pending |
-| tsconfig.json | ⏳ Pending |
-| src/ | ⏳ Pending |
-| schemas/ | ⏳ Pending |
-| fixtures/ | ⏳ Pending |
-| tests/ | ⏳ Pending |
-| .npmrc | ⏳ Pending |
-| .nvmrc | ⏳ Pending |
-| DECISIONS.md | ⏳ Pending |
+| progress.md | ✅ Phase 2 complete |
+| package.json | ✅ Done |
+| tsconfig.json | ✅ Done |
+| src/ | ✅ Done |
+| schemas/ | ✅ Done (5 schemas) |
+| fixtures/ | ✅ Done (golden fixture complete) |
+| tests/ | ✅ Done |
+| .npmrc | ✅ Done |
+| .nvmrc | ✅ Done |
+| DECISIONS.md | ✅ Done |
+| package-lock.json | ✅ Done (committed) |
+| ds-catalog.example.yaml | ✅ Done |
+| schemas/manifest.schema.json | ✅ Done |
+| schemas/site-config.schema.json | ✅ Done |
+| schemas/composition.schema.json | ✅ Done |
+| schemas/content.schema.json | ✅ Done |
+| schemas/seo.schema.json | ✅ Done |

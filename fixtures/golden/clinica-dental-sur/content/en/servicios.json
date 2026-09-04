@@ -1,0 +1,58 @@
+{
+  "blocks": [
+    {
+      "id": "header-main",
+      "type": "header",
+      "values": {
+        "logo": {
+          "src": "assets/brand/logo.svg",
+          "alt": "Clínica Dental Sur",
+          "href": "/"
+        },
+        "navigation": [
+          { "label": "Home", "href": "/" },
+          { "label": "Services", "href": "/servicios" },
+          { "label": "Contact", "href": "/contacto" }
+        ],
+        "cta": {
+          "label": "Book Appointment",
+          "href": "/contacto",
+          "target": "_self"
+        }
+      }
+    },
+    {
+      "id": "hero-servicios",
+      "type": "hero",
+      "values": {
+        "headline": "Our Dental Services",
+        "subheadline": "Comprehensive treatments for the whole family with the most advanced technology",
+        "cta": {
+          "label": "Book Appointment",
+          "href": "/contacto",
+          "target": "_self"
+        },
+        "background": {
+          "src": "assets/media/images/servicios-hero.jpg",
+          "alt": "Modern dental office"
+        }
+      }
+    },
+    {
+      "id": "footer-main",
+      "type": "footer",
+      "values": {
+        "copyright": "© 2026 Clínica Dental Sur. All rights reserved.",
+        "links": [
+          { "label": "Legal Notice", "href": "/aviso-legal" },
+          { "label": "Privacy Policy", "href": "/politica-privacidad" },
+          { "label": "Contact", "href": "/contacto" }
+        ],
+        "social": [
+          { "label": "Facebook", "href": "https://facebook.com/clinicadentalsur", "icon": "facebook" },
+          { "label": "Instagram", "href": "https://instagram.com/clinicadentalsur", "icon": "instagram" }
+        ]
+      }
+    }
+  ]
+}

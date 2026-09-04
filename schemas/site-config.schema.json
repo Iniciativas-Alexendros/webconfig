@@ -1,0 +1,124 @@
+{
+  "$id": "https://webconfig.dev/schemas/site-config.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SiteConfig",
+  "version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "defaultLocale",
+    "fallbackLocale",
+    "locales",
+    "name",
+    "navigation",
+    "theme",
+    "timezone",
+    "version"
+  ],
+  "properties": {
+    "defaultLocale": {
+      "type": "string",
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+    },
+    "fallbackLocale": {
+      "type": "string",
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+    },
+    "locales": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "navigation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "footer",
+        "header"
+      ],
+      "properties": {
+        "footer": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "href",
+              "label"
+            ],
+            "properties": {
+              "href": {
+                "type": "string",
+                "minLength": 1
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "header": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "href",
+              "label"
+            ],
+            "properties": {
+              "href": {
+                "type": "string",
+                "minLength": 1
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "colorScheme",
+        "fontFamily",
+        "radius"
+      ],
+      "properties": {
+        "colorScheme": {
+          "type": "string",
+          "enum": ["light", "dark", "auto"]
+        },
+        "fontFamily": {
+          "type": "string",
+          "minLength": 1
+        },
+        "radius": {
+          "type": "string",
+          "enum": ["none", "sm", "md", "lg", "full"]
+        }
+      }
+    },
+    "timezone": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^1\\.0\\.0$"
+    }
+  }
+}

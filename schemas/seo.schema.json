@@ -1,0 +1,140 @@
+{
+  "$id": "https://webconfig.dev/schemas/seo.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SEO",
+  "version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "description",
+    "jsonLd",
+    "keywords",
+    "openGraph",
+    "title",
+    "twitter"
+  ],
+  "properties": {
+    "canonical": {
+      "type": ["string", "null"]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "jsonLd": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "@context",
+        "@type"
+      ],
+      "properties": {
+        "@context": {
+          "type": "string",
+          "const": "https://schema.org"
+        },
+        "@type": {
+          "type": "string",
+          "enum": ["WebSite", "WebPage", "LocalBusiness", "Dentist", "Service"]
+        }
+      }
+    },
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "noIndex": {
+      "type": "boolean"
+    },
+    "noFollow": {
+      "type": "boolean"
+    },
+    "openGraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "description",
+        "title",
+        "type"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "alt",
+              "url"
+            ],
+            "properties": {
+              "alt": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          }
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "enum": ["website", "article", "profile"]
+        }
+      }
+    },
+    "robots": {
+      "type": "string",
+      "enum": ["index,follow", "noindex,follow", "index,nofollow", "noindex,nofollow"]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "twitter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "card",
+        "description",
+        "title"
+      ],
+      "properties": {
+        "card": {
+          "type": "string",
+          "enum": ["summary", "summary_large_image", "app", "player"]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

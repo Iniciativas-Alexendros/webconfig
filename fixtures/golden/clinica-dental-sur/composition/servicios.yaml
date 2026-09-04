@@ -1,0 +1,151 @@
+components:
+  - id: "header-main"
+    type: "header"
+    parentId: null
+    props:
+      logo:
+        src: "assets/brand/logo.svg"
+        alt: "Clínica Dental Sur"
+        href: "/"
+      navigation:
+        - label: "Inicio"
+          href: "/"
+        - label: "Servicios"
+          href: "/servicios"
+        - label: "Contacto"
+          href: "/contacto"
+      cta:
+        label: "Reservar cita"
+        href: "/contacto"
+        variant: "primary"
+  - id: "hero-servicios"
+    type: "hero"
+    parentId: null
+    props:
+      headline: "Nuestros Servicios Odontológicos"
+      subheadline: "Tratamientos integrales para toda la familia con la tecnología más avanzada"
+      cta:
+        label: "Pedir cita previa"
+        href: "/contacto"
+        variant: "primary"
+      background:
+        src: "assets/media/images/servicios-hero.jpg"
+        alt: "Gabinete dental moderno"
+  - id: "implantes-section"
+    type: "heading"
+    parentId: null
+    props:
+      level: 2
+      text: "Implantología Avanzada"
+  - id: "implantes-grid"
+    type: "card-grid"
+    parentId: null
+    props:
+      columns: 2
+      cards:
+        - title: "Implante Unitario"
+          description: "Sustitución de un diente perdido con implante de titanio y corona de zirconio."
+          image:
+            src: "assets/media/images/implante-unitario.jpg"
+            alt: "Implante unitario"
+          link:
+            label: "Desde 1.200€"
+            href: "/contacto#implantes"
+            target: "_self"
+        - title: "Arcada Completa (All-on-4)"
+          description: "Rehabilitación total con 4 implantes y prótesis fija en 24 horas."
+          image:
+            src: "assets/media/images/all-on-4.jpg"
+            alt: "All on 4"
+          link:
+            label: "Desde 8.500€"
+            href: "/contacto#implantes"
+            target: "_self"
+  - id: "ortodoncia-section"
+    type: "heading"
+    parentId: null
+    props:
+      level: 2
+      text: "Ortodoncia"
+  - id: "ortodoncia-grid"
+    type: "card-grid"
+    parentId: null
+    props:
+      columns: 2
+      cards:
+        - title: "Invisalign®"
+          description: "Alineadores transparentes, removibles y prácticamente invisibles."
+          image:
+            src: "assets/media/images/invisalign.jpg"
+            alt: "Alineadores Invisalign"
+          link:
+            label: "Desde 3.200€"
+            href: "/contacto#ortodoncia"
+            target: "_self"
+        - title: "Brackets Estéticos"
+          description: "Brackets de zafiro o cerámica, mucho menos visibles que los metálicos."
+          image:
+            src: "assets/media/images/brackets-esteticos.jpg"
+            alt: "Brackets de zafiro"
+          link:
+            label: "Desde 2.800€"
+            href: "/contacto#ortodoncia"
+            target: "_self"
+  - id: "estetica-section"
+    type: "heading"
+    parentId: null
+    props:
+      level: 2
+      text: "Estética Dental"
+  - id: "estetica-grid"
+    type: "card-grid"
+    parentId: null
+    props:
+      columns: 3
+      cards:
+        - title: "Carillas de Porcelana"
+          description: "Láminas ultrafinas que transforman forma, color y tamaño de los dientes."
+          image:
+            src: "assets/media/images/carillas.jpg"
+            alt: "Carillas de porcelana"
+          link:
+            label: "Desde 450€/diente"
+            href: "/contacto#estetica"
+            target: "_self"
+        - title: "Blanqueamiento Profesional"
+          description: "Blanqueamiento con luz LED en clínica + férulas para casa. Hasta 8 tonos."
+          image:
+            src: "assets/media/images/blanqueamiento.jpg"
+            alt: "Blanqueamiento dental"
+          link:
+            label: "299€"
+            href: "/contacto#estetica"
+            target: "_self"
+        - title: "Reconstrucción Estética"
+          description: "Composite de alta estética para fracturas, caries o cerrar espacios."
+          image:
+            src: "assets/media/images/reconstruccion.jpg"
+            alt: "Reconstrucción con composite"
+          link:
+            label: "Desde 120€"
+            href: "/contacto#estetica"
+            target: "_self"
+  - id: "footer-main"
+    type: "footer"
+    parentId: null
+    props:
+      copyright: "© 2026 Clínica Dental Sur. Todos los derechos reservados."
+      links:
+        - label: "Aviso Legal"
+          href: "/aviso-legal"
+        - label: "Política de Privacidad"
+          href: "/politica-privacidad"
+        - label: "Contacto"
+          href: "/contacto"
+      social:
+        - label: "Facebook"
+          href: "https://facebook.com/clinicadentalsur"
+          icon: "facebook"
+        - label: "Instagram"
+          href: "https://instagram.com/clinicadentalsur"
+          icon: "instagram"

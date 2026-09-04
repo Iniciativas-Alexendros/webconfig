@@ -1,0 +1,27 @@
+defaultLocale: "es"
+fallbackLocale: "es"
+locales:
+  - "es"
+  - "en"
+name: "Clínica Dental Sur"
+navigation:
+  footer:
+    - href: "/aviso-legal"
+      label: "Aviso Legal"
+    - href: "/politica-privacidad"
+      label: "Política de Privacidad"
+    - href: "/contacto"
+      label: "Contacto"
+  header:
+    - href: "/"
+      label: "Inicio"
+    - href: "/servicios"
+      label: "Servicios"
+    - href: "/contacto"
+      label: "Contacto"
+theme:
+  colorScheme: "light"
+  fontFamily: "Inter, system-ui, sans-serif"
+  radius: "md"
+timezone: "Europe/Madrid"
+version: "1.0.0"

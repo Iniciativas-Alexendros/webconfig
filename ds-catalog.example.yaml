@@ -1,0 +1,517 @@
+components:
+  - id: "hero"
+    name: "Hero Section"
+    category: "layout"
+    description: "Full-width hero banner with headline, subheadline, and CTA"
+    propsSchema:
+      type: "object"
+      properties:
+        headline:
+          type: "string"
+        subheadline:
+          type: "string"
+        cta:
+          type: "object"
+          properties:
+            label:
+              type: "string"
+            href:
+              type: "string"
+            variant:
+              type: "string"
+              enum: ["primary", "secondary", "outline"]
+          required: ["label", "href"]
+        background:
+          type: "object"
+          properties:
+            src:
+              type: "string"
+            alt:
+              type: "string"
+          required: ["src", "alt"]
+      required: ["headline", "cta"]
+
+  - id: "header"
+    name: "Site Header"
+    category: "layout"
+    description: "Site header with logo, navigation, and optional CTA"
+    propsSchema:
+      type: "object"
+      properties:
+        logo:
+          type: "object"
+          properties:
+            src:
+              type: "string"
+            alt:
+              type: "string"
+            href:
+              type: "string"
+          required: ["src", "alt", "href"]
+        navigation:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              label:
+                type: "string"
+              href:
+                type: "string"
+            required: ["label", "href"]
+        cta:
+          type: "object"
+          properties:
+            label:
+              type: "string"
+            href:
+              type: "string"
+            variant:
+              type: "string"
+              enum: ["primary", "secondary"]
+          required: ["label", "href"]
+      required: ["logo", "navigation"]
+
+  - id: "footer"
+    name: "Site Footer"
+    category: "layout"
+    description: "Site footer with links, copyright, and social links"
+    propsSchema:
+      type: "object"
+      properties:
+        copyright:
+          type: "string"
+        links:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              label:
+                type: "string"
+              href:
+                type: "string"
+            required: ["label", "href"]
+        social:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              label:
+                type: "string"
+              href:
+                type: "string"
+              icon:
+                type: "string"
+            required: ["label", "href", "icon"]
+      required: ["copyright", "links"]
+
+  - id: "nav-main"
+    name: "Main Navigation"
+    category: "nav"
+    description: "Horizontal navigation bar with dropdown support"
+    propsSchema:
+      type: "object"
+      properties:
+        items:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              label:
+                type: "string"
+              href:
+                type: "string"
+              children:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    label:
+                      type: "string"
+                    href:
+                      type: "string"
+                  required: ["label", "href"]
+            required: ["label", "href"]
+      required: ["items"]
+
+  - id: "nav-breadcrumb"
+    name: "Breadcrumb Navigation"
+    category: "nav"
+    description: "Breadcrumb trail showing current page hierarchy"
+    propsSchema:
+      type: "object"
+      properties:
+        items:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              label:
+                type: "string"
+              href:
+                type: ["string", "null"]
+            required: ["label"]
+      required: ["items"]
+
+  - id: "text-block"
+    name: "Text Block"
+    category: "content"
+    description: "Rich text content block with formatting"
+    propsSchema:
+      type: "object"
+      properties:
+        content:
+          type: "string"
+        variant:
+          type: "string"
+          enum: ["body", "lead", "caption"]
+      required: ["content"]
+
+  - id: "heading"
+    name: "Heading"
+    category: "content"
+    description: "Section heading with configurable level"
+    propsSchema:
+      type: "object"
+      properties:
+        level:
+          type: "integer"
+          minimum: 1
+          maximum: 6
+        text:
+          type: "string"
+      required: ["level", "text"]
+
+  - id: "card-grid"
+    name: "Card Grid"
+    category: "content"
+    description: "Responsive grid of cards with image, title, description, and link"
+    propsSchema:
+      type: "object"
+      properties:
+        columns:
+          type: "integer"
+          minimum: 1
+          maximum: 4
+          default: 3
+        cards:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              title:
+                type: "string"
+              description:
+                type: "string"
+              image:
+                type: "object"
+                properties:
+                  src:
+                    type: "string"
+                  alt:
+                    type: "string"
+                required: ["src", "alt"]
+              link:
+                type: "object"
+                properties:
+                  label:
+                    type: "string"
+                  href:
+                    type: "string"
+                  target:
+                    type: "string"
+                    enum: ["_self", "_blank"]
+                required: ["label", "href", "target"]
+            required: ["title", "description", "image", "link"]
+      required: ["cards"]
+
+  - id: "price-table"
+    name: "Price Table"
+    category: "content"
+    description: "Pricing table with plans, features, and CTA"
+    propsSchema:
+      type: "object"
+      properties:
+        plans:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              price:
+                type: "object"
+                properties:
+                  amount:
+                    type: "number"
+                    minimum: 0
+                  currency:
+                    type: "string"
+                    pattern: "^[A-Z]{3}$"
+                  period:
+                    type: "string"
+                    enum: ["month", "year", "once", "session"]
+                required: ["amount", "currency", "period"]
+              features:
+                type: "array"
+                items:
+                  type: "string"
+              cta:
+                type: "object"
+                properties:
+                  label:
+                    type: "string"
+                  href:
+                    type: "string"
+                  variant:
+                    type: "string"
+                    enum: ["primary", "secondary", "outline"]
+                required: ["label", "href"]
+              highlighted:
+                type: "boolean"
+            required: ["name", "price", "features", "cta"]
+      required: ["plans"]
+
+  - id: "icon-list"
+    name: "Icon List"
+    category: "content"
+    description: "List of items with icons"
+    propsSchema:
+      type: "object"
+      properties:
+        items:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              icon:
+                type: "string"
+              text:
+                type: "string"
+            required: ["icon", "text"]
+      required: ["items"]
+
+  - id: "testimonial"
+    name: "Testimonial"
+    category: "content"
+    description: "Customer testimonial with avatar, quote, and author"
+    propsSchema:
+      type: "object"
+      properties:
+        avatar:
+          type: "object"
+          properties:
+            src:
+              type: "string"
+            alt:
+              type: "string"
+          required: ["src", "alt"]
+        quote:
+          type: "string"
+        author:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            role:
+              type: "string"
+          required: ["name", "role"]
+      required: ["avatar", "quote", "author"]
+
+  - id: "contact-form"
+    name: "Contact Form"
+    category: "form"
+    description: "Contact form with validation"
+    propsSchema:
+      type: "object"
+      properties:
+        fields:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              label:
+                type: "string"
+              type:
+                type: "string"
+                enum: ["text", "email", "tel", "textarea", "select"]
+              required:
+                type: "boolean"
+              placeholder:
+                type: "string"
+              options:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    value:
+                      type: "string"
+                    label:
+                      type: "string"
+                  required: ["value", "label"]
+            required: ["name", "label", "type", "required"]
+        submitLabel:
+          type: "string"
+        successMessage:
+          type: "string"
+      required: ["fields", "submitLabel"]
+
+  - id: "booking-form"
+    name: "Booking Form"
+    category: "form"
+    description: "Appointment booking form with date/time selection"
+    propsSchema:
+      type: "object"
+      properties:
+        services:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+              name:
+                type: "string"
+              duration:
+                type: "integer"
+              price:
+                type: "object"
+                properties:
+                  amount:
+                    type: "number"
+                    minimum: 0
+                  currency:
+                    type: "string"
+                    pattern: "^[A-Z]{3}$"
+                required: ["amount", "currency"]
+            required: ["id", "name", "duration", "price"]
+        submitLabel:
+          type: "string"
+      required: ["services", "submitLabel"]
+
+  - id: "newsletter-form"
+    name: "Newsletter Form"
+    category: "form"
+    description: "Email newsletter subscription form"
+    propsSchema:
+      type: "object"
+      properties:
+        placeholder:
+          type: "string"
+        submitLabel:
+          type: "string"
+        successMessage:
+          type: "string"
+        privacyPolicyUrl:
+          type: "string"
+      required: ["placeholder", "submitLabel", "successMessage"]
+
+  - id: "image"
+    name: "Image"
+    category: "media"
+    description: "Single image with alt text and optional caption"
+    propsSchema:
+      type: "object"
+      properties:
+        src:
+          type: "string"
+        alt:
+          type: "string"
+        caption:
+          type: "string"
+        width:
+          type: "integer"
+        height:
+          type: "integer"
+      required: ["src", "alt"]
+
+  - id: "gallery"
+    name: "Image Gallery"
+    category: "media"
+    description: "Responsive image gallery with lightbox"
+    propsSchema:
+      type: "object"
+      properties:
+        images:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              src:
+                type: "string"
+              alt:
+                type: "string"
+              caption:
+                type: "string"
+            required: ["src", "alt"]
+        columns:
+          type: "integer"
+          minimum: 1
+          maximum: 4
+          default: 3
+      required: ["images"]
+
+  - id: "video"
+    name: "Video Player"
+    category: "media"
+    description: "Video player with autoplay and pause control"
+    propsSchema:
+      type: "object"
+      properties:
+        src:
+          type: "string"
+        poster:
+          type: "string"
+        autoplay:
+          type: "boolean"
+        pauseControl:
+          type: "boolean"
+        muted:
+          type: "boolean"
+        loop:
+          type: "boolean"
+      required: ["src", "autoplay", "pauseControl"]
+
+  - id: "carousel"
+    name: "Carousel"
+    category: "media"
+    description: "Image/content carousel with navigation"
+    propsSchema:
+      type: "object"
+      properties:
+        slides:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              image:
+                type: "object"
+                properties:
+                  src:
+                    type: "string"
+                  alt:
+                    type: "string"
+                required: ["src", "alt"]
+              caption:
+                type: "string"
+              link:
+                type: "object"
+                properties:
+                  href:
+                    type: "string"
+                  label:
+                    type: "string"
+                  target:
+                    type: "string"
+                    enum: ["_self", "_blank"]
+                required: ["href", "label", "target"]
+            required: ["image"]
+        autoplay:
+          type: "boolean"
+        pauseControl:
+          type: "boolean"
+        interval:
+          type: "integer"
+          minimum: 1000
+      required: ["slides", "autoplay", "pauseControl"]

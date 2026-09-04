@@ -1,0 +1,55 @@
+canonical: "https://clinicadentalsur.es/en/contacto"
+description: "Contact Clínica Dental Sur in Madrid. Book online or call +34 912 345 678. Calle Mayor 45, Madrid. Mon-Fri 9-20h, Sat 9-14h."
+jsonLd:
+  "@context": "https://schema.org"
+  "@type": "ContactPage"
+  name: "Contact - Clínica Dental Sur"
+  description: "Contact form, phone, address and hours for Clínica Dental Sur in Madrid"
+  url: "https://clinicadentalsur.es/en/contacto"
+  mainEntity:
+    "@type": "Dentist"
+    name: "Clínica Dental Sur"
+    telephone: "+34 912 345 678"
+    email: "info@clinicadentalsur.es"
+    address:
+      "@type": "PostalAddress"
+      streetAddress: "Calle Mayor, 45"
+      addressLocality: "Madrid"
+      postalCode: "28013"
+      addressCountry: "ES"
+    openingHoursSpecification:
+      - "@type": "OpeningHoursSpecification"
+        dayOfWeek:
+          - "Monday"
+          - "Tuesday"
+          - "Wednesday"
+          - "Thursday"
+          - "Friday"
+        opens: "09:00"
+        closes: "20:00"
+      - "@type": "OpeningHoursSpecification"
+        dayOfWeek: "Saturday"
+        opens: "09:00"
+        closes: "14:00"
+keywords:
+  - "contact dentist Madrid"
+  - "book dental appointment"
+  - "dental clinic Madrid center"
+  - "dental emergency Madrid"
+noIndex: false
+noFollow: false
+openGraph:
+  description: "Contact Clínica Dental Sur. Book online or call us. Calle Mayor 45, Madrid."
+  images:
+    - alt: "Contact Clínica Dental Sur"
+      url: "https://clinicadentalsur.es/assets/media/images/og-contacto.jpg"
+  title: "Contact | Clínica Dental Sur"
+  type: "website"
+robots: "index,follow"
+title: "Contact | Clínica Dental Sur - Book Your Appointment in Madrid"
+twitter:
+  card: "summary_large_image"
+  description: "Contact Clínica Dental Sur. Book online or call us. Calle Mayor 45, Madrid."
+  images:
+    - "https://clinicadentalsur.es/assets/media/images/twitter-contacto.jpg"
+  title: "Contact | Clínica Dental Sur"

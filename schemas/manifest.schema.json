@@ -1,0 +1,42 @@
+{
+  "$id": "https://webconfig.dev/schemas/manifest.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Manifest",
+  "version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "bundleVersion",
+    "createdAt",
+    "description",
+    "name",
+    "siteConfig",
+    "updatedAt"
+  ],
+  "properties": {
+    "bundleVersion": {
+      "type": "string",
+      "pattern": "^1\\.0\\.0$"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "siteConfig": {
+      "type": "string",
+      "pattern": "^site\\.config\\.yaml$"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

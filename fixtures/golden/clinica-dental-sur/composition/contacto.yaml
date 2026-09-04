@@ -1,0 +1,114 @@
+components:
+  - id: "header-main"
+    type: "header"
+    parentId: null
+    props:
+      logo:
+        src: "assets/brand/logo.svg"
+        alt: "Clínica Dental Sur"
+        href: "/"
+      navigation:
+        - label: "Inicio"
+          href: "/"
+        - label: "Servicios"
+          href: "/servicios"
+        - label: "Contacto"
+          href: "/contacto"
+      cta:
+        label: "Reservar cita"
+        href: "/contacto"
+        variant: "primary"
+  - id: "hero-contacto"
+    type: "hero"
+    parentId: null
+    props:
+      headline: "Pide tu Cita"
+      subheadline: "Estamos aquí para ayudarte. Rellena el formulario y te contactaremos en menos de 24h."
+      cta:
+        label: "Llamar ahora"
+        href: "tel:+34912345678"
+        variant: "secondary"
+      background:
+        src: "assets/media/images/contacto-hero.jpg"
+        alt: "Recepción de la clínica"
+  - id: "contact-form"
+    type: "contact-form"
+    parentId: null
+    props:
+      fields:
+        - name: "nombre"
+          label: "Nombre completo"
+          type: "text"
+          required: true
+          placeholder: "Juan Pérez"
+        - name: "email"
+          label: "Email"
+          type: "email"
+          required: true
+          placeholder: "juan@ejemplo.com"
+        - name: "telefono"
+          label: "Teléfono"
+          type: "tel"
+          required: true
+          placeholder: "+34 600 000 000"
+        - name: "servicio"
+          label: "Servicio de interés"
+          type: "select"
+          required: false
+          options:
+            - value: "implantes"
+              label: "Implantología"
+            - value: "ortodoncia"
+              label: "Ortodoncia"
+            - value: "estetica"
+              label: "Estética Dental"
+            - value: "general"
+              label: "Odontología General"
+            - value: "urgencia"
+              label: "Urgencia"
+        - name: "mensaje"
+          label: "Mensaje / Síntomas"
+          type: "textarea"
+          required: false
+          placeholder: "Cuéntanos qué necesitas..."
+      submitLabel: "Enviar solicitud"
+      successMessage: "¡Gracias! Te contactaremos en menos de 24 horas para confirmar tu cita."
+  - id: "info-contacto"
+    type: "icon-list"
+    parentId: null
+    props:
+      items:
+        - icon: "map-pin"
+          text: "Calle Mayor, 45 - 28013 Madrid"
+        - icon: "phone"
+          text: "+34 912 345 678"
+        - icon: "mail"
+          text: "info@clinicadentalsur.es"
+        - icon: "clock"
+          text: "L-V: 9:00-20:00 | S: 9:00-14:00"
+  - id: "map-placeholder"
+    type: "image"
+    parentId: null
+    props:
+      src: "assets/media/images/mapa-clinica.jpg"
+      alt: "Mapa de ubicación de Clínica Dental Sur"
+      caption: "Nuestra clínica en el centro de Madrid"
+  - id: "footer-main"
+    type: "footer"
+    parentId: null
+    props:
+      copyright: "© 2026 Clínica Dental Sur. Todos los derechos reservados."
+      links:
+        - label: "Aviso Legal"
+          href: "/aviso-legal"
+        - label: "Política de Privacidad"
+          href: "/politica-privacidad"
+        - label: "Contacto"
+          href: "/contacto"
+      social:
+        - label: "Facebook"
+          href: "https://facebook.com/clinicadentalsur"
+          icon: "facebook"
+        - label: "Instagram"
+          href: "https://instagram.com/clinicadentalsur"
+          icon: "instagram"

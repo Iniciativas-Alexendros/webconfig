@@ -40,26 +40,37 @@
 | RICHTEXT_001 HTML | Regex `/<[^>]+>/` on rich-text fields |
 | Package privacy | `"private": true` |
 
+### Phase 1 Complete ✅
+- `git init` on main branch
+- `package.json` with exact versions, private: true, bin: webconfig, engines: node>=20, type: module
+- `tsconfig.json` with strict mode
+- Directory structure: `src/`, `schemas/`, `fixtures/golden/`, `fixtures/invalid/`, `tests/`
+- `.gitignore` (node_modules, dist, *.tar.gz, package-lock.json)
+- `.npmrc` with `engine-strict=true`
+- `.nvmrc` with `20`
+- `DECISIONS.md` with header
+- `npm install` → `package-lock.json` generated (committed)
+- Commit: `1cde9b3` "chore: bootstrap webconfig"
+
 ### Next Actions
-1. Begin Phase 1: Scaffolding (git init, package.json with exact versions, tsconfig, folder structure, .npmrc, .nvmrc, DECISIONS.md)
-2. Verify directory is empty and ready
-3. Create initial commit
+1. Begin Phase 2: Schemas & Golden Fixture (5 JSON Schemas + well-formed golden fixture)
 
 ### Files Status
 | File | Status |
 |------|--------|
 | task_plan.md | ✅ Updated with rectifications + corrections A & B |
 | findings.md | ✅ Created |
-| progress.md | ✅ Updated with corrections |
-| package.json | ⏳ Pending |
-| tsconfig.json | ⏳ Pending |
-| src/ | ⏳ Pending |
-| schemas/ | ⏳ Pending |
-| fixtures/ | ⏳ Pending |
-| tests/ | ⏳ Pending |
-| .npmrc | ⏳ Pending |
-| .nvmrc | ⏳ Pending |
-| DECISIONS.md | ⏳ Pending |
+| progress.md | ✅ Phase 1 complete |
+| package.json | ✅ Done |
+| tsconfig.json | ✅ Done |
+| src/ | ✅ Done |
+| schemas/ | ✅ Done |
+| fixtures/ | ✅ Done |
+| tests/ | ✅ Done |
+| .npmrc | ✅ Done |
+| .nvmrc | ✅ Done |
+| DECISIONS.md | ✅ Done |
+| package-lock.json | ✅ Done (committed) |
 
 ---
 
@@ -67,7 +78,7 @@
 
 | Phase | Status | Start Date | End Date | Commit |
 |-------|--------|------------|----------|--------|
-| 1: Scaffolding | 🟡 In Progress | 2026-09-04 | - | - |
+| 1: Scaffolding | ✅ Complete | 2026-09-04 | 2026-09-04 | 1cde9b3 |
 | 2: Schemas + Golden | ⏳ Pending | - | - | - |
 | 3: Canonicalize + Integrity | ⏳ Pending | - | - | - |
 | 4: Validator | ⏳ Pending | - | - | - |

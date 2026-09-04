@@ -1,0 +1,48 @@
+{
+  "$id": "https://webconfig.dev/schemas/composition.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Composition",
+  "version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "components",
+    "page"
+  ],
+  "properties": {
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "props",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parentId": {
+            "type": ["string", "null"]
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "page": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
