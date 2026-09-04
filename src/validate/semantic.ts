@@ -679,8 +679,15 @@ async function validateSemantic(
     }
   }
   const bundleVersion = manifest["bundleVersion"] as string | undefined;
-  if (bundleVersion !== "1.0.0") {
+  if (bundleVersion === undefined || !/^[0-9]+\.[0-9]+\.[0-9]+$/.test(bundleVersion)) {
+    issues.push(createIssue(EC.MANIFEST_002, "manifest.yaml", `Manifest bundleVersion is not valid semver: ${bundleVersion}`));
+  } else if (bundleVersion !== "1.0.0") {
     issues.push(createIssue(EC.MANIFEST_002, "manifest.yaml", `Manifest bundleVersion does not match schema version: ${bundleVersion}`));
+  }
+
+  const schemaCompat = manifest["schema_compat"] as string | undefined;
+  if (schemaCompat !== undefined && !/^~?\^?1\.0\.0$/.test(schemaCompat)) {
+    issues.push(createIssue(EC.MANIFEST_002, "manifest.yaml", `Incompatible schema_compat constraint: ${schemaCompat}`));
   }
 
   const integrity = manifest["integrity"] as { files?: Record<string, string>; global?: string } | undefined;

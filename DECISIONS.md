@@ -95,6 +95,14 @@ This separation allows:
 - `schemas/` and `schema_compat` = version of the **site.bundle format**; stays at `1.0.0` unless changed by manual decision. Format versions are never auto-bumped by release tooling
 - `schemas/` and the error-code table must not be modified without a written proposal in this file first
 
+### schema_compat Restored (deviation fixed)
+- **Date**: 2026-09-05
+- `schema_compat` ausente en schema y validador = desviación; este cambio **RESTAURA el contrato v1.0.0**, no lo modifica.
+- `schemas/manifest.schema.json` now REQUIRES `schema_compat` with pattern `^~?\^?1\.0\.0$` (accepts `^1.0.0`/`1.0.0`; rejects `>=`, `1.x`, and any 2+ version).
+- Semantic layer `MANIFEST_002` now also fires for: `bundleVersion` that is not pure semver, and `schema_compat` present but incompatible with spec 1.0.0 (`Incompatible schema_compat constraint: <value>`).
+- Separation of responsibilities (tested): missing `schema_compat` → `MANIFEST_001` (required field, syntax/AJV layer); incompatible `schema_compat` → `MANIFEST_002` (semantic layer).
+- Commit: this commit (`fix(validator): enforce schema_compat per frozen spec v1.0.0`)
+
 ## Testing Strategy
 
 ### Unit Tests

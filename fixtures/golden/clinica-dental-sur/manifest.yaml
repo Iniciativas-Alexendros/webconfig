@@ -43,5 +43,6 @@ integrity:
     site.config.yaml: aa7aa42ece45fd7073cc1086dcc66e2a37b4d6ac9c1d8d7116a259493bfe0662
   global: a6aa671094d81ba6fb06b9391c136b311e0b9ad0e82d1b0458d7d866cb69eeee
 name: clinica-dental-sur
+schema_compat: ^1.0.0
 siteConfig: site.config.yaml
 updatedAt: 2026-09-04T10:00:00.000Z

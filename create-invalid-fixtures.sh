@@ -38,6 +38,7 @@ bundleVersion: "1.0.0"
 createdAt: "2026-09-04T10:00:00.000Z"
 description: "Test bundle for $2"
 name: "$2"
+schema_compat: "^1.0.0"
 siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
 MANIFEST
@@ -450,17 +451,19 @@ bundleVersion: "1.0.0"
 createdAt: "2026-09-04T10:00:00.000Z"
 description: "Test bundle for MANIFEST_001"
 name: "MANIFEST_001"
+schema_compat: "^1.0.0"
 siteConfig: "non-existent.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
 MANIFEST
 
-# MANIFEST_002 - bundleVersion mismatch
+# MANIFEST_002 - schema_compat incompatible (historical DS-version error)
 create_base "$BASE/MANIFEST_002" "MANIFEST_002"
 cat > "$BASE/MANIFEST_002/manifest.yaml" <<MANIFEST
-bundleVersion: "2.0.0"
+bundleVersion: "1.0.0"
 createdAt: "2026-09-04T10:00:00.000Z"
 description: "Test bundle for MANIFEST_002"
 name: "MANIFEST_002"
+schema_compat: "2.4.1"
 siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
 MANIFEST

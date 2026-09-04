@@ -2,6 +2,7 @@ bundleVersion: "1.0.0"
 createdAt: "2026-09-04T10:00:00.000Z"
 description: "Test bundle for RICHTEXT_001"
 name: "RICHTEXT_001"
+schema_compat: "^1.0.0"
 siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
 integrity:

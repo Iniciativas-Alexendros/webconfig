@@ -52,6 +52,29 @@ function mapAjvErrors(errors: Ajv.ErrorObject[] | null | undefined, file: string
   }));
 }
 
+function mapManifestErrors(errors: Ajv.ErrorObject[] | null | undefined, file: string): ValidationIssue[] {
+  if (!errors) return [];
+  return errors.map((err) => {
+    if (err.keyword === "required") {
+      const missing = (err.params as { missingProperty?: string }).missingProperty ?? "field";
+      return {
+        code: "MANIFEST_001" as ErrorCode,
+        severity: "error" as const,
+        file,
+        message: `Manifest missing required field: ${missing}`,
+        location: undefined,
+      };
+    }
+    return {
+      code: `SYNTAX_${err.keyword?.toUpperCase() || "ERROR"}` as ErrorCode,
+      severity: "error" as const,
+      file,
+      message: `${err.instancePath || "/"} ${err.message}`,
+      location: undefined,
+    };
+  });
+}
+
 export async function validateSyntax(
   bundleDir: string
 ): Promise<ValidationIssue[]> {
@@ -67,7 +90,7 @@ export async function validateSyntax(
     const validateManifest = await loadSchema("manifest");
     const valid = validateManifest(manifest);
     if (!valid) {
-      issues.push(...mapAjvErrors(validateManifest.errors, "manifest.yaml"));
+      issues.push(...mapManifestErrors(validateManifest.errors, "manifest.yaml"));
     }
   } catch (e) {
     issues.push({
