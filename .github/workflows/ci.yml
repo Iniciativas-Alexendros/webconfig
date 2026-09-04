@@ -61,6 +61,7 @@ jobs:
       
       - name: Validate all invalid fixtures
         run: |
+          set +e
           for dir in fixtures/invalid/*/; do
             code=$(basename "$dir")
             echo "Validating $dir (expect $code)..."

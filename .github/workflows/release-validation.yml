@@ -47,11 +47,18 @@ jobs:
       
       - name: Validate all invalid fixtures
         run: |
+          set +e
           for dir in fixtures/invalid/*/; do
-            echo "Validating $dir..."
-            node dist/cli.js validate "$dir" --ds ds-catalog.example.yaml 2>&1 | grep -q "ERRORS:" || { echo "FAIL: $dir should have errors"; exit 1; }
+            code=$(basename "$dir")
+            echo "Validating $dir (expect $code)..."
+            output=$(node dist/cli.js validate "$dir" --ds ds-catalog.example.yaml 2>&1)
+            if ! echo "$output" | grep -q "\[$code\]"; then
+              echo "FAIL: $dir did not trigger expected code $code"
+              echo "$output"
+              exit 1
+            fi
           done
-          echo "All invalid fixtures correctly rejected"
+          echo "All invalid fixtures correctly flagged"
       
       - name: Export and validate deterministic output
         run: |
