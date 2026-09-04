@@ -27,8 +27,46 @@ jobs:
       - name: Run tests
         run: npm test
       
+      - name: Build CLI
+        run: npm run build
+      
       - name: Validate golden fixture
         run: node dist/cli.js validate fixtures/golden/clinica-dental-sur --ds ds-catalog.example.yaml
       
       - name: Normalize check golden fixture
         run: node dist/cli.js normalize fixtures/golden/clinica-dental-sur --check
+      
+      - name: Export deterministic test
+        run: |
+          node dist/cli.js export fixtures/golden/clinica-dental-sur /tmp/test1.tar.gz
+          node dist/cli.js export fixtures/golden/clinica-dental-sur /tmp/test2.tar.gz
+          sha256sum /tmp/test1.tar.gz /tmp/test2.tar.gz | awk '{print $1}' | sort -u | wc -l | grep -q '^1$' && echo "Exports are deterministic"
+
+  validate-all-fixtures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build CLI
+        run: npm run build
+      
+      - name: Validate all invalid fixtures
+        run: |
+          for dir in fixtures/invalid/*/; do
+            echo "Validating $dir..."
+            node dist/cli.js validate "$dir" --ds ds-catalog.example.yaml 2>&1 | grep -q "ERRORS:" || echo "FAIL: $dir should have errors"
+          done
+          echo "All invalid fixtures correctly rejected"
+      
+      - name: Validate golden fixture with --json
+        run: |
+          node dist/cli.js validate fixtures/golden/clinica-dental-sur --ds ds-catalog.example.yaml --json | jq -e '.valid == true and .errors | length == 0'

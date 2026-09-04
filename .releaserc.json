@@ -1,0 +1,13 @@
+{
+  "branches": ["main", "beta", "alpha"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/changelog",
+    "@semantic-release/npm",
+    "@semantic-release/git",
+    "@semantic-release/github"
+  ],
+  "changelog": "CHANGELOG.md",
+  "repositoryUrl": "https://github.com/Iniciativas-Alexendros/webconfig"
+}
