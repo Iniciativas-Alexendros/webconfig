@@ -4,3 +4,12 @@ description: "Test bundle for PARENT_002"
 name: "PARENT_002"
 siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
+integrity:
+  files:
+    "assets/brand/logo.svg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/test.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "composition/home.yaml": "688f6d394cf626676fa356c63e4b9f20ebd859518df5baa5bab3da6ccc719d92"
+    "content/es/home.json": "537d456d16fd216e01dba3fdaa471b011e7b16b81c4e9bd82c3127713dc9bb2d"
+    "content/seo/es/home.yaml": "d547b166e5e70717b55910b576f658ec63e260f2c3893f67d00e12aa7da398ef"
+    "site.config.yaml": "b2a60b1594a52d2067ba33f1cf561c406296bb6a526b7938cd0cf29126e2e007"
+  global: "e5f02570a4be5a77c241dfab48aa651bd9ea24f5497eb1e3a81f130c7c6f5133"

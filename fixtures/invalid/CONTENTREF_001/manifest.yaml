@@ -4,3 +4,12 @@ description: "Test bundle for CONTENTREF_001"
 name: "CONTENTREF_001"
 siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
+integrity:
+  files:
+    "assets/brand/logo.svg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/test.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "composition/home.yaml": "a0c3b3fdbed7535b19444fbb29bb7b78ab07279fb40b86ac08f41e425e0db2ad"
+    "content/es/home.json": "537d456d16fd216e01dba3fdaa471b011e7b16b81c4e9bd82c3127713dc9bb2d"
+    "content/seo/es/home.yaml": "d547b166e5e70717b55910b576f658ec63e260f2c3893f67d00e12aa7da398ef"
+    "site.config.yaml": "572190dd159438c78abe991a7968f978e971d361a89f3239c56ea2f97969d1ba"
+  global: "b8a09147dadb0ca140c897683476a812a5b2a6c229731d921d16a3ec9c143f8f"

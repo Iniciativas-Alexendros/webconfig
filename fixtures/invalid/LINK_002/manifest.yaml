@@ -4,3 +4,12 @@ description: "Test bundle for LINK_002"
 name: "LINK_002"
 siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
+integrity:
+  files:
+    "assets/brand/logo.svg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/test.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "composition/home.yaml": "e52a1bb2fe2a7dacff32e3ac3fb491041d37cb39664a12ec10c9c56a618c5393"
+    "content/es/home.json": "537d456d16fd216e01dba3fdaa471b011e7b16b81c4e9bd82c3127713dc9bb2d"
+    "content/seo/es/home.yaml": "d547b166e5e70717b55910b576f658ec63e260f2c3893f67d00e12aa7da398ef"
+    "site.config.yaml": "61a0b7771af39f2b34606fdc7fff00645bf6e492b7ea0314a3e3230ae76e9b2b"
+  global: "b519f1d47f78a8b0c232ba576b4b26bb14f6dba4f18acac2a422d71eb980fd15"

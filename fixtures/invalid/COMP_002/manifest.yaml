@@ -4,3 +4,12 @@ description: "Test bundle for COMP_002"
 name: "COMP_002"
 siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
+integrity:
+  files:
+    "assets/brand/logo.svg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/test.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "composition/home.yaml": "548730596f862bd6f11eb2108d71fff4326bb2d4ad60c9183991f7d9ae439232"
+    "content/es/home.json": "537d456d16fd216e01dba3fdaa471b011e7b16b81c4e9bd82c3127713dc9bb2d"
+    "content/seo/es/home.yaml": "d547b166e5e70717b55910b576f658ec63e260f2c3893f67d00e12aa7da398ef"
+    "site.config.yaml": "d16f93878a4d3bd5e86ff0320af65c6944facc0e9c42522135aa10466a1aa278"
+  global: "ff1b1075641f6fe3100089a32a21a3fb14b50788e0d91fa04bd6a24e4bc33cf3"

@@ -4,3 +4,12 @@ description: "Test bundle for SECRET_001"
 name: "SECRET_001"
 siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
+integrity:
+  files:
+    "assets/brand/logo.svg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/test.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "composition/home.yaml": "b4e8ae0f7090ec08e9388826e579abb14699595aab61a6f3d9ce7bc5c19ee0e4"
+    "content/es/home.json": "537d456d16fd216e01dba3fdaa471b011e7b16b81c4e9bd82c3127713dc9bb2d"
+    "content/seo/es/home.yaml": "d547b166e5e70717b55910b576f658ec63e260f2c3893f67d00e12aa7da398ef"
+    "site.config.yaml": "9f3fdd8527c248b703461a3416a21376bb7b4faaa1666a5f682b66423904d624"
+  global: "848010d1720ef48b6dd109208f7e54fc8f2a076f7725e1373e0708df97185adf"

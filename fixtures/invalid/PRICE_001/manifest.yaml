@@ -4,3 +4,12 @@ description: "Test bundle for PRICE_001"
 name: "PRICE_001"
 siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
+integrity:
+  files:
+    "assets/brand/logo.svg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/test.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "composition/home.yaml": "2f6ed136ce21e55bedfea6f6cd3cc94db0ade01af0a57b7b359644c62231461e"
+    "content/es/home.json": "537d456d16fd216e01dba3fdaa471b011e7b16b81c4e9bd82c3127713dc9bb2d"
+    "content/seo/es/home.yaml": "d547b166e5e70717b55910b576f658ec63e260f2c3893f67d00e12aa7da398ef"
+    "site.config.yaml": "a4e73cc8adcaf6b3b748468b6452bdffd425a1b6ce24e29871b96af5781ddadb"
+  global: "354a0c730ab26f7ea244d192e0144dc8f4f89e16841f04a14976964be89a790b"

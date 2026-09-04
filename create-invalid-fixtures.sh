@@ -4,6 +4,29 @@ set -e
 BASE="/home/alexendros/repositorios/webconfig/fixtures/invalid"
 DS_CATALOG="/home/alexendros/repositorios/webconfig/ds-catalog.example.yaml"
 
+# Append a correct integrity section to a fixture manifest (recipe: all files
+# except manifest.yaml, hashes sorted by path, no separators)
+write_integrity() {
+    local dir=$1
+    local files hashes global_hash file h
+    files=$(cd "$dir" && find . -type f ! -path './manifest.yaml' | sed 's|^\./||' | sort)
+    hashes=""
+    for file in $files; do
+        h=$(cd "$dir" && sha256sum "$file" | awk '{print $1}')
+        hashes="${hashes}${h}"
+    done
+    global_hash=$(printf '%s' "$hashes" | sha256sum | awk '{print $1}')
+    {
+        echo "integrity:"
+        echo "  files:"
+        for file in $files; do
+            h=$(cd "$dir" && sha256sum "$file" | awk '{print $1}')
+            echo "    \"$file\": \"$h\""
+        done
+        echo "  global: \"$global_hash\""
+    } >> "$dir/manifest.yaml"
+}
+
 # Common template files
 create_base() {
     local dir=$1
@@ -92,20 +115,14 @@ create_base "$BASE/PARENT_002" "PARENT_002"
 cat > "$BASE/PARENT_002/composition/home.yaml" <<COMP
 page: "home"
 components:
-  - id: "layout"
-    type: "hero"
+  - id: "content-parent"
+    type: "text-block"
     parentId: null
     props:
-      headline: "Test"
-      cta:
-        label: "Test"
-        href: "/"
-      background:
-        src: "assets/media/images/test.jpg"
-        alt: "Test"
+      content: "Test content"
   - id: "child"
     type: "text-block"
-    parentId: "layout"
+    parentId: "content-parent"
     props:
       content: "Test content"
 COMP
@@ -145,7 +162,7 @@ components:
       background:
         src: "assets/media/images/test.jpg"
         alt: "Test"
-      contentRef: "invalid-syntax"
+      contentRef: "invalid.json#/"
 COMP
 
 # CONTENTREF_003 - key not found in content
@@ -164,7 +181,7 @@ components:
       background:
         src: "assets/media/images/test.jpg"
         alt: "Test"
-      contentRef: "home.json#/non-existent-key"
+      contentRef: "es/home.json#/non-existent-key"
 COMP
 
 # I18N_002 - missing locale content
@@ -359,7 +376,7 @@ components:
       headline: "Test"
       cta:
         label: "Test"
-        href: "#non-existent-anchor"
+        href: "#NonExistentAnchor"
       background:
         src: "assets/media/images/test.jpg"
         alt: "Test"
@@ -438,8 +455,29 @@ siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
 MANIFEST
 
-# INTEGRITY_001 - file hash mismatch (skip - requires computed hash)
-# INTEGRITY_002 - global hash mismatch (skip - requires computed hash)
+# INTEGRITY_001 - file hash mismatch (tamper applied after integrity pass)
+create_base "$BASE/INTEGRITY_001" "INTEGRITY_001"
+cat > "$BASE/INTEGRITY_001/composition/home.yaml" <<COMP
+page: "home"
+components:
+  - id: "text"
+    type: "text-block"
+    parentId: null
+    props:
+      content: "Test content"
+COMP
+
+# INTEGRITY_002 - global hash mismatch (tamper applied after integrity pass)
+create_base "$BASE/INTEGRITY_002" "INTEGRITY_002"
+cat > "$BASE/INTEGRITY_002/composition/home.yaml" <<COMP
+page: "home"
+components:
+  - id: "text"
+    type: "text-block"
+    parentId: null
+    props:
+      content: "Test content"
+COMP
 
 # CRYPTO_001 - weak crypto pattern
 create_base "$BASE/CRYPTO_001" "CRYPTO_001"
@@ -452,5 +490,32 @@ components:
     props:
       content: "api_key = secret123"
 COMP
+
+# Write correct integrity into every fixture manifest, then tamper INTEGRITY fixtures
+for dir in "$BASE"/*/; do
+    write_integrity "$dir"
+done
+
+# INTEGRITY_001: tamper one file AFTER integrity was computed (manifest untouched)
+# Uses an asset file (not parsed) so only the hash mismatch fires
+printf 'tampered' >> "$BASE/INTEGRITY_001/assets/brand/logo.svg"
+
+# INTEGRITY_002: alter the global hash AFTER integrity was computed (files untouched)
+sed -i 's/^  global: .*/  global: "0000000000000000000000000000000000000000000000000000000000000000"/' "$BASE/INTEGRITY_002/manifest.yaml"
+
+# Self-verify: every fixture must trigger its own error code (fail at generation if not)
+CLI="/home/alexendros/repositorios/webconfig/dist/cli.js"
+if [ -f "$CLI" ]; then
+    for dir in "$BASE"/*/; do
+        code=$(basename "$dir")
+        if ! node "$CLI" validate "$dir" --ds "$DS_CATALOG" 2>&1 | grep -q "\[$code\]"; then
+            echo "ERROR: fixture $code does not trigger [$code]" >&2
+            exit 1
+        fi
+    done
+    echo "Self-verification passed: all $(ls -d "$BASE"/*/ | wc -l) fixtures trigger their codes"
+else
+    echo "Skipping self-verification: $CLI not built (run npm run build first)"
+fi
 
 echo "All invalid fixtures created!"

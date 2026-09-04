@@ -4,3 +4,12 @@ description: "Test bundle for ICON_001"
 name: "ICON_001"
 siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
+integrity:
+  files:
+    "assets/brand/logo.svg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/test.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "composition/home.yaml": "0b73d62ae731143847007be5910401d113b6590457bff19cfd22f350e8a58f70"
+    "content/es/home.json": "537d456d16fd216e01dba3fdaa471b011e7b16b81c4e9bd82c3127713dc9bb2d"
+    "content/seo/es/home.yaml": "d547b166e5e70717b55910b576f658ec63e260f2c3893f67d00e12aa7da398ef"
+    "site.config.yaml": "9241449dde633e9dca3b11e72a49f003a02f75dd7da931fff816e3b59f67760a"
+  global: "161f885f399c2169c64d795c9888ec77a4f0a9e04ae2819c366c60eb3cfa163c"

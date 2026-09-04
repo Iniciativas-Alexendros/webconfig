@@ -4,3 +4,12 @@ description: "Test bundle for LINK_003"
 name: "LINK_003"
 siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
+integrity:
+  files:
+    "assets/brand/logo.svg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/test.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "composition/home.yaml": "51dcd8ae74a6c10827c799c285e8da63e952fefeaa0337b0ec2526acbb33a2c5"
+    "content/es/home.json": "537d456d16fd216e01dba3fdaa471b011e7b16b81c4e9bd82c3127713dc9bb2d"
+    "content/seo/es/home.yaml": "d547b166e5e70717b55910b576f658ec63e260f2c3893f67d00e12aa7da398ef"
+    "site.config.yaml": "54fd53ddbb900ed0af82bad47061c6352d9031cc8d7bd85b110bbb84bc91813e"
+  global: "8d4dcaddf1eb455e847aebf738640c165cb160940043e976aaa111b7076be7c7"

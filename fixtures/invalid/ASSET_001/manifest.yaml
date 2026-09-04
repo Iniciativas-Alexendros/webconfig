@@ -4,3 +4,12 @@ description: "Test bundle for ASSET_001"
 name: "ASSET_001"
 siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
+integrity:
+  files:
+    "assets/brand/logo.svg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/test.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "composition/home.yaml": "cf034fd80cce487fcaa257422d515005638b084bd29457c118ebe7e7725c47bc"
+    "content/es/home.json": "537d456d16fd216e01dba3fdaa471b011e7b16b81c4e9bd82c3127713dc9bb2d"
+    "content/seo/es/home.yaml": "d547b166e5e70717b55910b576f658ec63e260f2c3893f67d00e12aa7da398ef"
+    "site.config.yaml": "03c29b512528880d6a20d2a123f21da8db6cb40a33fad7c94adb192d262b00c3"
+  global: "5fb3c5a702e803383eb44a5db90d9b30fa812a756955ec1892150c2fc9381d8d"

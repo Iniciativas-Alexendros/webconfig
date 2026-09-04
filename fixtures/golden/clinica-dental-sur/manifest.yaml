@@ -1,6 +1,47 @@
 bundleVersion: 1.0.0
 createdAt: 2026-09-04T10:00:00.000Z
 description: Sitio web de la Clínica Dental Sur - Servicios odontológicos integrales
+integrity:
+  files:
+    "assets/brand/logo.svg": "e3d460de60cfbe893fa43816f28acd7038eb290fcde1b83b34ee9697fb43ba35"
+    "assets/media/images/all-on-4.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/blanqueamiento.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/brackets-esteticos.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/carillas.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/contacto-hero.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/estetica.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/hero-dental.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/implante-unitario.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/implantes.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/invisalign.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/mapa-clinica.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/og-contacto.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/og-home.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/og-servicios.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/ortodoncia.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/paciente-maria.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/reconstruccion.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/servicios-hero.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/twitter-contacto.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/twitter-home.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/twitter-servicios.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "composition/contacto.yaml": "74eaf90371e71fc64ec41c4a1778dfe2af27841c48c048cfde391ed2e8c1fb06"
+    "composition/home.yaml": "dcb77c9f84ded848541d203a083a3df1e39d19057c288823c16fbc29a3f1e226"
+    "composition/servicios.yaml": "e21290c70ddce76bbbab8c5f20376a175cface6df2d24c00e81b72f9c3bed876"
+    "content/en/contacto.json": "22636b1f4fc49b83189f3e15cb7a09076cdcac96c18ab015c80b292cf756f039"
+    "content/en/home.json": "99be6f35e1501b5bf19a8f7f892b7124cd23b53b3d6a7822041ade3f4e4b7699"
+    "content/en/servicios.json": "cf3a9b2e27fcf000548f4b66b6aad6a0540b2daef4e491eb947990e18d0e7c8c"
+    "content/es/contacto.json": "a909b5349fb4d68b4d0b242015e8bdff4f34025f7769fca067e6d784bd6bcac6"
+    "content/es/home.json": "398acc8c971f148192e3aa62eeb1d2746a0a16c0e8d0dabff556c3fcaaf4aa7a"
+    "content/es/servicios.json": "cc34dc87e1cf8d8ae95630bc1b96d619f0386dab43766835e7759e976e7696f2"
+    "content/seo/en/contacto.yaml": "02c3eaebca46a8d04f36357a7faedeb3842543ef939e8078d481a24d248593fe"
+    "content/seo/en/home.yaml": "5f3a76fd25b6c7003973ab01c4793961ce755ca07718ab448e86ec42581cf9f8"
+    "content/seo/en/servicios.yaml": "51fae8b334736021acca70513e0d2170c488ff8723c1bdf41f673b7c7ffc614b"
+    "content/seo/es/contacto.yaml": "94b8caa13c0c9c93c0547736ae21c67ab2f52b50d65918623bb8aec2c30a5cd6"
+    "content/seo/es/home.yaml": "9cd3acf8503524e75999fb4bd4bd6afec3f6de3347c044997bfe7ff380c13148"
+    "content/seo/es/servicios.yaml": "7c861cc7d3658851c91e3eba4f0291c9802a3ac6fb629ced228d882072b5fcf1"
+    "site.config.yaml": "aa7aa42ece45fd7073cc1086dcc66e2a37b4d6ac9c1d8d7116a259493bfe0662"
+  global: "a6aa671094d81ba6fb06b9391c136b311e0b9ad0e82d1b0458d7d866cb69eeee"
 name: clinica-dental-sur
 siteConfig: site.config.yaml
 updatedAt: 2026-09-04T10:00:00.000Z

@@ -4,3 +4,11 @@ description: "Test bundle for MANIFEST_001"
 name: "MANIFEST_001"
 siteConfig: "non-existent.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
+integrity:
+  files:
+    "assets/brand/logo.svg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/test.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "content/es/home.json": "537d456d16fd216e01dba3fdaa471b011e7b16b81c4e9bd82c3127713dc9bb2d"
+    "content/seo/es/home.yaml": "d547b166e5e70717b55910b576f658ec63e260f2c3893f67d00e12aa7da398ef"
+    "site.config.yaml": "7f7910f28aba69144115564374833b149a43d154b762aaf6065a5e66c5d8532b"
+  global: "85391c01acc33150bf0d20e2e057821efe8ac1650cf9046d8ac8ce893f2cbf8f"

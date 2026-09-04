@@ -4,3 +4,12 @@ description: "Test bundle for A11Y_001"
 name: "A11Y_001"
 siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
+integrity:
+  files:
+    "assets/brand/logo.svg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/test.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "composition/home.yaml": "add0f1a62e7ab9631043236156661ed9c60469acc16d2ca2e6ae5375dd0337e7"
+    "content/es/home.json": "537d456d16fd216e01dba3fdaa471b011e7b16b81c4e9bd82c3127713dc9bb2d"
+    "content/seo/es/home.yaml": "d547b166e5e70717b55910b576f658ec63e260f2c3893f67d00e12aa7da398ef"
+    "site.config.yaml": "64f6d88cfe8236476864468b880c21fc16c1a245bd9f70f14617f770e62adbbc"
+  global: "53f2764d1103348415cff302036ca970bf1f282b93370b52964e528561eabdce"

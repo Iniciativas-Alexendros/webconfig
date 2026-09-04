@@ -4,3 +4,12 @@ description: "Test bundle for I18N_002"
 name: "I18N_002"
 siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
+integrity:
+  files:
+    "assets/brand/logo.svg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/test.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "composition/home.yaml": "6ec81b4b23906547c46a7b7ba34da14b56bf7fed228b5ea2037afe925b08eab0"
+    "content/es/home.json": "537d456d16fd216e01dba3fdaa471b011e7b16b81c4e9bd82c3127713dc9bb2d"
+    "content/seo/es/home.yaml": "d547b166e5e70717b55910b576f658ec63e260f2c3893f67d00e12aa7da398ef"
+    "site.config.yaml": "c1f12df42829c62c6a82d85b49e45ce48fc50ce380dc43be1582c04a6f8719e3"
+  global: "7cfbc03ac22942917120bde1db57c54c71e514bf538f8962bd7a5c05d8bd095d"

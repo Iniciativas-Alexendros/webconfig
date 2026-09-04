@@ -4,3 +4,11 @@ description: "Test bundle for SEO_002"
 name: "SEO_002"
 siteConfig: "site.config.yaml"
 updatedAt: "2026-09-04T10:00:00.000Z"
+integrity:
+  files:
+    "assets/brand/logo.svg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "assets/media/images/test.jpg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "content/es/home.json": "537d456d16fd216e01dba3fdaa471b011e7b16b81c4e9bd82c3127713dc9bb2d"
+    "content/seo/es/home.yaml": "0adb9f8e97538d1df9e703305cf3d187fd91cf26b22aa213bd20c074f72cf06e"
+    "site.config.yaml": "be0da3a72b0571e3da92cd39dd6a66a257dd787c6a36430f4907c92a679685a1"
+  global: "d7a4da3caeda12ea9c31c4f5aba63f0d3b54f71b21dead479670fd5b1c2f69a0"
