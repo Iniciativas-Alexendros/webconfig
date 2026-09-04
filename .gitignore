@@ -5,3 +5,8 @@ dist
 *.log
 .DS_Store
 coverage
+
+# Work-state files: NEVER committed. Decisions live in DECISIONS.md only.
+findings.md
+progress.md
+task_plan.md

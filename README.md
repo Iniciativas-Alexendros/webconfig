@@ -235,6 +235,21 @@ webconfig revisa cada parte y comprueba que todo encaje: que las páginas del di
 
 ---
 
+## Contrato de versión
+
+webconfig separa **dos versiones que no debes confundir**:
+
+| Qué | Dónde vive | Quién la gestiona |
+|-----|-----------|-------------------|
+| **Versión de la herramienta** (webconfig) | `package.json` → `version` | semantic-release (bumps automáticos en cada release) |
+| **Versión del formato** site.bundle | `schemas/` y `schema_compat` | Decisión manual únicamente (nadie la toca automáticamente) |
+
+- El **formato** site.bundle está **congelado en v1.0.0**. No cambia salvo decisión manual explícita, y cualquier cambio requiere una propuesta escrita en `DECISIONS.md`.
+- La **herramienta** se versiona de forma independiente (`v1.0.x`, `v1.1.x`, ...): puedes actualizar webconfig sin que eso altere el formato que produce o valida.
+- Los **tags de formato** (puntos de anclaje como `v1.0.0`) son la referencia para los consumidores del formato: un paquete site.bundle se identifica por su versión de formato, no por la versión del CLI que lo generó.
+
+---
+
 ## Licencia
 
 MIT

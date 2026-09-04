@@ -80,12 +80,28 @@ This separation allows:
 - Extracts .tar.gz to temporary directory with cleanup
 - Preserves directory structure in tar entries
 
+## CLI
+
+### Integrity Command (retroactive documentation)
+- **Date**: 2026-09-04 (introduced in `b520e3c` "feat: canonicalize and integrity")
+- **Motivation**: give operators a cheap way to detect content tampering between development and publishing, complementing the manifest `integrity` section validated by the validator
+- **Impact**: CLI grows from 3 to 4 commands (`validate`, `normalize`, `export`, `integrity`); no change to the bundle format
+- **Status**: `ADDITION-v1.1-pending` — the `integrity` CLI command is a tool capability, not part of the site.bundle format spec; it enters the format spec only if explicitly ratified before v1.1.0. Not promoted into `schemas/` for that reason.
+
+## Version Contract
+
+### Separate Versioning (frozen)
+- `package.json` `version` = version of the **tool** (webconfig); managed exclusively by semantic-release
+- `schemas/` and `schema_compat` = version of the **site.bundle format**; stays at `1.0.0` unless changed by manual decision. Format versions are never auto-bumped by release tooling
+- `schemas/` and the error-code table must not be modified without a written proposal in this file first
+
 ## Testing Strategy
 
 ### Unit Tests
 - Canonicalization: 23 tests (idempotency, key sorting, YAML/JSON)
-- Export: 3 tests (determinism, round-trip, bundle loading)
-- Integration: 4 tests (CLI validate, validate --json, export, validate exported)
+- Export: 5 tests (determinism, round-trip, bundle loading, I18N_002 per-key content/seo)
+- Integration: 5 tests (CLI validate, validate --json, export, validate exported, fail-closed JSON)
+- Integrity: 3 tests (INTEGRITY_001 per-file, INTEGRITY_002 global, golden passes)
 
 ### Test Fixtures
 - Golden fixture: `fixtures/golden/clinica-dental-sur/` (valid bundle)
