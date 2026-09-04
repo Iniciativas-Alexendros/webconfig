@@ -629,10 +629,26 @@ function validateComponentProps(
   if (!component.propsSchema) {
     return { valid: true, errors: [] };
   }
-  const schema = component.propsSchema as Record<string, { type?: string; required?: boolean; properties?: Record<string, unknown> }>;
-  for (const [key, propSchema] of Object.entries(schema)) {
-    if (propSchema.required && !(key in props)) {
+  const schema = component.propsSchema as Record<string, unknown>;
+  const required = (schema["required"] as string[]) || [];
+  const properties = (schema["properties"] as Record<string, unknown>) || {};
+  for (const key of required) {
+    if (!(key in props)) {
       errors.push(`Missing required prop: ${key}`);
+    }
+  }
+  for (const [key, value] of Object.entries(properties)) {
+    if (!(key in props)) continue;
+    const propSchema = value as Record<string, unknown>;
+    if (propSchema["type"] === "string" && typeof props[key] !== "string") {
+      errors.push(`Prop ${key} must be a string`);
+    } else if (propSchema["type"] === "number" && typeof props[key] !== "number") {
+      errors.push(`Prop ${key} must be a number`);
+    } else if (propSchema["type"] === "boolean" && typeof props[key] !== "boolean") {
+      errors.push(`Prop ${key} must be a boolean`);
+    }
+    if (propSchema["enum"] && Array.isArray(propSchema["enum"]) && !propSchema["enum"].includes(props[key])) {
+      errors.push(`Prop ${key} must be one of: ${(propSchema["enum"] as string[]).join(", ")}`);
     }
   }
   return { valid: errors.length === 0, errors };

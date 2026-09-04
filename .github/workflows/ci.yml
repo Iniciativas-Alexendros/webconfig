@@ -24,11 +24,11 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
       
-      - name: Run tests
-        run: npm test
-      
       - name: Build CLI
         run: npm run build
+      
+      - name: Run tests
+        run: npm test
       
       - name: Validate golden fixture
         run: node dist/cli.js validate fixtures/golden/clinica-dental-sur --ds ds-catalog.example.yaml
@@ -62,11 +62,17 @@ jobs:
       - name: Validate all invalid fixtures
         run: |
           for dir in fixtures/invalid/*/; do
-            echo "Validating $dir..."
-            node dist/cli.js validate "$dir" --ds ds-catalog.example.yaml 2>&1 | grep -q "ERRORS:" || echo "FAIL: $dir should have errors"
+            code=$(basename "$dir")
+            echo "Validating $dir (expect $code)..."
+            output=$(node dist/cli.js validate "$dir" --ds ds-catalog.example.yaml 2>&1)
+            if ! echo "$output" | grep -q "\[$code\]"; then
+              echo "FAIL: $dir did not trigger expected code $code"
+              echo "$output"
+              exit 1
+            fi
           done
-          echo "All invalid fixtures correctly rejected"
+          echo "All invalid fixtures correctly flagged"
       
       - name: Validate golden fixture with --json
         run: |
-          node dist/cli.js validate fixtures/golden/clinica-dental-sur --ds ds-catalog.example.yaml --json | jq -e '.valid == true and .errors | length == 0'
+          node dist/cli.js validate fixtures/golden/clinica-dental-sur --ds ds-catalog.example.yaml --json | jq -e '(.valid == true) and (.errors | length == 0) and (.warnings | length == 0)'
