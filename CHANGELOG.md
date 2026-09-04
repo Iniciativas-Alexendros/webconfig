@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/Iniciativas-Alexendros/webconfig/compare/v1.0.1...v1.0.2) (2026-09-04)
+
+
+### Bug Fixes
+
+* **fixtures:** canonicalize golden manifest integrity block ([5bc6967](https://github.com/Iniciativas-Alexendros/webconfig/commit/5bc69676c51328f93dc72f1738c3b53b1b6b8573))
+
 ## [1.0.1](https://github.com/Iniciativas-Alexendros/webconfig/compare/v1.0.0...v1.0.1) (2026-09-04)
 
 
