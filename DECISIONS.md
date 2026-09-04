@@ -86,7 +86,8 @@ This separation allows:
 - **Date**: 2026-09-04 (introduced in `b520e3c` "feat: canonicalize and integrity")
 - **Motivation**: give operators a cheap way to detect content tampering between development and publishing, complementing the manifest `integrity` section validated by the validator
 - **Impact**: CLI grows from 3 to 4 commands (`validate`, `normalize`, `export`, `integrity`); no change to the bundle format
-- **Status**: `ADDITION-v1.1-pending` — the `integrity` CLI command is a tool capability, not part of the site.bundle format spec; it enters the format spec only if explicitly ratified before v1.1.0. Not promoted into `schemas/` for that reason.
+- **Status**: `ADDITION-v1.1` — **ratificado** como parte de la spec del formato site.bundle.
+- **Ratificación**: 2026-09-05. Ratificación afirmativa del comando `integrity` como `ADDITION-v1.1` (entra en la spec del formato a partir de v1.1.0; no se promueve a `schemas/` en v1.0.x). El comando es una capacidad de la herramienta que queda ligada a la sección `integrity` del manifest, ya validada por el validador.
 
 ## Version Contract
 
@@ -110,6 +111,7 @@ This separation allows:
 - Export: 5 tests (determinism, round-trip, bundle loading, I18N_002 per-key content/seo)
 - Integration: 5 tests (CLI validate, validate --json, export, validate exported, fail-closed JSON)
 - Integrity: 3 tests (INTEGRITY_001 per-file, INTEGRITY_002 global, golden passes)
+- Manifest: 3 tests (schema_compat required → MANIFEST_001, incompatible → MANIFEST_002, golden passes)
 
 ### Test Fixtures
 - Golden fixture: `fixtures/golden/clinica-dental-sur/` (valid bundle)
