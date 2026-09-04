@@ -125,7 +125,7 @@ This separation allows:
 
 ## Known Limitations
 
-1. **INTEGRITY_001/002**: Not fully implemented (placeholder)
+1. **INTEGRITY_001/002**: Implemented in v1.0.0 (per-file sha256 declared in `manifest.yaml` integrity.files plus a global hash over the path-sorted concatenated hashes; manifest.yaml itself is excluded from the hashed set).
 2. **Content references in SEO**: Not validated (only composition/content)
 3. **Anchor link validation**: Basic pattern matching only
 4. **Performance**: No caching for large bundles (acceptable for v1)
