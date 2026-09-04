@@ -1,3 +1,13 @@
+## [1.0.1](https://github.com/Iniciativas-Alexendros/webconfig/compare/v1.0.0...v1.0.1) (2026-09-04)
+
+
+### Bug Fixes
+
+* **cli:** fail-closed --json output on bundle load errors ([ac9c274](https://github.com/Iniciativas-Alexendros/webconfig/commit/ac9c27457b85796598660afdde4dedaed143ec2e))
+* **validate:** complete truncated secret detection patterns ([769e4ce](https://github.com/Iniciativas-Alexendros/webconfig/commit/769e4cefe17358856e49246eb096776c96ea7723))
+* **validator:** implement INTEGRITY_001/002 validation ([37096a1](https://github.com/Iniciativas-Alexendros/webconfig/commit/37096a12db022649b26badb8a183b917613406f8))
+* **validator:** per-key I18N_002 fallback warnings for content and seo ([57081b1](https://github.com/Iniciativas-Alexendros/webconfig/commit/57081b17c4de0ba2b0078bfcf49b4d8669fe6fb0))
+
 # 1.0.0 (2026-09-04)
 
 
