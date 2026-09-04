@@ -109,6 +109,13 @@ This separation allows:
 - Validate golden fixture
 - Normalize --check golden fixture
 
+### Release (semantic-release)
+- Package is `private: true`; release = git tag + GitHub Release only (no npm publish)
+- `@semantic-release/npm` is intentionally **not** used (nothing to publish)
+- `@semantic-release/git` commits `CHANGELOG.md` (and `package.json` when the version changes)
+- `@semantic-release/github` creates the GitHub Release
+- Expected secrets: only `GH_TOKEN` (a GitHub token with repo scope). `NPM_TOKEN` is not required.
+
 ## Package Configuration
 
 ### package.json
