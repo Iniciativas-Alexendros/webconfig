@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/Iniciativas-Alexendros/webconfig/compare/v1.0.2...v1.0.3) (2026-09-04)
+
+
+### Bug Fixes
+
+* **validator:** enforce schema_compat per frozen spec v1.0.0 ([6c60cdd](https://github.com/Iniciativas-Alexendros/webconfig/commit/6c60cdd090a534f3c18541c503f05bebf6cb093c))
+
 > **Contrato de versión**: las versiones de este changelog (`v1.0.x`, ...) pertenecen a la **herramienta** webconfig y las gestiona semantic-release. La **versión del formato** site.bundle (`schemas/` y `schema_compat`) es independiente y permanece congelada en `1.0.0` salvo decisión manual; los tags de formato (`v1.0.0`, ...) son los puntos de anclaje para los consumidores del formato. Ver `README.md` → "Contrato de versión".
 
 ## [1.0.2](https://github.com/Iniciativas-Alexendros/webconfig/compare/v1.0.1...v1.0.2) (2026-09-04)
