@@ -3,6 +3,8 @@ import { program } from "commander";
 import { normalizeDirectory } from "./normalize.js";
 import { computeIntegrity } from "./integrity.js";
 import { validateBundle, formatValidationResult, getExitCode } from "./validate/index.js";
+import { exportBundle } from "./export/bundler.js";
+import { loadBundle } from "./load.js";
 import { resolve } from "node:path";
 
 program
@@ -71,6 +73,22 @@ program
 
     console.log(formatValidationResult(result, options.json));
     process.exit(getExitCode(result, options.strict));
+  });
+
+program
+  .command("export <bundle> <output>")
+  .description("Export a site.bundle directory to deterministic .tar.gz")
+  .action(async (bundle: string, output: string) => {
+    const loaded = await loadBundle(resolve(bundle));
+    try {
+      await exportBundle({
+        bundleDir: loaded.bundleDir,
+        outputPath: resolve(output),
+      });
+      console.log(`Exported to ${output}`);
+    } finally {
+      await loaded.cleanup();
+    }
   });
 
 program.parse();

@@ -47,14 +47,14 @@ openGraph:
   description: Clínica Dental Sur - Comprehensive dentistry in Madrid. Implants, invisible orthodontics, cosmetic dentistry.
   images:
     - alt: Clínica Dental Sur - Dental Team
-      url: https://clinicadentalsur.es/assets/media/images/og-home.jpg
+      url: assets/media/images/og-home.jpg
   title: Clínica Dental Sur | Dentist in Madrid
   type: website
 robots: index,follow
-title: Clínica Dental Sur | Dentist in Madrid - Implants, Orthodontics, Cosmetics
+title: Clínica Dental Sur | Dentist in Madrid
 twitter:
   card: summary_large_image
   description: Clínica Dental Sur - Comprehensive dentistry in Madrid. Implants, invisible orthodontics, cosmetic dentistry.
   images:
-    - https://clinicadentalsur.es/assets/media/images/twitter-home.jpg
+    - assets/media/images/twitter-home.jpg
   title: Clínica Dental Sur | Dentist in Madrid

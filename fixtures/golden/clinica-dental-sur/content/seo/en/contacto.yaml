@@ -42,14 +42,14 @@ openGraph:
   description: Contact Clínica Dental Sur. Book online or call us. Calle Mayor 45, Madrid.
   images:
     - alt: Contact Clínica Dental Sur
-      url: https://clinicadentalsur.es/assets/media/images/og-contacto.jpg
+      url: assets/media/images/og-contacto.jpg
   title: Contact | Clínica Dental Sur
   type: website
 robots: index,follow
-title: Contact | Clínica Dental Sur - Book Your Appointment in Madrid
+title: Contact | Clínica Dental Sur
 twitter:
   card: summary_large_image
   description: Contact Clínica Dental Sur. Book online or call us. Calle Mayor 45, Madrid.
   images:
-    - https://clinicadentalsur.es/assets/media/images/twitter-contacto.jpg
+    - assets/media/images/twitter-contacto.jpg
   title: Contact | Clínica Dental Sur

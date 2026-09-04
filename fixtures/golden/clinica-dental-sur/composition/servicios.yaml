@@ -1,4 +1,3 @@
-page: "servicios"
 components:
   - id: header-main
     parentId: null
@@ -150,3 +149,4 @@ components:
           icon: instagram
           label: Instagram
     type: footer
+page: servicios

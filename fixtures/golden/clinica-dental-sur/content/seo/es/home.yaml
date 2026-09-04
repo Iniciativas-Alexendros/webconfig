@@ -47,14 +47,14 @@ openGraph:
   description: Clínica Dental Sur - Odontología integral en Madrid. Implantes, ortodoncia invisible, estética dental.
   images:
     - alt: Clínica Dental Sur - Equipo dental
-      url: https://clinicadentalsur.es/assets/media/images/og-home.jpg
+      url: assets/media/images/og-home.jpg
   title: Clínica Dental Sur | Dentista en Madrid
   type: website
 robots: index,follow
-title: Clínica Dental Sur | Dentista en Madrid - Implantes, Ortodoncia, Estética
+title: Clínica Dental Sur | Dentista en Madrid
 twitter:
   card: summary_large_image
   description: Clínica Dental Sur - Odontología integral en Madrid. Implantes, ortodoncia invisible, estética dental.
   images:
-    - https://clinicadentalsur.es/assets/media/images/twitter-home.jpg
+    - assets/media/images/twitter-home.jpg
   title: Clínica Dental Sur | Dentista en Madrid

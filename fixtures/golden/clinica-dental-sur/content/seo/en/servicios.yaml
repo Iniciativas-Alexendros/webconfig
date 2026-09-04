@@ -54,14 +54,14 @@ openGraph:
   description: "Dental services at Clínica Dental Sur: Implantology, Orthodontics, Cosmetics. Transparent pricing."
   images:
     - alt: Dental Services Clínica Dental Sur
-      url: https://clinicadentalsur.es/assets/media/images/og-servicios.jpg
+      url: assets/media/images/og-servicios.jpg
   title: Services | Clínica Dental Sur
   type: website
 robots: index,follow
-title: Dental Services | Clínica Dental Sur - Implants, Orthodontics, Cosmetics
+title: Services | Clínica Dental Sur
 twitter:
   card: summary_large_image
   description: "Dental services at Clínica Dental Sur: Implantology, Orthodontics, Cosmetics. Transparent pricing."
   images:
-    - https://clinicadentalsur.es/assets/media/images/twitter-servicios.jpg
+    - assets/media/images/twitter-servicios.jpg
   title: Services | Clínica Dental Sur

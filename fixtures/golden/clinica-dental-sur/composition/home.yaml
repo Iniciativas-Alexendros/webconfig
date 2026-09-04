@@ -1,4 +1,3 @@
-page: "home"
 components:
   - id: hero-home
     parentId: null
@@ -114,3 +113,4 @@ components:
       content: ¿Listo para recuperar tu sonrisa? Nuestro equipo te espera para una primera consulta sin compromiso.
       variant: lead
     type: text-block
+page: home
