@@ -22,7 +22,11 @@ describe("integration tests", () => {
     const result = JSON.parse(stdout);
     expect(result.valid).toBe(true);
     expect(result.errors).toHaveLength(0);
-    expect(result.warnings).toHaveLength(0);
+    // Golden is intentionally partial in 'en' (falls back to es) -> I18N_002 warnings
+    expect(result.warnings.length).toBeGreaterThan(0);
+    for (const w of result.warnings) {
+      expect(w.code).toBe("I18N_002");
+    }
   });
 
   it("export command works via CLI", async () => {

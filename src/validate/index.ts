@@ -148,8 +148,13 @@ export function formatValidationResult(result: ValidationResult, json: boolean =
     }
   }
   
-  if (lines.length === 0) {
-    lines.push("✓ Valid bundle (no errors or warnings)");
+  if (result.errors.length === 0) {
+    if (result.warnings.length > 0) {
+      const n = result.warnings.length;
+      lines.push(`✓ Valid bundle (${n} warning${n === 1 ? "" : "s"})`);
+    } else {
+      lines.push("✓ Valid bundle (no errors or warnings)");
+    }
   }
   
   return lines.join("\n");

@@ -38,7 +38,8 @@ describe("export and round-trip", () => {
 
     expect(result.valid).toBe(true);
     expect(result.errors).toHaveLength(0);
-    expect(result.warnings).toHaveLength(0);
+    // Round-trip preserves golden warnings (I18N_002 for partial 'en' fallback)
+    expect(result.warnings.every((w) => w.code === "I18N_002")).toBe(true);
 
     await fs.rm(output, { force: true });
   });
@@ -58,5 +59,27 @@ describe("export and round-trip", () => {
     await tarLoaded.cleanup();
 
     await fs.rm(output, { force: true });
+  });
+
+  it("I18N_002 fires per missing content key resolved via fallback", async () => {
+    const result = await validateBundle({
+      bundlePath: resolve("fixtures/invalid/I18N_002"),
+      dsCatalogPath: dsCatalog,
+    });
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+    const homeWarnings = result.warnings.filter((w) => w.file === "content/en/home.json" && w.code === "I18N_002");
+    expect(homeWarnings.length).toBeGreaterThan(0);
+    expect(homeWarnings[0]?.message).toContain("resolved via fallback to es");
+  });
+
+  it("I18N_002 fires per missing SEO field resolved via fallback", async () => {
+    const result = await validateBundle({
+      bundlePath: resolve("fixtures/invalid/I18N_002"),
+      dsCatalogPath: dsCatalog,
+    });
+    const seoWarnings = result.warnings.filter((w) => w.file === "content/seo/en/home.yaml" && w.code === "I18N_002");
+    expect(seoWarnings.length).toBeGreaterThan(0);
+    expect(seoWarnings[0]?.message).toContain("#/");
   });
 });

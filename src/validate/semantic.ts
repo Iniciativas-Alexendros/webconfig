@@ -455,6 +455,75 @@ function checkContentRefs(
   }
 }
 
+function checkLocaleFallback(
+  content: Map<string, Record<string, unknown>>,
+  seo: Map<string, Record<string, unknown>>,
+  locales: string[],
+  defaultLocale: string,
+  issues: ValidationIssue[]
+): void {
+  if (locales.length <= 1) return;
+  const configured = new Set(locales);
+
+  const contentByFile = new Map<string, Map<string, Set<string>>>();
+  for (const [key, record] of content) {
+    const slash = key.indexOf("/");
+    if (slash < 0) continue;
+    const locale = key.slice(0, slash);
+    const file = key.slice(slash + 1);
+    const blocks = (record["blocks"] as Array<Record<string, unknown>> | undefined) || [];
+    const ids = new Set<string>();
+    for (const b of blocks) {
+      if (typeof b["id"] === "string") ids.add(b["id"]);
+    }
+    if (!contentByFile.has(file)) contentByFile.set(file, new Map());
+    contentByFile.get(file)?.set(locale, ids);
+  }
+
+  const seoByFile = new Map<string, Map<string, Set<string>>>();
+  for (const [key, record] of seo) {
+    const parts = key.split("/");
+    if (parts.length < 3) continue;
+    const locale = parts[0] as string;
+    const file = parts[2] as string;
+    if (!seoByFile.has(file)) seoByFile.set(file, new Map());
+    seoByFile.get(file)?.set(locale, new Set(Object.keys(record)));
+  }
+
+  function walk(
+    byFile: Map<string, Map<string, Set<string>>>,
+    labelFor: (locale: string, file: string) => string
+  ): void {
+    for (const [file, perLocale] of byFile) {
+      const defaultSet = perLocale.get(defaultLocale);
+      if (!defaultSet) continue;
+      const union = new Set<string>();
+      for (const s of perLocale.values()) {
+        for (const k of s) union.add(k);
+      }
+      for (const k of union) {
+        for (const locale of configured) {
+          if (locale === defaultLocale) continue;
+          const activeSet = perLocale.get(locale);
+          if (activeSet && activeSet.has(k)) continue;
+          if (defaultSet.has(k)) {
+            issues.push(
+              createIssue(EC.I18N_002, labelFor(locale, file), `#/${k} resolved via fallback to ${defaultLocale}`)
+            );
+          } else {
+            issues.push(
+              createIssue(EC.CONTENTREF_003, labelFor(locale, file), `Content reference key not found: ${k}`)
+            );
+          }
+        }
+      }
+    }
+  }
+
+  walk(contentByFile, (locale, file) => `content/${locale}/${file}`);
+  walk(seoByFile, (locale, file) => `content/seo/${locale}/${file}`);
+}
+
 async function validateSemantic(
   bundleDir: string,
   catalog: DSCatalog
@@ -503,7 +572,6 @@ async function validateSemantic(
   const siteConfig = data.siteConfig;
   const locales = (siteConfig["locales"] as string[]) || [];
   const defaultLocale = (siteConfig["defaultLocale"] as string) || "es";
-  const fallbackLocale = (siteConfig["fallbackLocale"] as string) || "es";
 
   // Build a map of composition component IDs to their types for parent validation
   const compositionComponentTypes = new Map<string, string>();
@@ -585,12 +653,7 @@ async function validateSemantic(
     checkSecretsInObject(seo, `content/${key}`, issues);
   }
 
-  for (const locale of locales) {
-    const hasContent = Array.from(data.content.keys()).some((k) => k.startsWith(`${locale}/`));
-    if (!hasContent && locale !== fallbackLocale) {
-      issues.push(createIssue(EC.I18N_002, `content/${locale}/`, `Locale ${locale} missing content; will fallback to ${fallbackLocale}`));
-    }
-  }
+  checkLocaleFallback(data.content, data.seo, locales, defaultLocale, issues);
 
   const referencedAssets = extractReferencedAssets(data);
   for (const asset of referencedAssets) {
