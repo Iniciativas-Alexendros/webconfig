@@ -94,21 +94,21 @@ Deliver a complete, tested, and documented implementation following the 7-phase 
 - [x] Golden fixture validation: 0 errors, only ASSET_002 warnings (expected for unused OG/Twitter images)
 - [ ] Commit: "feat: complete validator with all error codes"
 
-### Phase 5: CLI + Export [PENDING]
+### Phase 5: CLI + Export ✅ COMPLETE
 **Objective**: All 3 commands + deterministic tar.gz + round-trip test + integration tests
-- [ ] `src/cli.ts`: Commander setup for validate/normalize/export
-- [ ] `src/load.ts`: Load bundle from directory or .tar.gz
-- [ ] `src/export/bundler.ts`: Deterministic tar.gz
+- [x] `src/cli.ts`: Commander setup for validate/normalize/export
+- [x] `src/load.ts`: Load bundle from directory or .tar.gz
+- [x] `src/export/bundler.ts`: Deterministic tar.gz
   - Entries sorted by path
   - mtimes = epoch (0)
   - gzip without timestamp
   - uid/gid fixed
-- [ ] Property: two exports of same bundle = byte-identical tar.gz
-- [ ] Round-trip test: validate(export(normalize(golden))) = valid + bytes identical
-- [ ] **Integration tests via execFile of compiled binary**: at least validate and export
-- [ ] Commit: "feat: CLI commands and deterministic export"
+- [x] Property: two exports of same bundle = byte-identical tar.gz
+- [x] Round-trip test: validate(export(normalize(golden))) = valid + bytes identical
+- [x] **Integration tests via execFile of compiled binary**: at least validate and export
+- [x] Commit: "feat: CLI commands and deterministic export" (a750d75)
 
-### Phase 6: CI + GitHub [PENDING]
+### Phase 6: CI + GitHub [IN PROGRESS]
 **Objective**: GitHub Actions workflow, README, CHANGELOG, remote repo
 - [ ] `.github/workflows/ci.yml`:
   - On push/PR: checkout, setup-node 20, npm ci
@@ -137,7 +137,7 @@ Deliver a complete, tested, and documented implementation following the 7-phase 
 - [ ] Commit: "chore: final verification"
 
 ## Next Step
-Begin Phase 4: Validator - Syntax (AJV) + Semantic (all error codes) + DS catalog loader.
+Begin Phase 6: CI + GitHub - GitHub Actions workflow, README, CHANGELOG, remote repo.
 
 ## Decisions Made (Frozen Answers from Spec)
 | Date | Decision | Alternatives | Reason |
@@ -161,15 +161,15 @@ Begin Phase 4: Validator - Syntax (AJV) + Semantic (all error codes) + DS catalo
 ## Files Created/Modified
 | File | Status |
 |------|--------|
-| task_plan.md | ✅ Phase 3 complete |
+| task_plan.md | ✅ Phase 5 complete |
 | findings.md | ✅ Created |
-| progress.md | ✅ Phase 3 complete |
+| progress.md | ✅ Phase 5 complete |
 | package.json | ✅ Done |
 | tsconfig.json | ✅ Done |
 | src/ | ✅ Done |
 | schemas/ | ✅ Done (5 schemas) |
-| fixtures/ | ✅ Done (golden fixture complete) |
-| tests/ | ✅ Done (canonicalize tests) |
+| fixtures/ | ✅ Done (golden fixture + invalid fixtures complete) |
+| tests/ | ✅ Done (canonicalize, export, integration tests) |
 | .npmrc | ✅ Done |
 | .nvmrc | ✅ Done |
 | DECISIONS.md | ✅ Done |
@@ -184,3 +184,14 @@ Begin Phase 4: Validator - Syntax (AJV) + Semantic (all error codes) + DS catalo
 | src/integrity.ts | ✅ Done |
 | src/normalize.ts | ✅ Done |
 | src/cli.ts | ✅ Done |
+| src/validate/errors.ts | ✅ Done |
+| src/validate/syntax.ts | ✅ Done |
+| src/validate/semantic.ts | ✅ Done |
+| src/validate/ds-catalog.ts | ✅ Done |
+| src/validate/index.ts | ✅ Done |
+| src/load.ts | ✅ Done |
+| src/export/bundler.ts | ✅ Done |
+| fixtures/invalid/ | ✅ Done (24 error codes) |
+| create-invalid-fixtures.sh | ✅ Done |
+| tests/export.test.ts | ✅ Done |
+| tests/integration.test.ts | ✅ Done |
