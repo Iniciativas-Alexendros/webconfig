@@ -40,4 +40,18 @@ describe("integration tests", () => {
     expect(stderr).toBe("");
     expect(stdout).toContain("Valid bundle");
   });
+
+  it("validate --json is fail-closed on parse errors (exit 1, valid JSON)", async () => {
+    try {
+      await execFileAsync("node", [cliPath, "validate", resolve("does-not-exist"), "--ds", dsCatalog, "--json"]);
+      expect.unreachable("expected validate to fail");
+    } catch (err) {
+      const e = err as { code?: number; stdout?: string };
+      expect(e.code).toBe(1);
+      const result = JSON.parse(e.stdout ?? "");
+      expect(result.valid).toBe(false);
+      expect(result.errors.length).toBeGreaterThan(0);
+      expect(result.errors[0]?.severity).toBe("error");
+    }
+  });
 });

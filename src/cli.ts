@@ -3,6 +3,7 @@ import { program } from "commander";
 import { normalizeDirectory } from "./normalize.js";
 import { computeIntegrity } from "./integrity.js";
 import { validateBundle, formatValidationResult, getExitCode } from "./validate/index.js";
+import type { ValidationIssue, ValidationResult } from "./validate/errors.js";
 import { exportBundle } from "./export/bundler.js";
 import { loadBundle } from "./load.js";
 import { resolve } from "node:path";
@@ -64,15 +65,27 @@ program
   .option("--strict", "Exit 1 on warnings as well")
   .option("--json", "Output JSON for pipeline consumption")
   .action(async (bundle: string, options: { ds?: string; strict?: boolean; json?: boolean }) => {
-    const result = await validateBundle({
-      bundlePath: resolve(bundle),
-      dsCatalogPath: options.ds ? resolve(options.ds) : undefined,
-      strict: options.strict,
-      json: options.json,
-    });
+    try {
+      const result = await validateBundle({
+        bundlePath: resolve(bundle),
+        dsCatalogPath: options.ds ? resolve(options.ds) : undefined,
+        strict: options.strict,
+        json: options.json,
+      });
 
-    console.log(formatValidationResult(result, options.json));
-    process.exit(getExitCode(result, options.strict));
+      console.log(formatValidationResult(result, options.json));
+      process.exit(getExitCode(result, options.strict));
+    } catch (err) {
+      const issue: ValidationIssue = {
+        code: "SYNTAX_ERROR",
+        severity: "error",
+        file: bundle,
+        message: err instanceof Error ? err.message : String(err),
+      };
+      const result: ValidationResult = { errors: [issue], warnings: [], valid: false };
+      console.log(formatValidationResult(result, options.json));
+      process.exit(1);
+    }
   });
 
 program
