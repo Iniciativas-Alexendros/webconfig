@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/Iniciativas-Alexendros/webconfig/compare/v1.0.3...v1.0.4) (2026-09-05)
+
+
+### Performance Improvements
+
+* **cli:** lazy-load validate/export modules; fix 6/7 vulns ([e65876b](https://github.com/Iniciativas-Alexendros/webconfig/commit/e65876bbebd8fc94fd20515f904e5ed2ff6532a3))
+
 ## [1.0.3](https://github.com/Iniciativas-Alexendros/webconfig/compare/v1.0.2...v1.0.3) (2026-09-04)
 
 
