@@ -1,12 +1,8 @@
 #!/usr/bin/env node
 import { program } from "commander";
+import { resolve } from "node:path";
 import { normalizeDirectory } from "./normalize.js";
 import { computeIntegrity } from "./integrity.js";
-import { validateBundle, formatValidationResult, getExitCode } from "./validate/index.js";
-import type { ValidationIssue, ValidationResult } from "./validate/errors.js";
-import { exportBundle } from "./export/bundler.js";
-import { loadBundle } from "./load.js";
-import { resolve } from "node:path";
 
 program
   .name("webconfig")
@@ -58,6 +54,33 @@ program
     }
   });
 
+async function runValidate(bundle: string, options: { ds?: string; strict?: boolean; json?: boolean }) {
+  const { validateBundle, formatValidationResult, getExitCode } = await import("./validate/index.js");
+  const result = await validateBundle({
+    bundlePath: resolve(bundle),
+    dsCatalogPath: options.ds ? resolve(options.ds) : undefined,
+    strict: options.strict,
+    json: options.json,
+  });
+  console.log(formatValidationResult(result, options.json));
+  process.exit(getExitCode(result, options.strict));
+}
+
+async function runExport(bundle: string, output: string) {
+  const { loadBundle } = await import("./load.js");
+  const { exportBundle } = await import("./export/bundler.js");
+  const loaded = await loadBundle(resolve(bundle));
+  try {
+    await exportBundle({
+      bundleDir: loaded.bundleDir,
+      outputPath: resolve(output),
+    });
+    console.log(`Exported to ${output}`);
+  } finally {
+    await loaded.cleanup();
+  }
+}
+
 program
   .command("validate <bundle>")
   .description("Validate a site.bundle directory or .tar.gz")
@@ -66,23 +89,16 @@ program
   .option("--json", "Output JSON for pipeline consumption")
   .action(async (bundle: string, options: { ds?: string; strict?: boolean; json?: boolean }) => {
     try {
-      const result = await validateBundle({
-        bundlePath: resolve(bundle),
-        dsCatalogPath: options.ds ? resolve(options.ds) : undefined,
-        strict: options.strict,
-        json: options.json,
-      });
-
-      console.log(formatValidationResult(result, options.json));
-      process.exit(getExitCode(result, options.strict));
+      await runValidate(bundle, options);
     } catch (err) {
-      const issue: ValidationIssue = {
+      const { formatValidationResult, getExitCode } = await import("./validate/index.js");
+      const issue = {
         code: "SYNTAX_ERROR",
-        severity: "error",
+        severity: "error" as const,
         file: bundle,
         message: err instanceof Error ? err.message : String(err),
       };
-      const result: ValidationResult = { errors: [issue], warnings: [], valid: false };
+      const result = { errors: [issue], warnings: [], valid: false };
       console.log(formatValidationResult(result, options.json));
       process.exit(1);
     }
@@ -92,15 +108,11 @@ program
   .command("export <bundle> <output>")
   .description("Export a site.bundle directory to deterministic .tar.gz")
   .action(async (bundle: string, output: string) => {
-    const loaded = await loadBundle(resolve(bundle));
     try {
-      await exportBundle({
-        bundleDir: loaded.bundleDir,
-        outputPath: resolve(output),
-      });
-      console.log(`Exported to ${output}`);
-    } finally {
-      await loaded.cleanup();
+      await runExport(bundle, output);
+    } catch (err) {
+      console.error(`Export failed: ${err instanceof Error ? err.message : String(err)}`);
+      process.exit(1);
     }
   });
 
