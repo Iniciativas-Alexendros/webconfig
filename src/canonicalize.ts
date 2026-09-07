@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 import * as yaml from "yaml";
 
 function sortKeysRecursive<T>(obj: T): T {
@@ -18,13 +17,11 @@ function sortKeysRecursive<T>(obj: T): T {
 export function canonicalizeYaml(input: string): string {
   const parsed = yaml.parse(input);
   const sorted = sortKeysRecursive(parsed);
-  const doc = new yaml.Document(sorted as yaml.Node);
+  const doc = new yaml.Document(sorted as yaml.Node, { aliasDuplicateObjects: false });
   return doc.toString({
     indent: 2,
     lineWidth: -1,
-    noAnchor: true,
-    noRefs: true,
-  } as yaml.ToStringOptions);
+  });
 }
 
 export function canonicalizeJson(input: string): string {

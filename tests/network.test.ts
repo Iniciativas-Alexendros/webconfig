@@ -1,0 +1,53 @@
+import { describe, it, expect } from "vitest";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+
+const FORBIDDEN = [
+  "node:http",
+  "node:https",
+  "node:net",
+  "node:dns",
+  "node:tls",
+  "fetch(",
+  "XMLHttpRequest",
+  "WebSocket",
+];
+
+function collectFiles(dir: string, files: string[] = []): string[] {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      collectFiles(full, files);
+    } else if (entry.name.endsWith(".ts") && !entry.name.endsWith(".test.ts")) {
+      files.push(full);
+    }
+  }
+  return files;
+}
+
+describe("no network in runtime", () => {
+  const srcFiles = collectFiles("src");
+
+  it("runtime source does not import or call network APIs", () => {
+    const offenders: string[] = [];
+    for (const file of srcFiles) {
+      const content = readFileSync(file, "utf-8");
+      for (const token of FORBIDDEN) {
+        if (content.includes(token)) {
+          offenders.push(`${file}: ${token}`);
+        }
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("runtime source has no dependencies that require network at import time", () => {
+    for (const file of srcFiles) {
+      const content = readFileSync(file, "utf-8");
+      const imported = content.match(/from\s+["']([^"']+)["']/g) ?? [];
+      for (const line of imported) {
+        expect(line).not.toMatch(/node:http|node:https|node:net|node:dns|node:tls/);
+      }
+    }
+  });
+});

@@ -1,5 +1,6 @@
 {
   "$id": "https://webconfig.dev/schemas/site-config.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "SiteConfig",
   "version": "1.0.0",
   "type": "object",

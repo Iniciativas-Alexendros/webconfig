@@ -1,0 +1,13 @@
+dist/
+node_modules/
+coverage/
+*.tgz
+fixtures/
+schemas/
+ds-catalog.example.yaml
+CHANGELOG.md
+DECISIONS.md
+README.md
+.github/
+package.json
+package-lock.json

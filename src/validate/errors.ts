@@ -5,10 +5,12 @@ export interface ValidationIssue {
   severity: Severity;
   file: string;
   message: string;
-  location?: {
-    line?: number | undefined;
-    column?: number | undefined;
-  } | undefined;
+  location?:
+    | {
+        line?: number | undefined;
+        column?: number | undefined;
+      }
+    | undefined;
 }
 
 export interface ValidationResult {
@@ -43,6 +45,7 @@ export const ErrorCode = {
   INTEGRITY_001: "INTEGRITY_001",
   INTEGRITY_002: "INTEGRITY_002",
   CRYPTO_001: "CRYPTO_001",
+  STRUCT_001: "STRUCT_001",
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
@@ -73,6 +76,7 @@ export const ErrorSeverity: Record<ErrorCode, Severity> = {
   [ErrorCode.INTEGRITY_001]: "error",
   [ErrorCode.INTEGRITY_002]: "error",
   [ErrorCode.CRYPTO_001]: "warning",
+  [ErrorCode.STRUCT_001]: "error",
 };
 
 export const ErrorMessage: Record<ErrorCode, string> = {
@@ -101,6 +105,7 @@ export const ErrorMessage: Record<ErrorCode, string> = {
   [ErrorCode.INTEGRITY_001]: "File integrity hash mismatch",
   [ErrorCode.INTEGRITY_002]: "Global integrity hash mismatch",
   [ErrorCode.CRYPTO_001]: "Weak cryptographic pattern detected (ambiguous context)",
+  [ErrorCode.STRUCT_001]: "Bundle is missing a required directory",
 };
 
 export function createIssue(

@@ -61,7 +61,7 @@ describe("canonicalize", () => {
       expect(output).toBe('{\n  "a": 1,\n  "b": {\n    "c": 3,\n    "d": 4\n  }\n}');
     });
 
-it("preserves array order (arrays are ordered)", () => {
+    it("preserves array order (arrays are ordered)", () => {
       const input = "[3, 1, 2]";
       const output = canonicalizeJson(input);
       expect(output).toBe("[\n  3,\n  1,\n  2\n]");

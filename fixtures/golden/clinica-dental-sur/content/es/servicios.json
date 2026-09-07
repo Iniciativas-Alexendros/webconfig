@@ -67,7 +67,7 @@
               "src": "assets/media/images/implante-unitario.jpg"
             },
             "link": {
-              "href": "/contacto#implantes",
+              "href": "/contacto#contact-form",
               "label": "Desde 1.200€",
               "target": "_self"
             },
@@ -80,7 +80,7 @@
               "src": "assets/media/images/all-on-4.jpg"
             },
             "link": {
-              "href": "/contacto#implantes",
+              "href": "/contacto#contact-form",
               "label": "Desde 8.500€",
               "target": "_self"
             },
@@ -110,7 +110,7 @@
               "src": "assets/media/images/invisalign.jpg"
             },
             "link": {
-              "href": "/contacto#ortodoncia",
+              "href": "/contacto#contact-form",
               "label": "Desde 3.200€",
               "target": "_self"
             },
@@ -123,7 +123,7 @@
               "src": "assets/media/images/brackets-esteticos.jpg"
             },
             "link": {
-              "href": "/contacto#ortodoncia",
+              "href": "/contacto#contact-form",
               "label": "Desde 2.800€",
               "target": "_self"
             },
@@ -153,7 +153,7 @@
               "src": "assets/media/images/carillas.jpg"
             },
             "link": {
-              "href": "/contacto#estetica",
+              "href": "/contacto#contact-form",
               "label": "Desde 450€/diente",
               "target": "_self"
             },
@@ -166,7 +166,7 @@
               "src": "assets/media/images/blanqueamiento.jpg"
             },
             "link": {
-              "href": "/contacto#estetica",
+              "href": "/contacto#contact-form",
               "label": "299€",
               "target": "_self"
             },
@@ -179,7 +179,7 @@
               "src": "assets/media/images/reconstruccion.jpg"
             },
             "link": {
-              "href": "/contacto#estetica",
+              "href": "/contacto#contact-form",
               "label": "Desde 120€",
               "target": "_self"
             },

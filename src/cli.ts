@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 import { program } from "commander";
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { normalizeDirectory } from "./normalize.js";
 import { computeIntegrity } from "./integrity.js";
 
-program
-  .name("webconfig")
-  .description("site.bundle v1.0.0 validator & exporter")
-  .version("1.0.0");
+const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf-8")) as { version: string };
+
+program.name("webconfig").description("site.bundle v1.0.0 validator & exporter").version(pkg.version);
 
 program
   .command("normalize <dir>")
@@ -91,7 +91,7 @@ program
     try {
       await runValidate(bundle, options);
     } catch (err) {
-      const { formatValidationResult, getExitCode } = await import("./validate/index.js");
+      const { formatValidationResult } = await import("./validate/index.js");
       const issue = {
         code: "SYNTAX_ERROR",
         severity: "error" as const,

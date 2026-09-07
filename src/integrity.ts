@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
-import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join, relative, resolve } from "node:path";
+import { readFileSync, statSync } from "node:fs";
+import { join, resolve } from "node:path";
+import { walkDirSync } from "./fs-utils.js";
 
 export interface FileIntegrity {
   path: string;
@@ -18,23 +19,9 @@ function sha256File(filePath: string): string {
   return createHash("sha256").update(content).digest("hex");
 }
 
-function walkDir(dir: string, base: string = dir): string[] {
-  const entries = readdirSync(dir, { withFileTypes: true });
-  const files: string[] = [];
-  for (const entry of entries) {
-    const fullPath = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      files.push(...walkDir(fullPath, base));
-    } else if (entry.isFile()) {
-      files.push(relative(base, fullPath));
-    }
-  }
-  return files.sort();
-}
-
 export function computeIntegrity(bundleDir: string): BundleIntegrity {
   const absoluteDir = resolve(bundleDir);
-  const files = walkDir(absoluteDir);
+  const files = walkDirSync(absoluteDir);
   const fileIntegrities: FileIntegrity[] = [];
 
   for (const file of files) {
@@ -49,7 +36,9 @@ export function computeIntegrity(bundleDir: string): BundleIntegrity {
     });
   }
 
-  const globalHash = createHash("sha256").update(fileIntegrities.map((f) => f.hash).join("")).digest("hex");
+  const globalHash = createHash("sha256")
+    .update(fileIntegrities.map((f) => `${f.path}\0${f.hash}`).join(""))
+    .digest("hex");
 
   return {
     files: fileIntegrities,

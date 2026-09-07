@@ -46,7 +46,7 @@ components:
             alt: Implante unitario
             src: assets/media/images/implante-unitario.jpg
           link:
-            href: /contacto#implantes
+            href: /contacto#contact-form
             label: Desde 1.200€
             target: _self
           title: Implante Unitario
@@ -55,7 +55,7 @@ components:
             alt: All on 4
             src: assets/media/images/all-on-4.jpg
           link:
-            href: /contacto#implantes
+            href: /contacto#contact-form
             label: Desde 8.500€
             target: _self
           title: Arcada Completa (All-on-4)
@@ -76,7 +76,7 @@ components:
             alt: Alineadores Invisalign
             src: assets/media/images/invisalign.jpg
           link:
-            href: /contacto#ortodoncia
+            href: /contacto#contact-form
             label: Desde 3.200€
             target: _self
           title: Invisalign®
@@ -85,7 +85,7 @@ components:
             alt: Brackets de zafiro
             src: assets/media/images/brackets-esteticos.jpg
           link:
-            href: /contacto#ortodoncia
+            href: /contacto#contact-form
             label: Desde 2.800€
             target: _self
           title: Brackets Estéticos
@@ -106,7 +106,7 @@ components:
             alt: Carillas de porcelana
             src: assets/media/images/carillas.jpg
           link:
-            href: /contacto#estetica
+            href: /contacto#contact-form
             label: Desde 450€/diente
             target: _self
           title: Carillas de Porcelana
@@ -115,7 +115,7 @@ components:
             alt: Blanqueamiento dental
             src: assets/media/images/blanqueamiento.jpg
           link:
-            href: /contacto#estetica
+            href: /contacto#contact-form
             label: 299€
             target: _self
           title: Blanqueamiento Profesional
@@ -124,7 +124,7 @@ components:
             alt: Reconstrucción con composite
             src: assets/media/images/reconstruccion.jpg
           link:
-            href: /contacto#estetica
+            href: /contacto#contact-form
             label: Desde 120€
             target: _self
           title: Reconstrucción Estética

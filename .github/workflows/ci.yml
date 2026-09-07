@@ -9,33 +9,45 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['20', '22']
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Typecheck
         run: npm run typecheck
-      
+
+      - name: Lint
+        run: npm run lint
+
       - name: Build CLI
         run: npm run build
-      
+
       - name: Run tests
         run: npm test
-      
+
+      - name: Coverage
+        run: npm test -- --coverage
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev
+
       - name: Validate golden fixture
         run: node dist/cli.js validate fixtures/golden/clinica-dental-sur --ds ds-catalog.example.yaml
-      
+
       - name: Normalize check golden fixture
         run: node dist/cli.js normalize fixtures/golden/clinica-dental-sur --check
-      
+
       - name: Export deterministic test
         run: |
           node dist/cli.js export fixtures/golden/clinica-dental-sur /tmp/test1.tar.gz
@@ -46,44 +58,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Build CLI
         run: npm run build
-      
-      - name: Verify fixture coverage (codes == fixtures)
-        run: |
-          codes=$(grep -cE "^[[:space:]]*[A-Z0-9]+_[0-9]+" src/validate/errors.ts)
-          fixtures=$(ls -d fixtures/invalid/*/ | wc -l)
-          echo "error codes: $codes, invalid fixtures: $fixtures"
-          if [ "$codes" -ne "$fixtures" ]; then
-            echo "FAIL: error codes ($codes) do not match invalid fixtures ($fixtures)"
-            exit 1
-          fi
-      
-      - name: Validate all invalid fixtures
-        run: |
-          set +e
-          for dir in fixtures/invalid/*/; do
-            code=$(basename "$dir")
-            echo "Validating $dir (expect $code)..."
-            output=$(node dist/cli.js validate "$dir" --ds ds-catalog.example.yaml 2>&1)
-            if ! echo "$output" | grep -q "\[$code\]"; then
-              echo "FAIL: $dir did not trigger expected code $code"
-              echo "$output"
-              exit 1
-            fi
-          done
-          echo "All invalid fixtures correctly flagged"
-      
+
+      - name: Verify fixture coverage and trigger codes
+        run: node scripts/verify-fixture-coverage.mjs
+
       - name: Validate golden fixture with --json
         run: |
           node dist/cli.js validate fixtures/golden/clinica-dental-sur --ds ds-catalog.example.yaml --json | jq -e '(.valid == true) and (.errors | length == 0) and ([.warnings[] | select(.code != "I18N_002")] | length == 0)'

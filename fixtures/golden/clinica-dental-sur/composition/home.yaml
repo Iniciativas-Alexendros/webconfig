@@ -59,7 +59,7 @@ components:
             alt: Implante dental
             src: assets/media/images/implantes.jpg
           link:
-            href: /servicios#implantes
+            href: /servicios#implantes-section
             label: Ver detalles
             target: _self
           title: Implantología
@@ -68,7 +68,7 @@ components:
             alt: Alineadores transparentes
             src: assets/media/images/ortodoncia.jpg
           link:
-            href: /servicios#ortodoncia
+            href: /servicios#ortodoncia-section
             label: Ver detalles
             target: _self
           title: Ortodoncia Invisible
@@ -77,7 +77,7 @@ components:
             alt: Carillas dentales
             src: assets/media/images/estetica.jpg
           link:
-            href: /servicios#estetica
+            href: /servicios#estetica-section
             label: Ver detalles
             target: _self
           title: Estética Dental

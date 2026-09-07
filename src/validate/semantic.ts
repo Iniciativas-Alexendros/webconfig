@@ -1,15 +1,11 @@
 import { createHash } from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { parse } from "yaml";
 import { computeIntegrity } from "../integrity.js";
-import { loadDSCatalog, type DSComponent, type DSCatalog } from "./ds-catalog.js";
-import type { ValidationIssue, ErrorCode } from "./errors.js";
-import { createIssue, ErrorCode as EC, ErrorSeverity } from "./errors.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import type { DSComponent, DSCatalog } from "./ds-catalog.js";
+import type { ValidationIssue } from "./errors.js";
+import { createIssue, ErrorCode as EC } from "./errors.js";
 
 interface BundleData {
   manifest: Record<string, unknown>;
@@ -18,18 +14,22 @@ interface BundleData {
   content: Map<string, Record<string, unknown>>;
   seo: Map<string, Record<string, unknown>>;
   assets: Set<string>;
+  structureIssues: ValidationIssue[];
 }
 
-const SECRET_PATTERNS: Array<{ pattern: RegExp; code: "SECRET_001" | "CRYPTO_001" }> = [
-  { pattern: /AKIA[0-9A-Z]{16}/, code: "SECRET_001" },
-  { pattern: /(sk|pk)-[A-Za-z0-9]{20,}/, code: "SECRET_001" },
-  { pattern: /(?:ghp_|gho_)[A-Za-z0-9]{36}/, code: "SECRET_001" },
-  { pattern: /github_pat_[A-Za-z0-9_]{22,}/, code: "SECRET_001" },
-  { pattern: /xox[abprs]-[A-Za-z0-9-]{10,}/, code: "SECRET_001" },
-  { pattern: /glpat-[A-Za-z0-9_-]{20}/, code: "SECRET_001" },
-  { pattern: /-----BEGIN .* PRIVATE KEY-----/, code: "SECRET_001" },
-  { pattern: /Authorization: Bearer \S{20,}/, code: "SECRET_001" },
-  { pattern: /(api[_-]?key|secret|token|password|passwd|pwd)\s*[=:]\s*\S+/i, code: "CRYPTO_001" },
+const SECRET_PATTERNS: Array<{ pattern: RegExp; code: "SECRET_001" | "CRYPTO_001"; name: string }> = [
+  { pattern: /AKIA[0-9A-Z]{16}/, code: "SECRET_001", name: "AWS access key" },
+  { pattern: /(sk|pk)-[A-Za-z0-9]{20,}/, code: "SECRET_001", name: "Stripe API key" },
+  { pattern: /\b(ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{36,}/, code: "SECRET_001", name: "GitHub token" },
+  { pattern: /github_pat_[A-Za-z0-9_]{22,}/, code: "SECRET_001", name: "GitHub fine-grained PAT" },
+  { pattern: /xox[abprs]-[A-Za-z0-9-]{10,}/, code: "SECRET_001", name: "Slack token" },
+  { pattern: /glpat-[A-Za-z0-9_-]{20}/, code: "SECRET_001", name: "GitLab personal access token" },
+  { pattern: /-----BEGIN .* PRIVATE KEY-----/, code: "SECRET_001", name: "private key" },
+  {
+    pattern: /\b(?:api[_-]?key|secret|token|password|passwd|pwd)\b\s*[=:]\s*\S+/i,
+    code: "CRYPTO_001",
+    name: "credential assignment",
+  },
 ];
 
 const EMOJI_REGEX = /\p{Extended_Pictographic}/u;
@@ -42,6 +42,7 @@ async function loadBundleData(bundleDir: string): Promise<BundleData> {
     content: new Map(),
     seo: new Map(),
     assets: new Set(),
+    structureIssues: [],
   };
 
   const manifestPath = path.join(bundleDir, "manifest.yaml");
@@ -63,6 +64,9 @@ async function loadBundleData(bundleDir: string): Promise<BundleData> {
       data.compositions.set(entry.replace(/\.ya?ml$/, ""), parsed);
     }
   } catch {
+    data.structureIssues.push(
+      createIssue(EC.STRUCT_001, "composition/", "Missing required composition/ directory")
+    );
   }
 
   const contentDir = path.join(bundleDir, "content");
@@ -71,7 +75,7 @@ async function loadBundleData(bundleDir: string): Promise<BundleData> {
     for (const entry of entries) {
       if (!entry.isDirectory()) continue;
       const locale = entry.name;
-      
+
       // Read regular content files from content/<locale>/
       const localeDir = path.join(contentDir, locale);
       try {
@@ -91,9 +95,8 @@ async function loadBundleData(bundleDir: string): Promise<BundleData> {
           const key = `${locale}/${file}`;
           data.content.set(key, parsed as Record<string, unknown>);
         }
-      } catch {
-      }
-      
+      } catch {}
+
       // Read SEO files from content/seo/<locale>/
       const seoLocaleDir = path.join(contentDir, "seo", locale);
       try {
@@ -113,10 +116,12 @@ async function loadBundleData(bundleDir: string): Promise<BundleData> {
           const key = `${locale}/seo/${file}`;
           data.seo.set(key, parsed as Record<string, unknown>);
         }
-      } catch {
-      }
+      } catch {}
     }
   } catch {
+    data.structureIssues.push(
+      createIssue(EC.STRUCT_001, "content/", "Missing required content/ directory")
+    );
   }
 
   const assetsDir = path.join(bundleDir, "assets");
@@ -128,14 +133,13 @@ async function loadBundleData(bundleDir: string): Promise<BundleData> {
         if (entry.isDirectory()) {
           await scanAssets(fullPath);
         } else {
-          const relPath = path.relative(bundleDir, fullPath);
+          const relPath = path.relative(bundleDir, fullPath).split(path.sep).join("/");
           data.assets.add(relPath);
         }
       }
     }
     await scanAssets(assetsDir);
-  } catch {
-  }
+  } catch {}
 
   return data;
 }
@@ -172,15 +176,18 @@ function extractReferencedAssets(data: BundleData): Set<string> {
     const openGraph = seo["openGraph"] as Record<string, unknown> | undefined;
     if (openGraph?.["images"]) {
       for (const img of openGraph["images"] as Array<Record<string, unknown>>) {
-        if (img["url"] && typeof img["url"] === "string") {
-          assets.add(img["url"]);
+        const url = img["url"];
+        if (typeof url === "string" && (url.startsWith("assets/") || url.startsWith("./assets/"))) {
+          assets.add(url.replace(/^\.\//, ""));
         }
       }
     }
     const twitter = seo["twitter"] as Record<string, unknown> | undefined;
     if (twitter?.["images"]) {
       for (const img of twitter["images"] as string[]) {
-        assets.add(img);
+        if (typeof img === "string" && (img.startsWith("assets/") || img.startsWith("./assets/"))) {
+          assets.add(img.replace(/^\.\//, ""));
+        }
       }
     }
   }
@@ -208,10 +215,12 @@ function collectAssetPaths(obj: Record<string, unknown>, assets: Set<string>): v
 }
 
 function checkSecretsInString(str: string, file: string, issues: ValidationIssue[]): void {
-  for (const { pattern, code } of SECRET_PATTERNS) {
+  for (const { pattern, code, name } of SECRET_PATTERNS) {
     const matches = str.match(pattern);
     if (matches) {
-      issues.push(createIssue(code as ErrorCode, file, `${code}: ${matches[0].substring(0, 50)}`));
+      issues.push(
+        createIssue(code, file, `${code}: possible ${name} detected (value omitted for security)`)
+      );
     }
   }
 }
@@ -263,7 +272,12 @@ function checkIcon(value: unknown, file: string, whitelist: Set<string>, issues:
   }
 }
 
-function checkIconsInObject(obj: Record<string, unknown>, file: string, whitelist: Set<string>, issues: ValidationIssue[]): void {
+function checkIconsInObject(
+  obj: Record<string, unknown>,
+  file: string,
+  whitelist: Set<string>,
+  issues: ValidationIssue[]
+): void {
   for (const [key, value] of Object.entries(obj)) {
     if (key === "icon") {
       checkIcon(value, file, whitelist, issues);
@@ -345,8 +359,14 @@ function checkLinks(
   obj: Record<string, unknown>,
   file: string,
   pageSlugs: Set<string>,
+  elementIdsByPage: Map<string, Set<string>>,
+  currentPage: string,
   issues: ValidationIssue[]
 ): void {
+  const hasElementId = (page: string, anchorId: string): boolean => {
+    const ids = elementIdsByPage.get(page);
+    return ids !== undefined && ids.has(anchorId);
+  };
   for (const value of Object.values(obj)) {
     if (value && typeof value === "object" && !Array.isArray(value)) {
       const v = value as Record<string, unknown>;
@@ -356,7 +376,7 @@ function checkLinks(
           issues.push(createIssue(EC.LINK_002, file, `External link uses http: ${href}`));
         } else if (href.startsWith("#")) {
           const anchorId = href.slice(1);
-          if (!pageSlugs.has(anchorId) && !/^[a-z-]+$/.test(anchorId)) {
+          if (!hasElementId(currentPage, anchorId)) {
             issues.push(createIssue(EC.LINK_003, file, `Anchor link points to non-existent element ID: ${anchorId}`));
           }
         } else if (href.startsWith("/") && !href.startsWith("//")) {
@@ -364,22 +384,22 @@ function checkLinks(
           const hashIndex = href.indexOf("#");
           const pagePath = hashIndex >= 0 ? href.substring(0, hashIndex) : href;
           const anchorId = hashIndex >= 0 ? href.substring(hashIndex + 1) : "";
-          
+
           const page = pagePath.split("/")[1] || "home";
           if (!pageSlugs.has(page) && page !== "") {
             issues.push(createIssue(EC.LINK_001, file, `Internal link points to non-existent page: ${href}`));
           }
           // Also validate anchor if present
-          if (anchorId && !pageSlugs.has(anchorId) && !/^[a-z-]+$/.test(anchorId)) {
+          if (anchorId && !hasElementId(page, anchorId)) {
             issues.push(createIssue(EC.LINK_003, file, `Anchor link points to non-existent element ID: ${anchorId}`));
           }
         }
       }
-      checkLinks(v, file, pageSlugs, issues);
+      checkLinks(v, file, pageSlugs, elementIdsByPage, currentPage, issues);
     } else if (Array.isArray(value)) {
       for (const item of value) {
         if (item && typeof item === "object") {
-          checkLinks(item as Record<string, unknown>, file, pageSlugs, issues);
+          checkLinks(item as Record<string, unknown>, file, pageSlugs, elementIdsByPage, currentPage, issues);
         }
       }
     }
@@ -524,18 +544,13 @@ function checkLocaleFallback(
   walk(seoByFile, (locale, file) => `content/seo/${locale}/${file}`);
 }
 
-async function validateSemantic(
-  bundleDir: string,
-  catalog: DSCatalog
-): Promise<ValidationIssue[]> {
+async function validateSemantic(bundleDir: string, catalog: DSCatalog): Promise<ValidationIssue[]> {
   const issues: ValidationIssue[] = [];
   const componentIndex = new Map<string, DSComponent>();
   for (const comp of catalog.components) {
     componentIndex.set(comp.id, comp);
   }
-  const layoutComponentIds = new Set(
-    catalog.components.filter((c) => c.category === "layout").map((c) => c.id)
-  );
+  const layoutComponentIds = new Set(catalog.components.filter((c) => c.category === "layout").map((c) => c.id));
 
   function extractIconEnums(schema: Record<string, unknown>): string[] {
     const icons: string[] = [];
@@ -568,6 +583,7 @@ async function validateSemantic(
   );
 
   const data = await loadBundleData(bundleDir);
+  issues.push(...data.structureIssues);
 
   const siteConfig = data.siteConfig;
   const locales = (siteConfig["locales"] as string[]) || [];
@@ -589,6 +605,18 @@ async function validateSemantic(
 
   const pageSlugs = extractPageSlugs(data.compositions);
 
+  const elementIdsByPage = new Map<string, Set<string>>();
+  for (const [name, composition] of data.compositions) {
+    const components = composition["components"] as Array<Record<string, unknown>> | undefined;
+    if (!components) continue;
+    const ids = new Set<string>();
+    for (const comp of components) {
+      const compId = comp["id"] as string;
+      if (compId) ids.add(compId);
+    }
+    elementIdsByPage.set(name, ids);
+  }
+
   for (const [name, composition] of data.compositions) {
     const components = composition["components"] as Array<Record<string, unknown>> | undefined;
     if (!components) continue;
@@ -599,15 +627,29 @@ async function validateSemantic(
       const props = comp["props"] as Record<string, unknown> | undefined;
 
       if (!componentIndex.has(compType)) {
-        issues.push(createIssue(EC.COMP_001, `composition/${name}.yaml`, `Component type "${compType}" not found in DS catalog`));
+        issues.push(
+          createIssue(EC.COMP_001, `composition/${name}.yaml`, `Component type "${compType}" not found in DS catalog`)
+        );
       }
 
       if (parentId && !compositionComponentTypes.has(parentId)) {
-        issues.push(createIssue(EC.PARENT_001, `composition/${name}.yaml`, `Component ${compId} references non-existent parent_id: ${parentId}`));
+        issues.push(
+          createIssue(
+            EC.PARENT_001,
+            `composition/${name}.yaml`,
+            `Component ${compId} references non-existent parent_id: ${parentId}`
+          )
+        );
       } else if (parentId) {
         const parentType = compositionComponentTypes.get(parentId);
         if (parentType && !layoutComponentIds.has(parentType)) {
-          issues.push(createIssue(EC.PARENT_002, `composition/${name}.yaml`, `parent_id must reference a layout component (category: layout), got parent of type: ${parentType}`));
+          issues.push(
+            createIssue(
+              EC.PARENT_002,
+              `composition/${name}.yaml`,
+              `parent_id must reference a layout component (category: layout), got parent of type: ${parentType}`
+            )
+          );
         }
       }
 
@@ -626,7 +668,7 @@ async function validateSemantic(
         checkPricesInObject(props, `composition/${name}.yaml`, issues);
         checkImageAlt(props, `composition/${name}.yaml`, issues);
         checkImagesInObject(props, `composition/${name}.yaml`, issues);
-        checkLinks(props, `composition/${name}.yaml`, pageSlugs, issues);
+        checkLinks(props, `composition/${name}.yaml`, pageSlugs, elementIdsByPage, name, issues);
         checkContentRefs(props, `composition/${name}.yaml`, pageSlugs, data.content, locales, issues);
       }
     }
@@ -643,7 +685,8 @@ async function validateSemantic(
       checkIconsInObject(values, `content/${key}`, iconWhitelist, issues);
       checkPricesInObject(values, `content/${key}`, issues);
       checkImagesInObject(values, `content/${key}`, issues);
-      checkLinks(values, `content/${key}`, pageSlugs, issues);
+      const pageSlug = key.split("/").pop()?.replace(/\.(json|ya?ml)$/, "") ?? "";
+      checkLinks(values, `content/${key}`, pageSlugs, elementIdsByPage, pageSlug, issues);
       checkContentRefs(values, `content/${key}`, pageSlugs, data.content, locales, issues);
     }
   }
@@ -678,16 +721,29 @@ async function validateSemantic(
       issues.push(createIssue(EC.MANIFEST_001, "manifest.yaml", `Manifest references non-existent ${missingFile}`));
     }
   }
+
+  checkSecretsInObject(manifest, "manifest.yaml", issues);
+  checkSecretsInObject(siteConfig, "site.config.yaml", issues);
   const bundleVersion = manifest["bundleVersion"] as string | undefined;
   if (bundleVersion === undefined || !/^[0-9]+\.[0-9]+\.[0-9]+$/.test(bundleVersion)) {
-    issues.push(createIssue(EC.MANIFEST_002, "manifest.yaml", `Manifest bundleVersion is not valid semver: ${bundleVersion}`));
+    issues.push(
+      createIssue(EC.MANIFEST_002, "manifest.yaml", `Manifest bundleVersion is not valid semver: ${bundleVersion}`)
+    );
   } else if (bundleVersion !== "1.0.0") {
-    issues.push(createIssue(EC.MANIFEST_002, "manifest.yaml", `Manifest bundleVersion does not match schema version: ${bundleVersion}`));
+    issues.push(
+      createIssue(
+        EC.MANIFEST_002,
+        "manifest.yaml",
+        `Manifest bundleVersion does not match schema version: ${bundleVersion}`
+      )
+    );
   }
 
   const schemaCompat = manifest["schema_compat"] as string | undefined;
   if (schemaCompat !== undefined && !/^~?\^?1\.0\.0$/.test(schemaCompat)) {
-    issues.push(createIssue(EC.MANIFEST_002, "manifest.yaml", `Incompatible schema_compat constraint: ${schemaCompat}`));
+    issues.push(
+      createIssue(EC.MANIFEST_002, "manifest.yaml", `Incompatible schema_compat constraint: ${schemaCompat}`)
+    );
   }
 
   const integrity = manifest["integrity"] as { files?: Record<string, string>; global?: string } | undefined;
@@ -711,7 +767,7 @@ async function validateSemantic(
 
     const declaredPaths = Object.keys(declaredFiles).sort();
     const expectedGlobal = createHash("sha256")
-      .update(declaredPaths.map((p) => declaredFiles[p]).join(""))
+      .update(declaredPaths.map((p) => `${p}\0${declaredFiles[p]}`).join(""))
       .digest("hex");
     if (integrity["global"] !== expectedGlobal) {
       issues.push(createIssue(EC.INTEGRITY_002, "manifest.yaml", "Global integrity hash mismatch"));
@@ -754,10 +810,6 @@ function validateComponentProps(
   return { valid: errors.length === 0, errors };
 }
 
-export async function runSemanticValidation(
-  bundleDir: string,
-  catalogPath: string
-): Promise<ValidationIssue[]> {
-  const catalog = loadDSCatalog(catalogPath);
+export async function runSemanticValidation(bundleDir: string, catalog: DSCatalog): Promise<ValidationIssue[]> {
   return validateSemantic(bundleDir, catalog);
 }

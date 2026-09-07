@@ -1,10 +1,5 @@
 import { readFileSync } from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { parse } from "yaml";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 export interface DSComponent {
   id: string;
@@ -65,7 +60,10 @@ export function validateComponentProps(
   if (!component.propsSchema) {
     return { valid: true, errors: [] };
   }
-  const schema = component.propsSchema as Record<string, { type?: string; required?: boolean; properties?: Record<string, unknown> }>;
+  const schema = component.propsSchema as Record<
+    string,
+    { type?: string; required?: boolean; properties?: Record<string, unknown> }
+  >;
   for (const [key, propSchema] of Object.entries(schema)) {
     if (propSchema.required && !(key in props)) {
       errors.push(`Missing required prop: ${key}`);

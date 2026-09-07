@@ -1,27 +1,14 @@
-import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
-import { join, resolve, extname, relative } from "node:path";
+import { readFileSync, writeFileSync } from "node:fs";
+import { join, resolve, extname } from "node:path";
 import { canonicalizeFile, isCanonicalYaml, isCanonicalJson } from "./canonicalize.js";
-
-function walkDir(dir: string, base: string = dir): string[] {
-  const entries = readdirSync(dir, { withFileTypes: true });
-  const files: string[] = [];
-  for (const entry of entries) {
-    const fullPath = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      files.push(...walkDir(fullPath, base));
-    } else if (entry.isFile()) {
-      files.push(relative(base, fullPath));
-    }
-  }
-  return files.sort();
-}
+import { walkDirSync } from "./fs-utils.js";
 
 export async function normalizeDirectory(
   bundleDir: string,
   options: { check: boolean; write: boolean }
 ): Promise<{ normalized: number; errors: string[] }> {
   const absoluteDir = resolve(bundleDir);
-  const files = walkDir(absoluteDir);
+  const files = walkDirSync(absoluteDir);
   let normalized = 0;
   const errors: string[] = [];
 

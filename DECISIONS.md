@@ -37,7 +37,19 @@ This separation allows:
 - Resolves across all locales, checking each locale's content file
 - Page slug extracted from reference, matched against composition page slugs
 
-### Asset Validation
+### ADR: Content Reference Fragment is a Block ID, not a JSON Pointer
+- **Date**: 2026-09-07
+- **Context**: `CONTENTREF_002` was documented as "pointer syntax" (e.g. `non-existent.json#/key`), implying the fragment follows JSON Pointer semantics (`/a/b/c`). The implementation in `checkContentRefs` (semantic.ts) instead resolves the fragment against the **block `id`** field: it finds the page's content file and does `blocks.find((b) => b["id"] === key)`, emitting `CONTENTREF_003` when no block matches. A true JSON Pointer would resolve nested object paths, not block ids.
+- **Decision**: The fragment is formally defined as a **block ID** (a single identifier string), not a JSON Pointer. The grammar `<page>.json#<blockId>` is canonical; the `#/` prefix in existing fixtures/docs is tolerated by the parser but the fragment itself must match a block `id`. Nested paths are out of scope for v1.x.
+- **Consequences**: The `CONTENTREF_002` error message stays as "invalid content reference syntax"; `CONTENTREF_003` means "block id not found in the referenced page's content". Any future move to real JSON Pointer resolution requires a new spec proposal (Version Contract section) and a new error code or versioned grammar.
+- **Status**: ADOPTED (v1.1.0)
+
+### ADR: JSON Schema draft-2020-12 is the frozen schema dialect
+- **Date**: 2026-09-07
+- **Context**: The bundled `schemas/meta-schema-2020-12.json` declared `$schema: draft-2020-12` but contained unresolvable `$ref`s (`meta/core`, `meta/applicator`, etc.) and was never imported anywhere (dead file). `seo.schema.json` declared `$schema: 2020-12` while `manifest`, `site-config`, and `composition` did not, yet AJV ran in draft-07 by default — a dialect limbo.
+- **Decision**: All five active schemas (`manifest`, `site-config`, `composition`, `content`, `seo`) declare `$schema: https://json-schema.org/draft/2020-12/schema`. AJV compiles them with `ajv/dist/2020` (the 2020-12 dialect), removing the draft-07 default. The dead `schemas/meta-schema-2020-12.json` is deleted; JSON Schema 2020-12 is the single frozen dialect for v1.x.
+- **Consequences**: Schema evolution is bound to the 2020-12 keyword set (no `dependencies`/`$recursiveRef`; use `dependentRequired`/`$dynamicRef`). Fixtures and the golden bundle are unaffected (schema files are not part of a bundle).
+- **Status**: ADOPTED (v1.1.0)
 - `ASSET_001`: Referenced asset must exist in bundle
 - `ASSET_002` (warning): Unreferenced asset files flagged
 - Scans compositions, content blocks, and SEO for asset references
@@ -137,7 +149,7 @@ This separation allows:
 
 ### Release (semantic-release)
 - Package is `private: true`; release = git tag + GitHub Release only (no npm publish)
-- `@semantic-release/npm` is intentionally **not** used (nothing to publish)
+- `@semantic-release/npm` is used with `npmPublish: false` to bump `package.json` version on each release (fixes the version drift that left `package.json` at 1.0.0 while tags advanced)
 - `@semantic-release/git` commits `CHANGELOG.md` (and `package.json` when the version changes)
 - `@semantic-release/github` creates the GitHub Release
 - Expected secrets: only `GH_TOKEN` (a GitHub token with repo scope). `NPM_TOKEN` is not required.
@@ -148,7 +160,7 @@ This separation allows:
 - `"private": true` (not published to npm)
 - `"type": "module"` (ESM)
 - `"bin": "webconfig"` (entry point)
-- `"engines": { "node": ">=20" }`
+- `"engines": { "node": ">=20.10" }`
 - Exact dependency versions (no ^ or ~)
 
 ### TypeScript Config
@@ -158,14 +170,14 @@ This separation allows:
 
 ## Known Limitations
 
-1. **INTEGRITY_001/002**: Implemented in v1.0.0 (per-file sha256 declared in `manifest.yaml` integrity.files plus a global hash over the path-sorted concatenated hashes; manifest.yaml itself is excluded from the hashed set).
+1. **INTEGRITY_001/002**: Implemented in v1.0.0 (per-file sha256 declared in `manifest.yaml` integrity.files plus a global hash over the path-sorted concatenated `<path>\0<hash>` entries; manifest.yaml itself is excluded from the hashed set).
 2. **Content references in SEO**: Not validated (only composition/content)
-3. **Anchor link validation**: Basic pattern matching only
+3. **Anchor link validation**: Anchor existence is validated against element ids of the target page (since v1.1.0); in-page `#anchor` refs check the current page's ids
 4. **Performance**: No caching for large bundles (acceptable for v1)
 
 ## Future Considerations
 
 1. Add watch mode for development
 2. Support for incremental validation
-3. JSON Schema draft-2020-12 meta-schema bundling
+3. JSON Schema draft-2020-12: all schemas declare `$schema: draft/2020-12` and are compiled with `ajv/dist/2020` (bundled `schemas/meta-schema-2020-12.json` removed — dead file)
 5. WebAssembly port for performance

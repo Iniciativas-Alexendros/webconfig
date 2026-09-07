@@ -3,6 +3,7 @@ import { createReadStream, createWriteStream } from "node:fs";
 import path from "node:path";
 import tar from "tar-stream";
 import zlib from "node:zlib";
+import { walkDir } from "../fs-utils.js";
 
 export interface ExportOptions {
   bundleDir: string;
@@ -21,16 +22,24 @@ export async function exportBundle(options: ExportOptions): Promise<void> {
   const packStream = pack as unknown as NodeJS.ReadableStream;
   packStream.pipe(gunzip).pipe(writeStream);
 
-  const files = await collectFiles(resolvedBundleDir);
-  files.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
+  const relativePaths = await walkDir(resolvedBundleDir);
+  relativePaths.sort((a, b) => a.localeCompare(b));
+  const files: FileEntry[] = relativePaths.map((relativePath) => ({
+    absolutePath: path.join(resolvedBundleDir, relativePath),
+    relativePath,
+  }));
 
   for (const file of files) {
     const stat = await fs.stat(file.absolutePath);
     const header = {
       name: file.relativePath,
       size: stat.size,
-      mode: stat.mode,
+      mode: 0o644,
       mtime: new Date(0), // epoch for determinism
+      uid: 0,
+      gid: 0,
+      uname: "",
+      gname: "",
       type: "file" as const,
     };
 
@@ -54,23 +63,4 @@ export async function exportBundle(options: ExportOptions): Promise<void> {
 interface FileEntry {
   absolutePath: string;
   relativePath: string;
-}
-
-async function collectFiles(dir: string, baseDir: string = dir): Promise<FileEntry[]> {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
-  const files: FileEntry[] = [];
-
-  for (const entry of entries) {
-    const absolutePath = path.join(dir, entry.name);
-    const relativePath = path.relative(baseDir, absolutePath);
-
-    if (entry.isDirectory()) {
-      const subFiles = await collectFiles(absolutePath, baseDir);
-      files.push(...subFiles);
-    } else if (entry.isFile()) {
-      files.push({ absolutePath, relativePath });
-    }
-  }
-
-  return files;
 }

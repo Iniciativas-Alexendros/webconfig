@@ -1,4 +1,4 @@
-import Ajv from "ajv";
+import Ajv from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
 const AjvConstructor = Ajv.default;
@@ -6,8 +6,7 @@ const addFormatsFn = addFormats.default;
 
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-import type { ValidationIssue, ErrorCode } from "./errors.js";
+import type { ValidationIssue } from "./errors.js";
 
 import manifestSchema from "../../schemas/manifest.schema.json" with { type: "json" };
 import siteConfigSchema from "../../schemas/site-config.schema.json" with { type: "json" };
@@ -44,7 +43,7 @@ async function loadSchema(name: string): Promise<Ajv.ValidateFunction> {
 function mapAjvErrors(errors: Ajv.ErrorObject[] | null | undefined, file: string): ValidationIssue[] {
   if (!errors) return [];
   return errors.map((err) => ({
-    code: `SYNTAX_${err.keyword?.toUpperCase() || "ERROR"}` as ErrorCode,
+    code: `SYNTAX_${err.keyword?.toUpperCase() || "ERROR"}`,
     severity: "error" as const,
     file,
     message: `${err.instancePath || "/"} ${err.message}`,
@@ -58,7 +57,7 @@ function mapManifestErrors(errors: Ajv.ErrorObject[] | null | undefined, file: s
     if (err.keyword === "required") {
       const missing = (err.params as { missingProperty?: string }).missingProperty ?? "field";
       return {
-        code: "MANIFEST_001" as ErrorCode,
+        code: "MANIFEST_001",
         severity: "error" as const,
         file,
         message: `Manifest missing required field: ${missing}`,
@@ -66,7 +65,7 @@ function mapManifestErrors(errors: Ajv.ErrorObject[] | null | undefined, file: s
       };
     }
     return {
-      code: `SYNTAX_${err.keyword?.toUpperCase() || "ERROR"}` as ErrorCode,
+      code: `SYNTAX_${err.keyword?.toUpperCase() || "ERROR"}`,
       severity: "error" as const,
       file,
       message: `${err.instancePath || "/"} ${err.message}`,
@@ -75,9 +74,7 @@ function mapManifestErrors(errors: Ajv.ErrorObject[] | null | undefined, file: s
   });
 }
 
-export async function validateSyntax(
-  bundleDir: string
-): Promise<ValidationIssue[]> {
+export async function validateSyntax(bundleDir: string): Promise<ValidationIssue[]> {
   const issues: ValidationIssue[] = [];
 
   const manifestPath = path.join(bundleDir, "manifest.yaml");
@@ -94,7 +91,7 @@ export async function validateSyntax(
     }
   } catch (e) {
     issues.push({
-      code: "SYNTAX_ERROR" as ErrorCode,
+      code: "SYNTAX_ERROR",
       severity: "error",
       file: "manifest.yaml",
       message: e instanceof Error ? e.message : "Failed to parse manifest.yaml",
@@ -112,7 +109,7 @@ export async function validateSyntax(
     }
   } catch (e) {
     issues.push({
-      code: "SYNTAX_ERROR" as ErrorCode,
+      code: "SYNTAX_ERROR",
       severity: "error",
       file: "site.config.yaml",
       message: e instanceof Error ? e.message : "Failed to parse site.config.yaml",
@@ -136,21 +133,29 @@ export async function validateSyntax(
         }
       } catch (e) {
         issues.push({
-          code: "SYNTAX_ERROR" as ErrorCode,
+          code: "SYNTAX_ERROR",
           severity: "error",
           file: `composition/${entry}`,
           message: e instanceof Error ? e.message : `Failed to parse ${entry}`,
         });
       }
     }
-  } catch {
+  } catch (e) {
+    const code = (e as NodeJS.ErrnoException).code;
+    if (code !== "ENOENT") {
+      issues.push({
+        code: "SYNTAX_ERROR",
+        severity: "error",
+        file: "composition/",
+        message: e instanceof Error ? e.message : "Failed to read composition/ directory",
+      });
+    }
   }
 
   const contentDir = path.join(bundleDir, "content");
   try {
     const locales = await fs.readdir(contentDir);
     const validateContent = await loadSchema("content");
-    const validateSeo = await loadSchema("seo");
     for (const locale of locales) {
       const localeDir = path.join(contentDir, locale);
       const stat = await fs.stat(localeDir);
@@ -170,17 +175,15 @@ export async function validateSyntax(
             data = yaml.parse(content);
           }
 
-          const isSeo = path.basename(filePath).startsWith("seo") || filePath.includes("seo");
-          const validator = isSeo ? validateSeo : validateContent;
-          const valid = validator(data);
+          const valid = validateContent(data);
           if (!valid) {
             const relPath = path.relative(bundleDir, filePath);
-            issues.push(...mapAjvErrors(validator.errors, relPath));
+            issues.push(...mapAjvErrors(validateContent.errors, relPath));
           }
         } catch (e) {
           const relPath = path.relative(bundleDir, filePath);
           issues.push({
-            code: "SYNTAX_ERROR" as ErrorCode,
+            code: "SYNTAX_ERROR",
             severity: "error",
             file: relPath,
             message: e instanceof Error ? e.message : `Failed to parse ${file}`,
@@ -188,7 +191,61 @@ export async function validateSyntax(
         }
       }
     }
-  } catch {
+  } catch (e) {
+    const code = (e as NodeJS.ErrnoException).code;
+    if (code !== "ENOENT") {
+      issues.push({
+        code: "SYNTAX_ERROR",
+        severity: "error",
+        file: "content/",
+        message: e instanceof Error ? e.message : "Failed to read content/ directory",
+      });
+    }
+  }
+
+  const seoDir = path.join(contentDir, "seo");
+  try {
+    const seoLocales = await fs.readdir(seoDir);
+    const validateSeo = await loadSchema("seo");
+    for (const locale of seoLocales) {
+      const localeDir = path.join(seoDir, locale);
+      const stat = await fs.stat(localeDir);
+      if (!stat.isDirectory()) continue;
+
+      const seoFiles = await fs.readdir(localeDir);
+      for (const file of seoFiles) {
+        if (!file.endsWith(".yaml") && !file.endsWith(".yml") && !file.endsWith(".json")) continue;
+        const filePath = path.join(localeDir, file);
+        try {
+          const content = await fs.readFile(filePath, "utf-8");
+          const yaml = await import("yaml");
+          const data = yaml.parse(content);
+          const valid = validateSeo(data);
+          if (!valid) {
+            const relPath = path.relative(bundleDir, filePath);
+            issues.push(...mapAjvErrors(validateSeo.errors, relPath));
+          }
+        } catch (e) {
+          const relPath = path.relative(bundleDir, filePath);
+          issues.push({
+            code: "SYNTAX_ERROR",
+            severity: "error",
+            file: relPath,
+            message: e instanceof Error ? e.message : `Failed to parse ${file}`,
+          });
+        }
+      }
+    }
+  } catch (e) {
+    const code = (e as NodeJS.ErrnoException).code;
+    if (code !== "ENOENT") {
+      issues.push({
+        code: "SYNTAX_ERROR",
+        severity: "error",
+        file: "content/seo/",
+        message: e instanceof Error ? e.message : "Failed to read content/seo/ directory",
+      });
+    }
   }
 
   return issues;

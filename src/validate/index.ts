@@ -1,17 +1,10 @@
-import { promises as fs } from "node:fs";
-import { createReadStream, createWriteStream } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { createRequire } from "node:module";
 import { validateSyntax } from "./syntax.js";
 import { runSemanticValidation } from "./semantic.js";
 import { loadDSCatalog, type DSCatalog } from "./ds-catalog.js";
-import type { ValidationIssue, ValidationResult, ErrorCode } from "./errors.js";
-import { groupBySeverity, createIssue, ErrorCode as EC, ErrorSeverity } from "./errors.js";
-
-const require = createRequire(import.meta.url);
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { extractTar } from "../tar.js";
+import type { ValidationResult } from "./errors.js";
+import { groupBySeverity, createIssue, ErrorCode as EC } from "./errors.js";
 
 function findDSCatalog(bundleDir: string, explicitPath?: string): string {
   if (explicitPath) {
@@ -22,40 +15,8 @@ function findDSCatalog(bundleDir: string, explicitPath?: string): string {
   return defaultPath;
 }
 
-async function loadBundleFromTar(tarPath: string): Promise<string> {
-  const tar = await import("tar-stream");
-  const zlib = await import("node:zlib");
-  const tmpDir = await fs.mkdtemp(path.join(path.dirname(tarPath), "webconfig-"));
-  
-  return new Promise((resolve, reject) => {
-    const extract = tar.extract();
-    const gunzip = zlib.createGunzip();
-    const readStream = createReadStream(tarPath);
-    
-    readStream.pipe(gunzip).pipe(extract as unknown as NodeJS.WritableStream);
-    
-    extract.on("entry", async (header: { name: string }, stream: NodeJS.ReadableStream, next: () => void) => {
-      const filePath = path.join(tmpDir, header.name);
-      await fs.mkdir(path.dirname(filePath), { recursive: true });
-      const writeStream = createWriteStream(filePath);
-      stream.pipe(writeStream);
-      stream.on("end", next);
-      stream.resume();
-    });
-    
-    extract.on("finish", () => {
-      resolve(tmpDir);
-    });
-    
-    extract.on("error", reject);
-  });
-}
-
-async function cleanupTempDir(dir: string): Promise<void> {
-  try {
-    await fs.rm(dir, { recursive: true, force: true });
-  } catch {
-  }
+async function loadBundleFromTar(tarPath: string): Promise<{ dir: string; cleanup: () => Promise<void> }> {
+  return extractTar(tarPath);
 }
 
 export interface ValidateOptions {
@@ -67,13 +28,12 @@ export interface ValidateOptions {
 
 export async function validateBundle(options: ValidateOptions): Promise<ValidationResult> {
   let bundleDir = options.bundlePath;
-  let tempDir: string | null = null;
-  let isTar = false;
+  let cleanupTemp: (() => Promise<void>) | null = null;
 
   if (bundleDir.endsWith(".tar.gz") || bundleDir.endsWith(".tgz")) {
-    isTar = true;
-    tempDir = await loadBundleFromTar(bundleDir);
-    bundleDir = tempDir;
+    const { dir, cleanup } = await loadBundleFromTar(bundleDir);
+    bundleDir = dir;
+    cleanupTemp = cleanup;
   }
 
   try {
@@ -83,14 +43,12 @@ export async function validateBundle(options: ValidateOptions): Promise<Validati
       catalog = loadDSCatalog(dsCatalogPath);
     } catch (e) {
       const error = e instanceof Error ? e.message : "Unknown error";
-      return groupBySeverity([
-        createIssue(EC.COMP_001, dsCatalogPath, `Failed to load DS catalog: ${error}`),
-      ]);
+      return groupBySeverity([createIssue(EC.COMP_001, dsCatalogPath, `Failed to load DS catalog: ${error}`)]);
     }
 
     const [syntaxIssues, semanticIssues] = await Promise.all([
       validateSyntax(bundleDir),
-      runSemanticValidation(bundleDir, dsCatalogPath),
+      runSemanticValidation(bundleDir, catalog),
     ]);
 
     const allIssues = [...syntaxIssues, ...semanticIssues];
@@ -102,35 +60,39 @@ export async function validateBundle(options: ValidateOptions): Promise<Validati
 
     return result;
   } finally {
-    if (tempDir && isTar) {
-      await cleanupTempDir(tempDir);
+    if (cleanupTemp) {
+      await cleanupTemp();
     }
   }
 }
 
 export function formatValidationResult(result: ValidationResult, json: boolean = false): string {
   if (json) {
-    return JSON.stringify({
-      errors: result.errors.map((e) => ({
-        code: e.code,
-        severity: e.severity,
-        file: e.file,
-        message: e.message,
-        location: e.location,
-      })),
-      warnings: result.warnings.map((w) => ({
-        code: w.code,
-        severity: w.severity,
-        file: w.file,
-        message: w.message,
-        location: w.location,
-      })),
-      valid: result.valid,
-    }, null, 2);
+    return JSON.stringify(
+      {
+        errors: result.errors.map((e) => ({
+          code: e.code,
+          severity: e.severity,
+          file: e.file,
+          message: e.message,
+          location: e.location,
+        })),
+        warnings: result.warnings.map((w) => ({
+          code: w.code,
+          severity: w.severity,
+          file: w.file,
+          message: w.message,
+          location: w.location,
+        })),
+        valid: result.valid,
+      },
+      null,
+      2
+    );
   }
 
   const lines: string[] = [];
-  
+
   if (result.errors.length > 0) {
     lines.push("ERRORS:");
     for (const issue of result.errors) {
@@ -138,7 +100,7 @@ export function formatValidationResult(result: ValidationResult, json: boolean =
       lines.push(`  [${issue.code}] ${issue.file}${loc}: ${issue.message}`);
     }
   }
-  
+
   if (result.warnings.length > 0) {
     if (lines.length > 0) lines.push("");
     lines.push("WARNINGS:");
@@ -147,7 +109,7 @@ export function formatValidationResult(result: ValidationResult, json: boolean =
       lines.push(`  [${issue.code}] ${issue.file}${loc}: ${issue.message}`);
     }
   }
-  
+
   if (result.errors.length === 0) {
     if (result.warnings.length > 0) {
       const n = result.warnings.length;
@@ -156,7 +118,7 @@ export function formatValidationResult(result: ValidationResult, json: boolean =
       lines.push("✓ Valid bundle (no errors or warnings)");
     }
   }
-  
+
   return lines.join("\n");
 }
 
