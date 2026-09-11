@@ -1,4 +1,4 @@
-import { esc, link } from "../lib/render.js";
+import { esc, link, safeUrl } from "../lib/render.js";
 
 export interface HeaderProps {
   logo: { src: string; alt: string; href: string };
@@ -7,9 +7,16 @@ export interface HeaderProps {
 }
 
 export function render(p: HeaderProps): string {
-  const nav = p.navigation.map((n) => `<li><a href="${esc(n.href)}">${esc(n.label)}</a></li>`).join("");
-  return `<header class="site-header"><div class="cluster"><a href="${esc(p.logo.href)}"><img src="${esc(p.logo.src)}" alt="${esc(p.logo.alt)}" width="40" height="40" /></a><nav aria-label="Principal"><ul>${nav}</ul></nav>${
-    p.cta ? link(p.cta.label, p.cta.href, p.cta.variant ?? "primary") : ""
+  if (!p || !p.logo || !Array.isArray(p.navigation)) {
+    return `<div class="badge" data-tone="danger">Header: faltan props requeridas (logo, navigation)</div>`;
+  }
+  const nav = p.navigation
+    .filter((n) => n && typeof n.label === "string" && typeof n.href === "string")
+    .map((n) => `<li><a href="${esc(safeUrl(n.href, "#"))}">${esc(n.label)}</a></li>`)
+    .join("");
+  const variant = p.cta?.variant === "secondary" ? "secondary" : "primary";
+  return `<header class="site-header"><div class="cluster"><a href="${esc(safeUrl(p.logo.href, "/"))}"><img src="${esc(safeUrl(p.logo.src, "#"))}" alt="${esc(p.logo.alt ?? "")}" width="40" height="40" /></a><nav aria-label="Principal"><ul>${nav}</ul></nav>${
+    p.cta ? link(p.cta.label, p.cta.href, variant) : ""
   }</div></header>`;
 }
 

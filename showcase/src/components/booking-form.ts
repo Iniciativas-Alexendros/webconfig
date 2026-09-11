@@ -1,4 +1,4 @@
-import { esc } from "../lib/render.js";
+import { esc, safeId } from "../lib/render.js";
 
 export interface BookingFormProps {
   services: Array<{
@@ -11,13 +11,31 @@ export interface BookingFormProps {
 }
 
 export function render(p: BookingFormProps): string {
-  const options = p.services
+  if (!p || !Array.isArray(p.services) || p.services.length === 0 || typeof p.submitLabel !== "string") {
+    return `<div class="badge" data-tone="danger">Booking-form: services y submitLabel requeridos</div>`;
+  }
+  const services = p.services.filter(
+    (s) =>
+      s &&
+      typeof s.id === "string" &&
+      typeof s.name === "string" &&
+      Number.isInteger(s.duration) &&
+      s.duration > 0 &&
+      s.price &&
+      typeof s.price.amount === "number" &&
+      s.price.amount >= 0 &&
+      /^[A-Z]{3}$/.test(s.price.currency ?? "")
+  );
+  if (services.length === 0) return `<div class="badge" data-tone="danger">Booking-form: ningún servicio válido</div>`;
+  const options = services
     .map(
       (s) =>
         `<option value="${esc(s.id)}">${esc(s.name)} — ${esc(s.duration)} min (${esc(s.price.amount)} ${esc(s.price.currency)})</option>`
     )
     .join("");
-  return `<form class="booking-form" method="post" action="#"><div class="form-field"><label for="bk-service">Servicio *</label><select id="bk-service" name="service" required aria-required="true">${options}</select></div><div class="form-field"><label for="bk-date">Fecha *</label><input id="bk-date" name="date" type="text" placeholder="AAAA-MM-DD" required aria-required="true" /></div><button class="btn" data-variant="primary" type="submit">${esc(p.submitLabel)}</button></form>`;
+  const serviceId = safeId("bk-service", "booking");
+  const dateId = safeId("bk-date", "booking");
+  return `<form class="booking-form" method="post" action="#reserva" novalidate><div class="form-field"><label for="${serviceId}">Servicio *</label><select id="${serviceId}" name="service" required aria-required="true">${options}</select></div><div class="form-field"><label for="${dateId}">Fecha *</label><input id="${dateId}" name="date" type="date" required aria-required="true" /></div><button class="btn" data-variant="primary" type="submit">${esc(p.submitLabel)}</button></form>`;
 }
 
 export const sample: BookingFormProps = {

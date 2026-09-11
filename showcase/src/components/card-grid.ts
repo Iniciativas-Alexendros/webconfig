@@ -1,4 +1,4 @@
-import { esc } from "../lib/render.js";
+import { esc, extLink, safeUrl, clampInt } from "../lib/render.js";
 
 export interface CardGridProps {
   columns?: 1 | 2 | 3 | 4;
@@ -11,13 +11,21 @@ export interface CardGridProps {
 }
 
 export function render(p: CardGridProps): string {
+  if (!p || !Array.isArray(p.cards) || p.cards.length === 0) {
+    return `<div class="badge" data-tone="danger">Card-grid: cards requerido (array no vacío)</div>`;
+  }
+  const columns = clampInt(p.columns ?? 3, 1, 4, 3);
   const cards = p.cards
+    .filter(
+      (c) => c && typeof c.title === "string" && c.image && typeof c.image.alt === "string" && c.image.alt && c.link
+    )
     .map(
       (c) =>
-        `<article class="card"><img src="${esc(c.image.src)}" alt="${esc(c.image.alt)}" loading="lazy" /><h3>${esc(c.title)}</h3><p>${esc(c.description)}</p><p><a class="btn" data-variant="secondary" href="${esc(c.link.href)}" target="${esc(c.link.target)}">${esc(c.link.label)}</a></p></article>`
+        `<article class="card"><img src="${esc(safeUrl(c.image.src, "#"))}" alt="${esc(c.image.alt)}" loading="lazy" /><h3>${esc(c.title)}</h3><p>${esc(c.description ?? "")}</p><p>${extLink(c.link.label, c.link.href, c.link.target)}</p></article>`
     )
     .join("");
-  return `<div class="grid-cards" data-columns="${esc(p.columns ?? 3)}">${cards}</div>`;
+  if (!cards) return `<div class="badge" data-tone="danger">Card-grid: ninguna tarjeta válida (alt requerido)</div>`;
+  return `<div class="grid-cards" data-columns="${columns}">${cards}</div>`;
 }
 
 export const sample: CardGridProps = {

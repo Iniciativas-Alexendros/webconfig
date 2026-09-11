@@ -7,10 +7,28 @@ declare const __TOKENS__: { light: Record<string, string>; dark: Record<string, 
 declare const __HEX__: { light: Record<string, string>; dark: Record<string, string> };
 declare const __INVALID__: string[];
 
-const app = document.getElementById("app") as HTMLElement;
+const appEl = document.getElementById("app");
+if (!appEl) throw new Error("Falta #app en showcase/index.html");
+const app: HTMLElement = appEl;
+
+function storageGet(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function storageSet(key: string, value: string): void {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Modo privado: el tema no persiste pero la app sigue funcionando.
+  }
+}
 
 function themeInit(): void {
-  const saved = localStorage.getItem("ds-theme");
+  const saved = storageGet("ds-theme");
   const theme = saved === "dark" || saved === "light" ? saved : "auto";
   applyTheme(theme);
   document.getElementById("theme-toggle")?.addEventListener("click", () => {
@@ -23,7 +41,7 @@ function themeInit(): void {
 function applyTheme(theme: string): void {
   if (theme === "auto") document.documentElement.removeAttribute("data-theme");
   else document.documentElement.setAttribute("data-theme", theme);
-  localStorage.setItem("ds-theme", theme);
+  storageSet("ds-theme", theme);
   const label = document.getElementById("theme-label");
   if (label) label.textContent = `Tema: ${theme}`;
 }
@@ -40,10 +58,18 @@ function tokenRows(): Array<{ name: string; light: string; dark: string; hex: st
 
 function goldenPages(): Array<{ slug: string; html: string }> {
   return ["home", "servicios", "contacto"].map((slug) => {
-    const raw = __GOLDEN__[slug] ?? "";
+    const raw = (__GOLDEN__ as Record<string, string> | undefined)?.[slug] ?? "";
     try {
       const parsed = parseCompositionYaml(raw);
-      const html = parsed.components.map((c) => renderByType(c.type, c.props)).join("\n");
+      const html = parsed.components
+        .map((c) => {
+          try {
+            return renderByType(c.type, c.props);
+          } catch {
+            return `<div class="badge" data-tone="danger">Error en ${c.id}</div>`;
+          }
+        })
+        .join("\n");
       return { slug, html };
     } catch {
       return { slug, html: renderByType("text-block", { content: `No se pudo parsear ${slug}`, variant: "body" }) };
@@ -53,7 +79,7 @@ function goldenPages(): Array<{ slug: string; html: string }> {
 
 function route(): void {
   const hash = location.hash || "#/";
-  const previewMatch = hash.match(/^#\/preview\/([a-z-]+)/);
+  const previewMatch = hash.match(/^#\/preview\/([A-Za-z0-9-]+)/);
   if (hash.startsWith("#/componentes")) {
     app.innerHTML = ComponentesView();
   } else if (hash.startsWith("#/preview")) {
@@ -68,12 +94,15 @@ function route(): void {
 
 function wireInvalidPicker(pages: Array<{ slug: string; html: string }>, active: string): void {
   const sel = document.getElementById("invalid-code") as HTMLSelectElement | null;
-  const out = document.getElementById("invalid-out");
   sel?.addEventListener("change", () => {
     const code = sel.value;
-    app.innerHTML = PreviewView(pages, active, code, __INVALID__);
-    wireInvalidPicker(pages, active);
-    void out;
+    const out = document.getElementById("invalid-out");
+    if (out) {
+      out.innerHTML = `El fixture <code>${code.replace(/[^A-Z0-9_]/g, "")}</code> dispara ese código en <code>webconfig validate</code>.`;
+    }
+    sel.focus();
+    void pages;
+    void active;
   });
 }
 

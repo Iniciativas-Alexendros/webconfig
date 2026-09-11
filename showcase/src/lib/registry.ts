@@ -1,3 +1,4 @@
+import { esc } from "./render.js";
 import * as hero from "../components/hero.js";
 import * as header from "../components/header.js";
 import * as footer from "../components/footer.js";
@@ -59,6 +60,11 @@ export const registry: CatalogEntry[] = [
 
 export function renderByType(type: string, props: unknown): string {
   const found = registry.find((r) => r.id === type);
-  if (!found) return `<div class="badge" data-tone="danger">Componente desconocido: ${String(type)}</div>`;
-  return found.render(props as never);
+  if (!found) return `<div class="badge" data-tone="danger">Componente desconocido: ${esc(String(type))}</div>`;
+  try {
+    const safe = props && typeof props === "object" ? props : {};
+    return found.render(safe as never);
+  } catch {
+    return `<div class="badge" data-tone="danger">Error al renderizar ${esc(found.id)}</div>`;
+  }
 }

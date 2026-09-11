@@ -26,7 +26,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["src/**/*.ts", "tests/**/*.ts"],
+    files: ["src/**/*.ts"],
     languageOptions: { globals: { ...globals.node } },
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
@@ -35,17 +35,12 @@ export default tseslint.config(
     },
   },
   {
-    files: ["showcase/**/*.ts"],
-    languageOptions: { globals: { ...globals.browser, ...globals.node } },
+    files: ["tests/**/*.ts", "showcase/**/*.ts", "playwright.config.ts"],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
-      "no-empty": ["error", { allowEmptyCatch: true }],
+      "no-empty": ["error", { allowEmptyCatch: false }],
     },
-  },
-  {
-    files: ["playwright.config.ts", "tests/ds/*.e2e.spec.ts"],
-    languageOptions: { globals: { ...globals.node } },
-    rules: {},
   }
 );

@@ -1,29 +1,44 @@
 import { test, expect } from "@playwright/test";
 
-const ROUTES = ["#/", "#/componentes", "#/preview/home"] as const;
+const ROUTES = [
+  { hash: "#/", expect: "Tokens del Design System" },
+  { hash: "#/componentes", expect: "Componentes (18/18)" },
+  { hash: "#/preview/home", expect: "Sonrisas que transforman vidas" },
+] as const;
 
 test.describe("showcase", () => {
   for (const route of ROUTES) {
-    test(`ruta ${route} carga sin errores`, async ({ page }) => {
+    test(`ruta ${route.hash} carga contenido esperado sin errores`, async ({ page }) => {
       const errors: string[] = [];
+      const failed: string[] = [];
       page.on("pageerror", (e) => errors.push(String(e)));
       page.on("console", (m) => {
         if (m.type() === "error") errors.push(m.text());
       });
-      await page.goto(`/${route}`);
-      await expect(page.locator("#app")).not.toBeEmpty();
+      page.on("requestfailed", (r) => failed.push(r.url()));
+      page.on("response", (r) => {
+        if (r.status() >= 400) failed.push(`${r.status()} ${r.url()}`);
+      });
+      await page.goto(`/${route.hash}`);
+      await expect(page.locator("#app")).toContainText(route.expect);
       expect(errors).toEqual([]);
+      expect(failed).toEqual([]);
     });
   }
 
-  test("toggle de tema light/dark/auto", async ({ page }) => {
+  test("toggle de tema recorre light/dark/auto con data-theme real", async ({ page }) => {
     await page.goto("/#/");
     const toggle = page.locator("#theme-toggle");
     await expect(toggle).toBeVisible();
     await toggle.click();
-    await expect(page.locator("#theme-label")).toContainText("Tema:");
+    await expect(page.locator("#theme-label")).toContainText("Tema: light");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await toggle.click();
+    await expect(page.locator("#theme-label")).toContainText("Tema: dark");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     await toggle.click();
+    await expect(page.locator("#theme-label")).toContainText("Tema: auto");
+    await expect(page.locator("html")).not.toHaveAttribute("data-theme", "dark");
   });
 
   test("componentes muestra 18 tarjetas", async ({ page }) => {
@@ -59,21 +74,22 @@ test.describe("showcase", () => {
     });
     for (const theme of ["light", "dark"] as const) {
       await page.evaluate((t) => document.documentElement.setAttribute("data-theme", t), theme);
-      await page.waitForTimeout(200);
+      await page.waitForFunction((t) => document.documentElement.getAttribute("data-theme") === t, theme);
       await expect(page.locator("#visual-probes")).toHaveScreenshot(`probes-${theme}.png`, {
         maxDiffPixelRatio: 0.01,
+        animations: "disabled",
       });
     }
     const lightBg = await page.evaluate(() => {
       document.documentElement.setAttribute("data-theme", "light");
       return getComputedStyle(document.documentElement).getPropertyValue("--bg-base").trim();
     });
+    expect(lightBg).toContain("oklch(1 0 0)");
     const darkBg = await page.evaluate(() => {
       document.documentElement.setAttribute("data-theme", "dark");
       return getComputedStyle(document.documentElement).getPropertyValue("--bg-base").trim();
     });
-    expect(lightBg).not.toBe("");
-    expect(darkBg).not.toBe("");
+    expect(darkBg).toContain("oklch(0.19 0.01 260)");
     expect(darkBg).not.toBe(lightBg);
   });
 

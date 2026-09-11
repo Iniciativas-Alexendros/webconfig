@@ -5,8 +5,14 @@ export interface TextBlockProps {
   variant?: "body" | "lead" | "caption";
 }
 
+const VARIANTS = ["body", "lead", "caption"] as const;
+
 export function render(p: TextBlockProps): string {
-  return `<div class="text-block" data-variant="${esc(p.variant ?? "body")}"><p>${esc(p.content)}</p></div>`;
+  if (!p || typeof p.content !== "string" || !p.content) {
+    return `<div class="badge" data-tone="danger">Text-block: content requerido</div>`;
+  }
+  const variant = VARIANTS.includes(p.variant as (typeof VARIANTS)[number]) ? p.variant : "body";
+  return `<div class="text-block" data-variant="${variant}"><p>${esc(p.content)}</p></div>`;
 }
 
 export const sample: TextBlockProps = {

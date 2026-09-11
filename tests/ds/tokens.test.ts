@@ -114,14 +114,11 @@ describe("tokens DTCG", () => {
   });
 
   it("tokens generados existen y cubren 1:1 las custom properties", () => {
-    try {
-      execFileSync("node", ["scripts/build-tokens.mjs"], { stdio: "ignore", timeout: 30000 });
-    } catch {
-      // Si el build falla, los readFileSync siguientes dan el error real.
-    }
+    execFileSync("node", ["scripts/build-tokens.mjs"], { stdio: "ignore", timeout: 30000 });
     const css = readFileSync(resolve("dist-tokens/css/variables.css"), "utf-8");
     const tokensJson = JSON.parse(readFileSync(resolve("dist-tokens/json/tokens.json"), "utf-8")) as {
       light: unknown;
+      dark: unknown;
     };
     const flat: string[] = [];
     const walk = (node: unknown, path: string[]): void => {
@@ -134,8 +131,22 @@ describe("tokens DTCG", () => {
     };
     walk(tokensJson.light, []);
     expect(flat.length).toBeGreaterThan(100);
+    const lines = new Set(css.split("\n").map((l) => l.trim()));
     for (const v of flat) {
-      expect(css.includes(`${v}:`), `var ausente en CSS: ${v}`).toBe(true);
+      expect(lines.has(`${v}:`) || [...lines].some((l) => l.startsWith(`${v}:`)), `var ausente en CSS: ${v}`).toBe(
+        true
+      );
     }
+    const flatDark: string[] = [];
+    const walkDark = (node: unknown, path: string[]): void => {
+      if (!node || typeof node !== "object") return;
+      for (const k of Object.keys(node as Record<string, unknown>)) {
+        const child = (node as Record<string, unknown>)[k];
+        if (typeof child === "string") flatDark.push(`--${[...path, k].join("-")}`);
+        else walkDark(child, [...path, k]);
+      }
+    };
+    walkDark(tokensJson.dark, []);
+    expect(flatDark.sort()).toEqual(flat.sort());
   });
 });

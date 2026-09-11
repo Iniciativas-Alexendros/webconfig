@@ -167,6 +167,31 @@
     .hero,
     .gallery figure {
       border: 1px solid CanvasText;
+      forced-color-adjust: auto;
+    }
+    .btn[data-variant="primary"] {
+      background: ButtonFace;
+      color: ButtonText;
+      border: 1px solid ButtonText;
+    }
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      border: 1px solid CanvasText;
+      background: Canvas;
+      color: CanvasText;
+    }
+    a {
+      color: LinkText;
+    }
+    :focus-visible {
+      outline: 2px solid Highlight;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .carousel-track {
+      scroll-behavior: auto;
+      scroll-snap-type: none;
     }
   }
 }

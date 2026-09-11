@@ -25,8 +25,25 @@ function parseOklch(input) {
     .trim()
     .match(/^oklch\(\s*([0-9.]+%?)\s+(-?[0-9.]+)\s+(-?[0-9.]+)(?:\s*\/\s*([0-9.]+%?))?\s*\)$/i);
   if (!m) throw new Error(`OKLCH invalido: ${input}`);
-  const num = (v) => (v.endsWith("%") ? parseFloat(v) / 100 : parseFloat(v));
-  return { l: num(m[1]), c: parseFloat(m[2]), h: parseFloat(m[3]), a: m[4] === undefined ? 1 : num(m[4]) };
+  const num = (v, name) => {
+    const n = v.endsWith("%") ? parseFloat(v) / 100 : parseFloat(v);
+    if (!Number.isFinite(n)) throw new Error(`OKLCH invalido (${name}): ${input}`);
+    return n;
+  };
+  const l = num(m[1], "L");
+  const c = parseFloat(m[2]);
+  const h = parseFloat(m[3]);
+  const a = m[4] === undefined ? 1 : num(m[4], "alpha");
+  if (!(l >= 0 && l <= 1)) throw new Error(`OKLCH fuera de rango (L debe estar en 0..1): ${input}`);
+  if (!(c >= 0 && c <= 0.5)) throw new Error(`OKLCH fuera de rango (C debe estar en 0..0.5): ${input}`);
+  if (!(h >= 0 && h <= 360)) throw new Error(`OKLCH fuera de rango (H debe estar en 0..360): ${input}`);
+  if (!(a >= 0 && a <= 1)) throw new Error(`OKLCH fuera de rango (alpha debe estar en 0..1): ${input}`);
+  return { l, c, h, a };
+}
+
+function extractFirstOklch(value) {
+  const m = String(value).match(/oklch\([^)]*\)/i);
+  return m ? m[0] : null;
 }
 
 function oklchToRgb({ l, c, h }) {
@@ -60,6 +77,22 @@ export function oklchToHex(input) {
   return `#${hx(r)}${hx(g)}${hx(b)}`.toLowerCase();
 }
 
+function hexWithAlpha(hex, alpha) {
+  if (alpha >= 1) return hex;
+  const a = Math.round(alpha * 255)
+    .toString(16)
+    .padStart(2, "0");
+  return `${hex}${a}`;
+}
+
+function fallbackForValue(value) {
+  const inner = extractFirstOklch(value);
+  if (!inner) return null;
+  const parsed = parseOklch(inner);
+  const hex = oklchToHex(inner);
+  return { hex: hexWithAlpha(hex, parsed.a), inner };
+}
+
 function isLeaf(node) {
   return !!node && typeof node === "object" && !Array.isArray(node) && typeof node.$value === "string";
 }
@@ -88,12 +121,13 @@ function buildIndex(files) {
   return index;
 }
 
-function resolveValue(raw, index, stack = []) {
+function resolveForMode(raw, mode, index, stack = []) {
   return String(raw).replace(/\{([a-z0-9._-]+)\}/gi, (_m, ref) => {
     if (stack.includes(ref)) throw new Error(`Referencia circular: ${[...stack, ref].join(" -> ")}`);
     const target = index.get(ref);
     if (!target) throw new Error(`Referencia sin resolver: {${ref}}`);
-    return resolveValue(target.node.$value, index, [...stack, ref]);
+    const targetRaw = target.node.$extensions?.mode?.[mode] ?? target.node.$value;
+    return resolveForMode(targetRaw, mode, index, [...stack, ref]);
   });
 }
 
@@ -119,8 +153,8 @@ for (const [key, leaf] of [...index.entries()].sort(([a], [b]) => (a < b ? -1 : 
   const modes = leaf.node.$extensions?.mode;
   const lightRaw = modes?.light ?? leaf.node.$value;
   const darkRaw = modes?.dark ?? lightRaw;
-  light.set(key, resolveValue(lightRaw, index, [key]));
-  dark.set(key, resolveValue(darkRaw, index, [key]));
+  light.set(key, resolveForMode(lightRaw, "light", index, [key]));
+  dark.set(key, resolveForMode(darkRaw, "dark", index, [key]));
 }
 
 const names = [...light.keys()].sort();
@@ -128,24 +162,28 @@ const varOf = new Map(names.map((k) => [k, varName(k.split("."))]));
 
 const lightDecls = [];
 const darkDecls = [];
-const fallbackDecls = [];
+const fallbackLight = [];
+const fallbackDark = [];
 const hexLight = {};
 const hexDark = {};
 for (const key of names) {
   const v = varOf.get(key);
   lightDecls.push(`  ${v}: ${light.get(key)};`);
   if (dark.get(key) !== light.get(key)) darkDecls.push(`  ${v}: ${dark.get(key)};`);
-  for (const [mode, store, hexStore] of [
-    ["light", light, hexLight],
-    ["dark", dark, hexDark],
-  ]) {
-    const val = store.get(key);
-    if (val.startsWith("oklch(")) {
-      hexStore[v] = oklchToHex(val);
-      if (mode === "light") fallbackDecls.push(`  ${v}: ${hexStore[v]}; /* fallback ${val} */`);
-    }
+  const fbLight = fallbackForValue(light.get(key));
+  const fbDark = fallbackForValue(dark.get(key));
+  if (fbLight) {
+    hexLight[v] = fbLight.hex;
+    fallbackLight.push(`  ${v}: ${fbLight.hex}; /* fallback ${fbLight.inner} */`);
   }
-  void dark;
+  if (fbDark) {
+    hexDark[v] = fbDark.hex;
+    if (fbDark.hex !== (fbLight ? fbLight.hex : null) || dark.get(key) !== light.get(key)) {
+      fallbackDark.push(`  ${v}: ${fbDark.hex}; /* fallback ${fbDark.inner} */`);
+    }
+  } else if (fbLight) {
+    hexDark[v] = fbLight.hex;
+  }
 }
 
 const css =
@@ -154,7 +192,9 @@ const css =
   '\n  }\n  :root[data-theme="dark"] {\n' +
   darkDecls.join("\n") +
   "\n  }\n  @supports not (color: oklch(0% 0 0)) {\n    :root {\n" +
-  fallbackDecls.join("\n") +
+  fallbackLight.join("\n") +
+  '\n    }\n    :root[data-theme="dark"] {\n' +
+  fallbackDark.join("\n") +
   "\n    }\n  }\n}\n";
 // prettier-ignore
 
@@ -189,6 +229,6 @@ writeFileSync(OUT_HEX, hexOut);
 
 const hash = createHash("sha256").update(css).digest("hex").slice(0, 12);
 console.log(
-  `tokens: ${names.length} vars desde ${files.length} ficheros (dark overrides: ${darkDecls.length}, fallbacks hex: ${fallbackDecls.length})`
+  `tokens: ${names.length} vars desde ${files.length} ficheros (dark overrides: ${darkDecls.length}, fallbacks light: ${fallbackLight.length}, dark: ${fallbackDark.length})`
 );
 console.log(`css sha: ${hash}`);

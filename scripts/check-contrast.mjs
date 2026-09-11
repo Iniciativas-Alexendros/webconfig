@@ -71,10 +71,23 @@ const PAIRS = [
   { name: "text/base sobre bg/base", fg: ["text", "base"], bg: ["bg", "base"], min: 4.5, apca: 60 },
   { name: "text/muted sobre bg/base", fg: ["text", "muted"], bg: ["bg", "base"], min: 4.5, apca: 45 },
   { name: "text/link sobre bg/base", fg: ["text", "link"], bg: ["bg", "base"], min: 4.5, apca: 45 },
+  { name: "text/base sobre bg/surface", fg: ["text", "base"], bg: ["bg", "surface"], min: 4.5, apca: 60 },
+  { name: "text/muted sobre bg/surface", fg: ["text", "muted"], bg: ["bg", "surface"], min: 4.5, apca: 45 },
+  { name: "text/link sobre bg/surface", fg: ["text", "link"], bg: ["bg", "surface"], min: 4.5, apca: 45 },
+  { name: "text/base sobre bg/muted", fg: ["text", "base"], bg: ["bg", "muted"], min: 4.5, apca: 45 },
+  { name: "text/base sobre card/bg", fg: ["text", "base"], bg: ["card", "bg"], min: 4.5, apca: 60 },
+  { name: "text/base sobre input/bg", fg: ["text", "base"], bg: ["input", "bg"], min: 4.5, apca: 60 },
   {
     name: "action/on-primary sobre action/primary-bg",
     fg: ["action", "on-primary"],
     bg: ["action", "primary-bg"],
+    min: 4.5,
+    apca: 60,
+  },
+  {
+    name: "action/on-primary sobre action/primary-bg-hover",
+    fg: ["action", "on-primary"],
+    bg: ["action", "primary-bg-hover"],
     min: 4.5,
     apca: 60,
   },
@@ -89,8 +102,8 @@ const PAIRS = [
     name: "feedback/success-text sobre feedback/success-bg",
     fg: ["feedback", "success-text"],
     bg: ["feedback", "success-bg"],
-    min: 3.0,
-    apca: 0,
+    min: 4.5,
+    apca: 45,
   },
   {
     name: "feedback/warning-text sobre feedback/warning-bg",
@@ -103,10 +116,18 @@ const PAIRS = [
     name: "feedback/danger-text sobre feedback/danger-bg",
     fg: ["feedback", "danger-text"],
     bg: ["feedback", "danger-bg"],
+    min: 4.5,
+    apca: 45,
+  },
+  { name: "border/base sobre bg/base (UI)", fg: ["border", "base"], bg: ["bg", "base"], min: 3.0, apca: 0 },
+  { name: "border/strong sobre bg/base (UI)", fg: ["border", "strong"], bg: ["bg", "base"], min: 3.0, apca: 0 },
+  {
+    name: "input/border-focus sobre bg/base (UI)",
+    fg: ["input", "border-focus"],
+    bg: ["bg", "base"],
     min: 3.0,
     apca: 0,
   },
-  { name: "border/base sobre bg/base (UI)", fg: ["border", "base"], bg: ["bg", "base"], min: 3.0, apca: 0 },
 ];
 
 function get(mode, path) {
@@ -117,11 +138,10 @@ function get(mode, path) {
 
 function hexOf(mode, path) {
   const direct = fallback[mode];
-  const flat = Object.entries(direct);
-  const dotted = path.join("-");
-  const hit = flat.find(([k]) => k.endsWith(dotted));
-  if (!hit) throw new Error(`Sin fallback hex para ${path.join(".")} en ${mode}`);
-  return { name: hit[0], hex: hit[1], raw: get(mode, path) };
+  const name = `--${path.join("-")}`;
+  const hex = direct[name];
+  if (!hex) throw new Error(`Sin fallback hex para ${path.join(".")} (${name}) en ${mode}`);
+  return { name, hex, raw: get(mode, path) };
 }
 
 let failed = false;

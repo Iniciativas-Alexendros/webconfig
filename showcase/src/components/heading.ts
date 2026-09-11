@@ -1,4 +1,4 @@
-import { esc } from "../lib/render.js";
+import { esc, clampInt } from "../lib/render.js";
 
 export interface HeadingProps {
   level: 1 | 2 | 3 | 4 | 5 | 6;
@@ -6,7 +6,10 @@ export interface HeadingProps {
 }
 
 export function render(p: HeadingProps): string {
-  const level = Math.min(6, Math.max(1, p.level));
+  const level = clampInt(p?.level, 1, 6, 0);
+  if (level === 0 || typeof p?.text !== "string" || !p.text) {
+    return `<div class="badge" data-tone="danger">Heading: level entero 1-6 y text requeridos</div>`;
+  }
   return `<h${level}>${esc(p.text)}</h${level}>`;
 }
 

@@ -1,4 +1,4 @@
-import { esc, link } from "../lib/render.js";
+import { esc, link, safeUrl } from "../lib/render.js";
 
 export interface HeroProps {
   headline: string;
@@ -7,12 +7,26 @@ export interface HeroProps {
   background?: { src: string; alt: string };
 }
 
+const VARIANTS = ["primary", "secondary", "outline"] as const;
+
 export function render(p: HeroProps): string {
-  const variant = p.cta.variant ?? "primary";
-  const bg = p.background ? `<img src="${esc(p.background.src)}" alt="${esc(p.background.alt)}" loading="lazy" />` : "";
-  return `<section class="hero" aria-label="${esc(p.headline)}">${bg}<h1>${esc(p.headline)}</h1>${
+  if (
+    !p ||
+    typeof p.headline !== "string" ||
+    !p.cta ||
+    typeof p.cta.label !== "string" ||
+    typeof p.cta.href !== "string"
+  ) {
+    return `<div class="badge" data-tone="danger">Hero: faltan props requeridas (headline, cta.label, cta.href)</div>`;
+  }
+  const variant = VARIANTS.includes(p.cta.variant as (typeof VARIANTS)[number]) ? p.cta.variant : "primary";
+  const bg =
+    p.background && typeof p.background.src === "string" && typeof p.background.alt === "string" && p.background.alt
+      ? `<img src="${esc(safeUrl(p.background.src, "#"))}" alt="${esc(p.background.alt)}" loading="lazy" />`
+      : "";
+  return `<section class="hero">${bg}<h1>${esc(p.headline)}</h1>${
     p.subheadline ? `<p class="lead">${esc(p.subheadline)}</p>` : ""
-  }<p>${link(p.cta.label, p.cta.href, variant)}</p></section>`;
+  }<p>${link(p.cta.label, p.cta.href, variant as string)}</p></section>`;
 }
 
 export const sample: HeroProps = {

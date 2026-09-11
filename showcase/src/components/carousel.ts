@@ -1,4 +1,4 @@
-import { esc } from "../lib/render.js";
+import { esc, safeUrl, safeTarget, relForTarget, clampInt, uniqueId } from "../lib/render.js";
 
 export interface CarouselProps {
   slides: Array<{
@@ -12,17 +12,42 @@ export interface CarouselProps {
 }
 
 export function render(p: CarouselProps): string {
-  const slides = p.slides
-    .map(
-      (s) =>
-        `<article><img src="${esc(s.image.src)}" alt="${esc(s.image.alt)}" loading="lazy" />${
-          s.caption ? `<p>${esc(s.caption)}</p>` : ""
-        }${s.link ? `<p><a class="btn" data-variant="secondary" href="${esc(s.link.href)}" target="${esc(s.link.target)}">${esc(s.link.label)}</a></p>` : ""}</article>`
-    )
+  if (
+    !p ||
+    !Array.isArray(p.slides) ||
+    p.slides.length === 0 ||
+    typeof p.autoplay !== "boolean" ||
+    typeof p.pauseControl !== "boolean"
+  ) {
+    return `<div class="badge" data-tone="danger">Carousel: slides, autoplay y pauseControl requeridos</div>`;
+  }
+  if (p.autoplay && !p.pauseControl) {
+    return `<div class="badge" data-tone="danger">Carousel: autoplay exige pauseControl (WCAG 2.2.2)</div>`;
+  }
+  const slides = p.slides.filter((s) => s && s.image && typeof s.image.alt === "string" && s.image.alt);
+  if (slides.length === 0)
+    return `<div class="badge" data-tone="danger">Carousel: ningún slide válido (alt requerido)</div>`;
+  const id = uniqueId("carousel");
+  const interval = clampInt(p.interval ?? 5000, 1000, 60000, 5000);
+  const items = slides
+    .map((s, idx) => {
+      const t = safeTarget(s.link?.target);
+      return `<article aria-roledescription="slide" aria-label="Slide ${idx + 1} de ${slides.length}"><img src="${esc(safeUrl(s.image.src, "#"))}" alt="${esc(s.image.alt)}" loading="lazy" />${
+        s.caption ? `<p>${esc(s.caption)}</p>` : ""
+      }${
+        s.link && typeof s.link.href === "string" && typeof s.link.label === "string"
+          ? `<p><a class="btn" data-variant="secondary" href="${esc(safeUrl(s.link.href, "#"))}" target="${t}"${relForTarget(t)}>${esc(s.link.label)}</a></p>`
+          : ""
+      }</article>`;
+    })
     .join("");
-  return `<div class="carousel" data-autoplay="${p.autoplay ? "true" : "false"}" role="region" aria-roledescription="carrusel" aria-label="Carrusel"><div class="carousel-track">${slides}</div>${
+  return `<div class="carousel" id="${id}" data-autoplay="${p.autoplay ? "true" : "false"}" role="region" aria-roledescription="carrusel" aria-label="Carrusel"><div class="carousel-track">${items}</div><div class="cluster"><button class="btn" data-variant="secondary" type="button" data-carousel-prev="${id}">Anterior</button><button class="btn" data-variant="secondary" type="button" data-carousel-next="${id}">Siguiente</button>${
+    p.autoplay
+      ? `<button class="btn" data-variant="outline" type="button" data-carousel-pause="${id}">Pausar</button>`
+      : ""
+  }</div>${
     p.pauseControl
-      ? `<p class="caption">Desliza horizontalmente. Autoplay ${p.autoplay ? `cada ${esc(p.interval ?? 5000)} ms` : "desactivado"}.</p>`
+      ? `<p class="caption">Autoplay ${p.autoplay ? `cada ${interval} ms (pausable)` : "desactivado"}.</p>`
       : ""
   }</div>`;
 }

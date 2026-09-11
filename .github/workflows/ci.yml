@@ -1,10 +1,12 @@
 name: CI
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
-    branches: [main]
   pull_request:
-    branches: [main]
 
 jobs:
   build-and-test:
@@ -76,6 +78,9 @@ jobs:
 
       - name: Check contrast + DS coverage
         run: npm run tokens:check
+
+      - name: Check generated tokens committed
+        run: git status --porcelain -- dist-tokens/ showcase/src/styles/generated-tokens.css | tee /tmp/ds-drift.txt | grep -q . && (echo "Tokens regenerados difieren del commit: commitea dist-tokens/ actualizado" && cat /tmp/ds-drift.txt && exit 1) || echo "Tokens generados al día"
 
       - name: Typecheck all
         run: npm run typecheck:all
