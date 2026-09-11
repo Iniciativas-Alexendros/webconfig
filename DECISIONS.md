@@ -128,6 +128,12 @@ This separation allows:
 - Separation of responsibilities (tested): missing `schema_compat` → `MANIFEST_001` (required field, syntax/AJV layer); incompatible `schema_compat` → `MANIFEST_002` (semantic layer).
 - Commit: this commit (`fix(validator): enforce schema_compat per frozen spec v1.0.0`)
 
+### DS Tokens v1.1 Proposal (no format change)
+- **Date**: 2026-09-11
+- **Status**: PROPOSAL — see `docs/adr/ds-tokens-v1.1-proposal.md`. `schemas/` untouched; `theme` v1.0 (`colorScheme/fontFamily/radius`) stays required.
+- **Scope**: opt-in `theme.tokensVersion` / `theme.tokensRef` (external file, like `ds-catalog.yaml`); fallback to this repo's generated tokens (`dist-tokens/json/tokens.json`); future `DS_001` warning only.
+- **Design system source**: `tokens/*.tokens.json` (W3C DTCG, OKLCH) built by `scripts/build-tokens.mjs` to `dist-tokens/`; GUI in `showcase/` (Vite static, dev-only, no CLI runtime deps).
+
 ## Testing Strategy
 
 ### Unit Tests

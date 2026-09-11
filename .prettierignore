@@ -1,6 +1,11 @@
 dist/
+dist-tokens/
+dist-showcase/
+playwright-report/
+test-results/
 node_modules/
 coverage/
+showcase/src/styles/generated-tokens.css
 *.tgz
 fixtures/
 schemas/

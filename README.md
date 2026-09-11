@@ -75,9 +75,22 @@ Y a partir de entonces podrás usar el comando `webconfig` directamente en tu te
 Comprobaciones habituales antes de un PR:
 
 ```bash
-npm run typecheck && npm run lint && npm run format:check
+npm run typecheck:all && npm run lint && npm run format:check
 npm run build && npm test && npm run verify:fixtures
+npm run tokens:build && npm run tokens:check && npx playwright test && npm run ds:build
 ```
+
+---
+
+## Design System (tokens OKLCH + Showcase en browser)
+
+Sistema de diseño tokenizado desde colores hasta componentes:
+
+- **Fuente:** `tokens/*.tokens.json` en formato **W3C DTCG** (`$value/$type/$description`), color autorado en **OKLCH** (CSS Color 4). Metodología CSS **CUBE + Every Layout**, sin frameworks JS.
+- **Build:** `npm run tokens:build` genera `dist-tokens/{css,variables.css · ts/tokens.ts · json/tokens.json}` + fallback hex sRGB para navegadores sin `oklch()`. `npm run tokens:check` verifica contraste **WCAG 2.2 AA + APCA** y cobertura 1:1.
+- **GUI:** `npm run ds:dev` abre el Showcase (Vite): `/` tabla de tokens con swatches y toggle light/dark/auto · `/#/componentes` los 18 componentes de `ds-catalog.example.yaml` · `/#/preview/home` render del bundle golden + selector de fixtures inválidas.
+- **E2E/visual:** `npx playwright test` (chromium: 3 rutas sin errores, toggle de tema, 18 tarjetas, preview golden, screenshots light/dark, checks a11y). Baseline en `tests/ds/showcase.e2e.spec.ts-snapshots/`.
+- **Compat:** el formato `site.bundle v1.0.0` no cambia (`schemas/` congelado). Extensión opt-in documentada en `docs/adr/ds-tokens-v1.1-proposal.md`.
 
 ---
 

@@ -9,8 +9,24 @@ const FORBIDDEN = [
   "node:dns",
   "node:tls",
   "fetch(",
+  "globalThis.fetch",
   "XMLHttpRequest",
   "WebSocket",
+  "EventSource",
+  "navigator.sendBeacon",
+  "sendBeacon(",
+];
+
+const SHOWCASE_FORBIDDEN = [
+  "fetch(",
+  "globalThis.fetch",
+  "XMLHttpRequest",
+  "WebSocket(",
+  "new EventSource",
+  "sendBeacon(",
+  "node:http",
+  "node:https",
+  "node:net",
 ];
 
 function collectFiles(dir: string, files: string[] = []): string[] {
@@ -48,6 +64,25 @@ describe("no network in runtime", () => {
       for (const line of imported) {
         expect(line).not.toMatch(/node:http|node:https|node:net|node:dns|node:tls/);
       }
+      expect(content).not.toMatch(/\bimport\s*\(\s*["']node:(http|https|net|dns|tls)["']\s*\)/);
+      expect(content).not.toMatch(/\brequire\s*\(\s*["']node:(http|https|net|dns|tls)["']\s*\)/);
     }
+  });
+});
+
+describe("no network in showcase", () => {
+  const showcaseFiles = collectFiles("showcase/src");
+
+  it("showcase source does not call network APIs", () => {
+    const offenders: string[] = [];
+    for (const file of showcaseFiles) {
+      const content = readFileSync(file, "utf-8");
+      for (const token of SHOWCASE_FORBIDDEN) {
+        if (content.includes(token)) {
+          offenders.push(`${file}: ${token}`);
+        }
+      }
+    }
+    expect(offenders).toEqual([]);
   });
 });

@@ -1,5 +1,8 @@
 node_modules
 dist
+dist-showcase
+playwright-report
+test-results
 *.tar.gz
 .env
 *.log

@@ -1,0 +1,45 @@
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  * {
+    margin: 0;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    min-height: 100dvh;
+    background: var(--bg-base);
+    color: var(--text-base);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-body);
+    line-height: var(--font-leading-base);
+    -webkit-font-smoothing: antialiased;
+  }
+  img,
+  video,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+  a {
+    color: var(--text-link);
+  }
+  :focus-visible {
+    outline: 2px solid var(--action-focus-ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
