@@ -80,7 +80,10 @@ jobs:
         run: npm run tokens:check
 
       - name: Check generated tokens committed
-        run: git status --porcelain -- dist-tokens/ showcase/src/styles/generated-tokens.css | tee /tmp/ds-drift.txt | grep -q . && (echo "Tokens regenerados difieren del commit: commitea dist-tokens/ actualizado" && cat /tmp/ds-drift.txt && exit 1) || echo "Tokens generados al día"
+        run: |
+          git status --porcelain -- dist-tokens/ showcase/src/styles/generated-tokens.css > /tmp/ds-drift.txt || true
+          if grep -q . /tmp/ds-drift.txt; then echo "Tokens regenerados difieren del commit" && cat /tmp/ds-drift.txt && exit 1; fi
+          echo "Tokens generados al día"
 
       - name: Typecheck all
         run: npm run typecheck:all
