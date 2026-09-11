@@ -1,5 +1,4 @@
-import { promises as fs } from "node:fs";
-import { readdirSync } from "node:fs";
+import { promises as fs, readdirSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 
 function toPosix(p: string): string {
