@@ -31,11 +31,19 @@ export function canonicalizeJson(input: string): string {
 }
 
 export function isCanonicalYaml(input: string): boolean {
-  return canonicalizeYaml(input) === input;
+  try {
+    return canonicalizeYaml(input) === input;
+  } catch {
+    return false;
+  }
 }
 
 export function isCanonicalJson(input: string): boolean {
-  return canonicalizeJson(input) === input;
+  try {
+    return canonicalizeJson(input) === input;
+  } catch {
+    return false;
+  }
 }
 
 export function canonicalizeFile(content: string, extension: string): string {

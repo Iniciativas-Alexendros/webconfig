@@ -1,8 +1,15 @@
 #!/bin/bash
+# OBSOLETO: no regenerar. Las fixtures en disco (fixtures/invalid/*) son canónicas
+# y este script diverge de src/integrity.ts (write_integrity calcula el hash global
+# sin paths ni \0, mientras que computeIntegrity usa sha256(path\0hash concat ordenado)).
+# Regenerar con este script rompería INTEGRITY_002 en todas las fixtures.
+# Se conserva como documentación del recipe original. No se usa en CI.
 set -e
 
-BASE="/home/alexendros/repositorios/webconfig/fixtures/invalid"
-DS_CATALOG="/home/alexendros/repositorios/webconfig/ds-catalog.example.yaml"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+BASE="$REPO_ROOT/fixtures/invalid"
+DS_CATALOG="$REPO_ROOT/ds-catalog.example.yaml"
 
 # Append a correct integrity section to a fixture manifest (recipe: all files
 # except manifest.yaml, hashes sorted by path, no separators)
@@ -517,7 +524,7 @@ printf 'tampered' >> "$BASE/INTEGRITY_001/assets/brand/logo.svg"
 sed -i 's/^  global: .*/  global: "0000000000000000000000000000000000000000000000000000000000000000"/' "$BASE/INTEGRITY_002/manifest.yaml"
 
 # Self-verify: every fixture must trigger its own error code (fail at generation if not)
-CLI="/home/alexendros/repositorios/webconfig/dist/cli.js"
+CLI="$REPO_ROOT/dist/cli.js"
 if [ -f "$CLI" ]; then
     for dir in "$BASE"/*/; do
         code=$(basename "$dir")

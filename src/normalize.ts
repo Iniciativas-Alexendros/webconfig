@@ -15,28 +15,16 @@ export async function normalizeDirectory(
   for (const file of files) {
     const fullPath = join(absoluteDir, file);
     const ext = extname(file);
+    if (ext !== ".yaml" && ext !== ".yml" && ext !== ".json") continue;
     const content = readFileSync(fullPath, "utf-8");
 
-    let isCanonical = true;
-    let canonicalContent = content;
-
-    if (ext === ".yaml" || ext === ".yml") {
-      isCanonical = isCanonicalYaml(content);
-      if (!isCanonical) {
-        canonicalContent = canonicalizeFile(content, ext);
-      }
-    } else if (ext === ".json") {
-      isCanonical = isCanonicalJson(content);
-      if (!isCanonical) {
-        canonicalContent = canonicalizeFile(content, ext);
-      }
-    }
+    const isCanonical = ext === ".json" ? isCanonicalJson(content) : isCanonicalYaml(content);
 
     if (!isCanonical) {
       if (options.check) {
         errors.push(`${file}: not canonical`);
       } else if (options.write) {
-        writeFileSync(fullPath, canonicalContent, "utf-8");
+        writeFileSync(fullPath, canonicalizeFile(content, ext), "utf-8");
         normalized++;
       } else {
         errors.push(`${file}: would be normalized (use --write)`);

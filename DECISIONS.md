@@ -11,8 +11,12 @@ This document records implementation decisions not explicitly covered by the fro
 
 ### No External Dependencies Beyond Spec
 Strictly adhered to the approved dependency list:
-- Runtime: zod, yaml, ajv, ajv-formats, commander, tar-stream
-- Dev: vitest, tsup, typescript, @types/node
+- Runtime: yaml, ajv, ajv-formats, commander, tar-stream (`zod` was listed historically but never used — removed in v1.1.x)
+- Dev: vitest, tsup, typescript, @types/node, eslint, prettier, @vitest/coverage-v8
+
+### Package Manager: npm (not pnpm)
+- Single-package repo (`"private": true`), `package-lock.json` + `npm ci` in all 3 workflows + `cache: 'npm'`.
+- Migrating to pnpm would churn the lockfile, CI, docs and release-validation with no benefit. Revisit only if this becomes a monorepo with workspaces.
 
 ## Validator Design
 
@@ -101,6 +105,14 @@ This separation allows:
 - **Status**: `ADDITION-v1.1` — **ratificado** como parte de la spec del formato site.bundle.
 - **Ratificación**: 2026-09-05. Ratificación afirmativa del comando `integrity` como `ADDITION-v1.1` (entra en la spec del formato a partir de v1.1.0; no se promueve a `schemas/` en v1.0.x). El comando es una capacidad de la herramienta que queda ligada a la sección `integrity` del manifest, ya validada por el validador.
 
+### Init Scaffold Command (TOOL-only, no format change)
+- **Date**: 2026-09-11 (uncommitted: `src/cli.ts` + `src/init.ts` + `tests/init.test.ts`)
+- **Motivation**: lower the onboarding cost — generate a starter bundle that validates clean (`validate → valid: true, 0 errors, 0 warnings`) without hand-writing 13+ files.
+- **Scope**: generates `site.config.yaml`, `composition/{home,contacto}.yaml`, `content/{es,en}/{home,contacto}.json`, `content/seo/{es,en}/{home,contacto}.yaml`, `assets/brand/logo.svg`, plus `manifest.yaml` (`schema_compat: ^1.0.0`, `bundleVersion: 1.0.0`, `integrity` via `computeIntegrity`, which excludes `manifest.yaml`). All text via canonical `toYaml`/`toJson` (`src/canonicalize.ts`).
+- **Catalog side-effect**: writes a minimal 4-component `ds-catalog.yaml` (`header`, `hero`, `footer`, `text-block`) to the bundle's parent dir only if missing. Distinct from the full 18-component `ds-catalog.example.yaml`.
+- **Impact**: CLI grows from 4 to 5 commands; no change to `schemas/`, error codes, or the version contract.
+- **Status**: `TOOL-only` — does not enter the format spec; `schemas/` untouched.
+
 ## Version Contract
 
 ### Separate Versioning (frozen)
@@ -121,9 +133,12 @@ This separation allows:
 ### Unit Tests
 - Canonicalization: 23 tests (idempotency, key sorting, YAML/JSON)
 - Export: 5 tests (determinism, round-trip, bundle loading, I18N_002 per-key content/seo)
-- Integration: 5 tests (CLI validate, validate --json, export, validate exported, fail-closed JSON)
+- Integration: 10 tests (CLI validate, validate --json, export, validate exported, fail-closed JSON, tar-slip, corrupt gzip, secret redaction ×3)
 - Integrity: 3 tests (INTEGRITY_001 per-file, INTEGRITY_002 global, golden passes)
 - Manifest: 3 tests (schema_compat required → MANIFEST_001, incompatible → MANIFEST_002, golden passes)
+- Init: 3 tests (scaffold validates clean, refuses non-empty without --force, CLI init → validate)
+- Fixture regression: 1:1 per error code (`fixtures.test.ts` + `verify-fixture-coverage.mjs`)
+- Network: 2 tests (no network APIs in runtime source)
 
 ### Test Fixtures
 - Golden fixture: `fixtures/golden/clinica-dental-sur/` (valid bundle)
@@ -160,8 +175,8 @@ This separation allows:
 - `"private": true` (not published to npm)
 - `"type": "module"` (ESM)
 - `"bin": "webconfig"` (entry point)
-- `"engines": { "node": ">=20.10" }`
-- Exact dependency versions (no ^ or ~)
+- `"engines": { "node": ">=20.10" }` (`.nvmrc` pins 22)
+- Exact runtime dependency versions (no ^ or ~); `^` ranges in devDependencies
 
 ### TypeScript Config
 - Strict mode enabled
@@ -170,7 +185,7 @@ This separation allows:
 
 ## Known Limitations
 
-1. **INTEGRITY_001/002**: Implemented in v1.0.0 (per-file sha256 declared in `manifest.yaml` integrity.files plus a global hash over the path-sorted concatenated `<path>\0<hash>` entries; manifest.yaml itself is excluded from the hashed set).
+1. **INTEGRITY_001/002**: per-file sha256 declared in `manifest.yaml` integrity.files plus a global hash over the path-sorted concatenated `<path>\0<hash>` entries; `manifest.yaml` itself is excluded from the hashed set.
 2. **Content references in SEO**: Not validated (only composition/content)
 3. **Anchor link validation**: Anchor existence is validated against element ids of the target page (since v1.1.0); in-page `#anchor` refs check the current page's ids
 4. **Performance**: No caching for large bundles (acceptable for v1)
@@ -180,4 +195,4 @@ This separation allows:
 1. Add watch mode for development
 2. Support for incremental validation
 3. JSON Schema draft-2020-12: all schemas declare `$schema: draft/2020-12` and are compiled with `ajv/dist/2020` (bundled `schemas/meta-schema-2020-12.json` removed — dead file)
-5. WebAssembly port for performance
+4. WebAssembly port for performance

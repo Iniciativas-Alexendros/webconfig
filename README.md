@@ -1,6 +1,11 @@
 # webconfig
 
-Herramienta de línea de comandos (CLI) para **validar, normalizar y exportar** paquetes de sitios web en el formato **site.bundle v1.0.0**.
+[![CI](https://github.com/Iniciativas-Alexendros/webconfig/actions/workflows/ci.yml/badge.svg)](https://github.com/Iniciativas-Alexendros/webconfig/actions/workflows/ci.yml)
+[![Release](https://github.com/Iniciativas-Alexendros/webconfig/actions/workflows/release.yml/badge.svg)](https://github.com/Iniciativas-Alexendros/webconfig/releases)
+![Node >=20](https://img.shields.io/badge/node-%3E%3D20-339933)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+Herramienta de línea de comandos (CLI) para **crear, validar, normalizar y exportar** paquetes de sitios web en el formato **site.bundle v1.0.0**.
 
 Este formato se usa para describir de forma estandarizada cómo debe construirse un sitio web: qué páginas tiene, cómo está organizada cada página, qué contenido muestra en cada idioma y cómo debe posicionarse en los buscadores.
 
@@ -8,12 +13,31 @@ La herramienta permite a un sistema de producción (por ejemplo, un generador de
 
 ---
 
+## TL;DR 30s
+
+```bash
+nvm use && npm ci && npm run build
+node dist/cli.js init ./mi-sitio --name "Mi Sitio"
+node dist/cli.js validate ./mi-sitio --ds ./ds-catalog.yaml
+```
+
+Flujo típico: `init` → `validate` → `normalize` → `export` → `integrity`.
+
+```mermaid
+flowchart LR; init-->validate-->normalize-->export-->integrity;
+```
+
+**Ref:** [CHANGELOG](CHANGELOG.md) · [DECISIONS](DECISIONS.md) · [ds-catalog.example.yaml](ds-catalog.example.yaml) · [schemas/](schemas/) · [CONTRIBUTING](CONTRIBUTING.md)
+
+---
+
 ## ¿Qué hace webconfig?
 
-En palabras sencillas, webconfig te ofrece cuatro operaciones:
+En palabras sencillas, webconfig te ofrece cinco operaciones:
 
 | Comando | Qué hace |
 |---------|----------|
+| `init` | **Crea** un sitio starter válido desde cero. |
 | `validate` | **Comprueba** que un sitio está bien formado y no tiene errores. |
 | `normalize` | **Ordena** los archivos para que tengan siempre el mismo formato. |
 | `export` | **Empaqueta** el sitio en un único archivo `.tar.gz` (reproducible). |
@@ -27,7 +51,7 @@ Todas estas operaciones son **deterministas**: si ejecutas el mismo comando dos 
 
 Para usar webconfig necesitas:
 
-- **Node.js** versión 20 o superior.
+- **Node.js** versión 20 o superior (`nvm use` — hay `.nvmrc` con Node 22).
 - El proyecto usa **ESM** (`"type": "module"`), es decir, módulos modernos de JavaScript/TypeScript.
 
 ---
@@ -35,7 +59,8 @@ Para usar webconfig necesitas:
 ## Instalación
 
 ```bash
-npm install
+nvm use
+npm ci
 npm run build
 ```
 
@@ -47,9 +72,34 @@ npm link
 
 Y a partir de entonces podrás usar el comando `webconfig` directamente en tu terminal.
 
+Comprobaciones habituales antes de un PR:
+
+```bash
+npm run typecheck && npm run lint && npm run format:check
+npm run build && npm test && npm run verify:fixtures
+```
+
 ---
 
 ## Comandos
+
+### 0. `webconfig init <carpeta> [opciones]`
+
+Crea un sitio starter válido desde cero (composición, contenido es/en, SEO, logo, `manifest.yaml` con `integrity`, y `../ds-catalog.yaml` mínimo de 4 componentes si no existe).
+
+**Opciones:**
+
+| Opción | Descripción |
+|--------|-------------|
+| `--name <nombre>` | Nombre del sitio (por defecto, el nombre de la carpeta). |
+| `--force` | Sobrescribe una carpeta existente no vacía. |
+
+**Ejemplo:**
+
+```bash
+node dist/cli.js init ./mi-sitio --name "Mi Sitio"
+node dist/cli.js validate ./mi-sitio --ds ./ds-catalog.yaml
+```
 
 ### 1. `webconfig validate <paquete> [opciones]`
 
@@ -74,6 +124,16 @@ Comprueba si un sitio es válido. Acepta tanto una carpeta como un archivo `.tar
 
 ```bash
 webconfig validate ./mi-sitio --ds ./ds-catalog.yaml --json
+```
+
+Salida `--json` (fail-closed: ante un error de carga devuelve JSON con `valid: false` y salida 1):
+
+```json
+{
+  "errors": [],
+  "warnings": [{ "code": "I18N_002", "severity": "warning", "file": "content/en/home.json", "message": "#/intro resolved via fallback to es" }],
+  "valid": true
+}
 ```
 
 ### 2. `webconfig normalize <carpeta> [opciones]`
@@ -117,14 +177,42 @@ webconfig export ./mi-sitio ./mi-sitio.tar.gz
 
 Calcula una huella digital (hash SHA-256) de cada archivo del sitio, más un **hash global** que resume todos los archivos. Es útil para verificar que el contenido no ha sido alterado entre el desarrollo y la publicación.
 
+**Ejemplo:**
+
+```bash
+webconfig integrity ./mi-sitio
+```
+
+**Salida:**
+
+```text
+Global hash: 9f2c…e1
+Files: 18
+a1b2…c3  content/en/home.json  (412 bytes)
+…
+```
+
+El bloque `integrity` del `manifest.yaml` se valida con `INTEGRITY_001/002` (`manifest.yaml` está excluido del conjunto hasheado).
+
+---
+
+## Troubleshooting
+
+| Síntoma | Causa probable | Qué hacer |
+|---------|----------------|-----------|
+| `Failed to load DS catalog` + `COMP_001` | `--ds` no apunta a un `ds-catalog.yaml` existente | Pasa `--ds ./ds-catalog.yaml` explícito o coloca el catálogo en la carpeta superior al paquete. |
+| Avisos `I18N_002/ASSET_002/SEO_002/CRYPTO_001` no fallan | Por defecto solo los errores dan salida 1 | Usa `--strict` para que los avisos también fallen. |
+| `validate --json` ante un paquete inexistente | Error de carga fail-closed | Lee el JSON de stdout (`valid: false`, `SYNTAX_ERROR`) en vez de stderr. |
+| `normalize --check` falla en CI | Archivos no canónicos | Ejecuta `normalize --write` en local y commitea el resultado. |
+
 ---
 
 ## Códigos de error
 
-Cuando webconfig encuentra un problema, lo identifica con un código concreto. Cada código tiene una **severidad**:
+Cuando webconfig encuentra un problema, lo identifica con un código concreto. Son **27 códigos** (26 reglas + `SYNTAX_ERROR` fail-closed de errores de carga; los fallos de esquema AJV se reportan como `SYNTAX_<keyword>`). Cada código tiene una **severidad**:
 
 - **error** → el sitio no es válido y no debería publicarse.
-- **warning (aviso)** → se puede publicar, pero conviene revisarlo.
+- **warning (aviso)** → se puede publicar, pero conviene revisarlo (con `--strict` también falla).
 
 | Código | Severidad | Descripción (en lenguaje claro) |
 |--------|-----------|--------------------------------|
@@ -153,6 +241,9 @@ Cuando webconfig encuentra un problema, lo identifica con un código concreto. C
 | `INTEGRITY_001` | error | El hash de un archivo no coincide con el esperado. |
 | `INTEGRITY_002` | error | El hash global del paquete no coincide con el esperado. |
 | `CRYPTO_001` | warning | Se detectó un patrón que podría ser una contraseña o clave en un contexto dudoso. |
+| `STRUCT_001` | error | Falta un directorio obligatorio (`composition/` o `content/`). |
+| `SYNTAX_<keyword>` | error | Fallo de esquema AJV (p. ej. `SYNTAX_TYPE`, `SYNTAX_REQUIRED` en `site.config.yaml`). |
+| `SYNTAX_ERROR` | error | Fallo de carga/parseo fail-closed (bundle inexistente, tar corrupto, YAML/JSON inválido). |
 
 ---
 
@@ -190,6 +281,8 @@ components:
 ```
 
 > **Recuerda:** el campo `category` es obligatorio. webconfig lo usa para saber qué componentes son de diseño (`layout`) y, en ningún caso, se fía de prefijos en el nombre del componente.
+
+Para un starter mínimo de 4 componentes (`header`, `hero`, `footer`, `text-block`), usa `webconfig init ./mi-sitio`: genera `../ds-catalog.yaml` si no existe. El ejemplo completo de 18 componentes vive en [`ds-catalog.example.yaml`](ds-catalog.example.yaml).
 
 ---
 

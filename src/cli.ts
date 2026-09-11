@@ -15,30 +15,39 @@ program
   .option("--check", "Exit 1 if non-canonical, do not write")
   .option("--write", "Normalize files in-place")
   .action(async (dir: string, options: { check: boolean; write: boolean }) => {
-    const { normalized, errors } = await normalizeDirectory(dir, options);
+    if (options.check && options.write) {
+      console.error("--check and --write are mutually exclusive");
+      process.exit(1);
+    }
+    try {
+      const { normalized, errors } = await normalizeDirectory(dir, options);
 
-    if (options.check) {
+      if (options.check) {
+        if (errors.length > 0) {
+          for (const err of errors) {
+            console.error(err);
+          }
+          process.exit(1);
+        }
+        console.log("All files are canonical");
+        process.exit(0);
+      }
+
+      if (options.write) {
+        console.log(`Normalized ${normalized} file(s)`);
+        process.exit(0);
+      }
+
       if (errors.length > 0) {
         for (const err of errors) {
-          console.error(err);
+          console.log(err);
         }
-        process.exit(1);
+      } else {
+        console.log("All files are canonical");
       }
-      console.log("All files are canonical");
-      process.exit(0);
-    }
-
-    if (options.write) {
-      console.log(`Normalized ${normalized} file(s)`);
-      process.exit(0);
-    }
-
-    if (errors.length > 0) {
-      for (const err of errors) {
-        console.log(err);
-      }
-    } else {
-      console.log("All files are canonical");
+    } catch (err) {
+      console.error(err instanceof Error ? err.message : String(err));
+      process.exit(1);
     }
   });
 
@@ -46,11 +55,16 @@ program
   .command("integrity <dir>")
   .description("Compute integrity hashes for a bundle")
   .action((dir: string) => {
-    const integrity = computeIntegrity(resolve(dir));
-    console.log(`Global hash: ${integrity.globalHash}`);
-    console.log(`Files: ${integrity.files.length}`);
-    for (const file of integrity.files) {
-      console.log(`${file.hash}  ${file.path}  (${file.size} bytes)`);
+    try {
+      const integrity = computeIntegrity(resolve(dir));
+      console.log(`Global hash: ${integrity.globalHash}`);
+      console.log(`Files: ${integrity.files.length}`);
+      for (const file of integrity.files) {
+        console.log(`${file.hash}  ${file.path}  (${file.size} bytes)`);
+      }
+    } catch (err) {
+      console.error(err instanceof Error ? err.message : String(err));
+      process.exit(1);
     }
   });
 
@@ -80,6 +94,29 @@ async function runExport(bundle: string, output: string) {
     await loaded.cleanup();
   }
 }
+
+program
+  .command("init <dir>")
+  .description("Scaffold a new site.bundle with a valid starter structure")
+  .option("--name <name>", "Site name (defaults to directory name)")
+  .option("--force", "Overwrite existing non-empty directory")
+  .action(async (dir: string, options: { name?: string; force?: boolean }) => {
+    try {
+      const { initBundle } = await import("./init.js");
+      const result = await initBundle(resolve(dir), options);
+      console.log(`Initialized bundle at ${result.bundleDir}`);
+      for (const file of result.createdFiles) {
+        console.log(`  created ${file}`);
+      }
+      if (result.catalogWritten && result.catalogPath) {
+        console.log(`  created ds-catalog at ${result.catalogPath}`);
+      }
+      console.log(`Next: webconfig validate ${dir}${result.catalogPath ? "" : " --ds <catalog>"}`);
+    } catch (err) {
+      console.error(`Init failed: ${err instanceof Error ? err.message : String(err)}`);
+      process.exit(1);
+    }
+  });
 
 program
   .command("validate <bundle>")
@@ -116,4 +153,4 @@ program
     }
   });
 
-program.parse();
+program.parseAsync(process.argv);

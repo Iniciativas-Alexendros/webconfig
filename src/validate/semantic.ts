@@ -1,9 +1,10 @@
-import { createHash } from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
-import { computeIntegrity } from "../integrity.js";
-import type { DSComponent, DSCatalog } from "./ds-catalog.js";
+import { BUNDLE_VERSION, BUNDLE_VERSION_RE, SCHEMA_COMPAT_RE, SEO_DESC_MAX, SEO_TITLE_MAX } from "../constants.js";
+import { computeGlobalHash, computeIntegrity } from "../integrity.js";
+import type { DSCatalog } from "./ds-catalog.js";
+import { createComponentIndex, getIconWhitelist, validateComponentProps } from "./ds-catalog.js";
 import type { ValidationIssue } from "./errors.js";
 import { createIssue, ErrorCode as EC } from "./errors.js";
 
@@ -64,9 +65,7 @@ async function loadBundleData(bundleDir: string): Promise<BundleData> {
       data.compositions.set(entry.replace(/\.ya?ml$/, ""), parsed);
     }
   } catch {
-    data.structureIssues.push(
-      createIssue(EC.STRUCT_001, "composition/", "Missing required composition/ directory")
-    );
+    data.structureIssues.push(createIssue(EC.STRUCT_001, "composition/", "Missing required composition/ directory"));
   }
 
   const contentDir = path.join(bundleDir, "content");
@@ -119,9 +118,7 @@ async function loadBundleData(bundleDir: string): Promise<BundleData> {
       } catch {}
     }
   } catch {
-    data.structureIssues.push(
-      createIssue(EC.STRUCT_001, "content/", "Missing required content/ directory")
-    );
+    data.structureIssues.push(createIssue(EC.STRUCT_001, "content/", "Missing required content/ directory"));
   }
 
   const assetsDir = path.join(bundleDir, "assets");
@@ -218,9 +215,7 @@ function checkSecretsInString(str: string, file: string, issues: ValidationIssue
   for (const { pattern, code, name } of SECRET_PATTERNS) {
     const matches = str.match(pattern);
     if (matches) {
-      issues.push(
-        createIssue(code, file, `${code}: possible ${name} detected (value omitted for security)`)
-      );
+      issues.push(createIssue(code, file, `${code}: possible ${name} detected (value omitted for security)`));
     }
   }
 }
@@ -408,12 +403,14 @@ function checkLinks(
 
 function checkSeoLengths(seo: Record<string, unknown>, file: string, issues: ValidationIssue[]): void {
   const title = seo["title"];
-  if (title && typeof title === "string" && title.length > 60) {
-    issues.push(createIssue(EC.SEO_001, file, `SEO title exceeds 60 characters (${title.length})`));
+  if (title && typeof title === "string" && title.length > SEO_TITLE_MAX) {
+    issues.push(createIssue(EC.SEO_001, file, `SEO title exceeds ${SEO_TITLE_MAX} characters (${title.length})`));
   }
   const description = seo["description"];
-  if (description && typeof description === "string" && description.length > 160) {
-    issues.push(createIssue(EC.SEO_001, file, `SEO description exceeds 160 characters (${description.length})`));
+  if (description && typeof description === "string" && description.length > SEO_DESC_MAX) {
+    issues.push(
+      createIssue(EC.SEO_001, file, `SEO description exceeds ${SEO_DESC_MAX} characters (${description.length})`)
+    );
   }
   const jsonLd = seo["jsonLd"] as Record<string, unknown> | undefined;
   if (jsonLd && (!jsonLd["@context"] || !jsonLd["@type"])) {
@@ -546,41 +543,10 @@ function checkLocaleFallback(
 
 async function validateSemantic(bundleDir: string, catalog: DSCatalog): Promise<ValidationIssue[]> {
   const issues: ValidationIssue[] = [];
-  const componentIndex = new Map<string, DSComponent>();
-  for (const comp of catalog.components) {
-    componentIndex.set(comp.id, comp);
-  }
+  const componentIndex = createComponentIndex(catalog);
   const layoutComponentIds = new Set(catalog.components.filter((c) => c.category === "layout").map((c) => c.id));
 
-  function extractIconEnums(schema: Record<string, unknown>): string[] {
-    const icons: string[] = [];
-    for (const value of Object.values(schema)) {
-      if (value && typeof value === "object") {
-        const v = value as Record<string, unknown>;
-        // Check if this object has an enum directly
-        if (v["enum"] && Array.isArray(v["enum"])) {
-          icons.push(...v["enum"].filter((x): x is string => typeof x === "string"));
-        }
-        // Recurse into items (for arrays)
-        if (v["items"] && typeof v["items"] === "object") {
-          icons.push(...extractIconEnums(v["items"] as Record<string, unknown>));
-        }
-        // Recurse into properties (for objects)
-        if (v["properties"] && typeof v["properties"] === "object") {
-          icons.push(...extractIconEnums(v["properties"] as Record<string, unknown>));
-        }
-      }
-    }
-    return icons;
-  }
-
-  const iconWhitelist = new Set(
-    catalog.components.flatMap((c) => {
-      const schema = c.propsSchema as Record<string, unknown> | undefined;
-      if (!schema) return [];
-      return extractIconEnums(schema);
-    })
-  );
+  const iconWhitelist = new Set(getIconWhitelist(catalog));
 
   const data = await loadBundleData(bundleDir);
   issues.push(...data.structureIssues);
@@ -664,9 +630,7 @@ async function validateSemantic(bundleDir: string, catalog: DSCatalog): Promise<
         checkSecretsInObject(props, `composition/${name}.yaml`, issues);
         checkRichTextForHtml(props, `composition/${name}.yaml`, issues);
         checkIconsInObject(props, `composition/${name}.yaml`, iconWhitelist, issues);
-        checkPrice(props, `composition/${name}.yaml`, issues);
         checkPricesInObject(props, `composition/${name}.yaml`, issues);
-        checkImageAlt(props, `composition/${name}.yaml`, issues);
         checkImagesInObject(props, `composition/${name}.yaml`, issues);
         checkLinks(props, `composition/${name}.yaml`, pageSlugs, elementIdsByPage, name, issues);
         checkContentRefs(props, `composition/${name}.yaml`, pageSlugs, data.content, locales, issues);
@@ -685,7 +649,11 @@ async function validateSemantic(bundleDir: string, catalog: DSCatalog): Promise<
       checkIconsInObject(values, `content/${key}`, iconWhitelist, issues);
       checkPricesInObject(values, `content/${key}`, issues);
       checkImagesInObject(values, `content/${key}`, issues);
-      const pageSlug = key.split("/").pop()?.replace(/\.(json|ya?ml)$/, "") ?? "";
+      const pageSlug =
+        key
+          .split("/")
+          .pop()
+          ?.replace(/\.(json|ya?ml)$/, "") ?? "";
       checkLinks(values, `content/${key}`, pageSlugs, elementIdsByPage, pageSlug, issues);
       checkContentRefs(values, `content/${key}`, pageSlugs, data.content, locales, issues);
     }
@@ -725,11 +693,11 @@ async function validateSemantic(bundleDir: string, catalog: DSCatalog): Promise<
   checkSecretsInObject(manifest, "manifest.yaml", issues);
   checkSecretsInObject(siteConfig, "site.config.yaml", issues);
   const bundleVersion = manifest["bundleVersion"] as string | undefined;
-  if (bundleVersion === undefined || !/^[0-9]+\.[0-9]+\.[0-9]+$/.test(bundleVersion)) {
+  if (bundleVersion === undefined || !BUNDLE_VERSION_RE.test(bundleVersion)) {
     issues.push(
       createIssue(EC.MANIFEST_002, "manifest.yaml", `Manifest bundleVersion is not valid semver: ${bundleVersion}`)
     );
-  } else if (bundleVersion !== "1.0.0") {
+  } else if (bundleVersion !== BUNDLE_VERSION) {
     issues.push(
       createIssue(
         EC.MANIFEST_002,
@@ -740,7 +708,7 @@ async function validateSemantic(bundleDir: string, catalog: DSCatalog): Promise<
   }
 
   const schemaCompat = manifest["schema_compat"] as string | undefined;
-  if (schemaCompat !== undefined && !/^~?\^?1\.0\.0$/.test(schemaCompat)) {
+  if (schemaCompat !== undefined && !SCHEMA_COMPAT_RE.test(schemaCompat)) {
     issues.push(
       createIssue(EC.MANIFEST_002, "manifest.yaml", `Incompatible schema_compat constraint: ${schemaCompat}`)
     );
@@ -765,49 +733,13 @@ async function validateSemantic(bundleDir: string, catalog: DSCatalog): Promise<
       }
     }
 
-    const declaredPaths = Object.keys(declaredFiles).sort();
-    const expectedGlobal = createHash("sha256")
-      .update(declaredPaths.map((p) => `${p}\0${declaredFiles[p]}`).join(""))
-      .digest("hex");
+    const expectedGlobal = computeGlobalHash(declaredFiles);
     if (integrity["global"] !== expectedGlobal) {
       issues.push(createIssue(EC.INTEGRITY_002, "manifest.yaml", "Global integrity hash mismatch"));
     }
   }
 
   return issues;
-}
-
-function validateComponentProps(
-  component: DSComponent,
-  props: Record<string, unknown>
-): { valid: boolean; errors: string[] } {
-  const errors: string[] = [];
-  if (!component.propsSchema) {
-    return { valid: true, errors: [] };
-  }
-  const schema = component.propsSchema as Record<string, unknown>;
-  const required = (schema["required"] as string[]) || [];
-  const properties = (schema["properties"] as Record<string, unknown>) || {};
-  for (const key of required) {
-    if (!(key in props)) {
-      errors.push(`Missing required prop: ${key}`);
-    }
-  }
-  for (const [key, value] of Object.entries(properties)) {
-    if (!(key in props)) continue;
-    const propSchema = value as Record<string, unknown>;
-    if (propSchema["type"] === "string" && typeof props[key] !== "string") {
-      errors.push(`Prop ${key} must be a string`);
-    } else if (propSchema["type"] === "number" && typeof props[key] !== "number") {
-      errors.push(`Prop ${key} must be a number`);
-    } else if (propSchema["type"] === "boolean" && typeof props[key] !== "boolean") {
-      errors.push(`Prop ${key} must be a boolean`);
-    }
-    if (propSchema["enum"] && Array.isArray(propSchema["enum"]) && !propSchema["enum"].includes(props[key])) {
-      errors.push(`Prop ${key} must be one of: ${(propSchema["enum"] as string[]).join(", ")}`);
-    }
-  }
-  return { valid: errors.length === 0, errors };
 }
 
 export async function runSemanticValidation(bundleDir: string, catalog: DSCatalog): Promise<ValidationIssue[]> {

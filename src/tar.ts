@@ -1,14 +1,9 @@
-import { promises as fs } from "node:fs";
-import { createReadStream, createWriteStream } from "node:fs";
+import { promises as fs, createReadStream, createWriteStream } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import tar from "tar-stream";
 import zlib from "node:zlib";
-
-export const TAR_LIMITS = {
-  maxFiles: 10_000,
-  maxTotalBytes: 512 * 1024 * 1024,
-} as const;
+import { TAR_LIMITS } from "./constants.js";
 
 export class TarExtractionError extends Error {
   constructor(message: string) {
@@ -47,6 +42,7 @@ export async function extractTar(tarPath: string): Promise<ExtractedBundle> {
     const extract = tar.extract();
     const gunzip = zlib.createGunzip();
     const readStream = createReadStream(resolvedTarPath);
+    let settled = false;
 
     const cleanup = async (): Promise<void> => {
       try {
@@ -55,6 +51,8 @@ export async function extractTar(tarPath: string): Promise<ExtractedBundle> {
     };
 
     const fail = (err: Error): void => {
+      if (settled) return;
+      settled = true;
       void cleanup().then(() => reject(err));
     };
 
@@ -105,6 +103,13 @@ export async function extractTar(tarPath: string): Promise<ExtractedBundle> {
           try {
             await fs.mkdir(path.dirname(filePath), { recursive: true });
             const writeStream = createWriteStream(filePath, { flags: "wx" });
+            stream.on("data", (chunk: unknown) => {
+              totalBytes += (chunk as Buffer).length;
+              if (totalBytes > TAR_LIMITS.maxTotalBytes) {
+                fail(new TarExtractionError(`archive exceeds max total size (${TAR_LIMITS.maxTotalBytes} bytes)`));
+                (stream as unknown as { destroy: () => void }).destroy();
+              }
+            });
             writeStream.on("error", (err) =>
               fail(new TarExtractionError(`failed to write entry ${header.name}: ${err.message}`))
             );
@@ -120,9 +125,10 @@ export async function extractTar(tarPath: string): Promise<ExtractedBundle> {
       }
     );
 
-    extract.on("finish", async () => {
-      if (extracted) return;
+    extract.on("finish", () => {
+      if (extracted || settled) return;
       extracted = true;
+      settled = true;
       resolve({
         dir: tmpDir,
         cleanup,
