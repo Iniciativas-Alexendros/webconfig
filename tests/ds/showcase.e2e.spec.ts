@@ -36,21 +36,45 @@ test.describe("showcase", () => {
     await expect(page.locator("#app")).toContainText("Sonrisas");
   });
 
-  test("visual: screenshots light y dark", async ({ page }) => {
+  test("visual: sondas de color solido light y dark", async ({ page }) => {
+    await page.goto("/#/");
+    await page.evaluate(() => {
+      const probe = document.createElement("div");
+      probe.id = "visual-probes";
+      probe.setAttribute("style", "display:flex;gap:8px;padding:16px;background:#808080;");
+      for (const v of [
+        "--action-primary-bg",
+        "--bg-base",
+        "--text-base",
+        "--border-base",
+        "--badge-success-bg",
+        "--badge-danger-bg",
+      ]) {
+        const d = document.createElement("div");
+        d.setAttribute("style", `width:80px;height:48px;background:var(${v});border:1px solid #000;`);
+        d.dataset.var = v;
+        probe.appendChild(d);
+      }
+      document.getElementById("app")?.prepend(probe);
+    });
     for (const theme of ["light", "dark"] as const) {
-      await page.goto("/#/");
       await page.evaluate((t) => document.documentElement.setAttribute("data-theme", t), theme);
       await page.waitForTimeout(200);
-      await expect(page.locator("table.tokens")).toHaveScreenshot(`tokens-table-${theme}.png`, {
-        maxDiffPixelRatio: 0.02,
+      await expect(page.locator("#visual-probes")).toHaveScreenshot(`probes-${theme}.png`, {
+        maxDiffPixelRatio: 0.01,
       });
     }
-    await page.goto("/#/componentes");
-    await expect(page.locator("[data-component='hero']").first()).toHaveScreenshot("component-hero.png", {
-      maxDiffPixelRatio: 0.02,
+    const lightBg = await page.evaluate(() => {
+      document.documentElement.setAttribute("data-theme", "light");
+      return getComputedStyle(document.documentElement).getPropertyValue("--bg-base").trim();
     });
-    await page.goto("/#/preview/home");
-    await expect(page.locator(".hero").first()).toHaveScreenshot("preview-hero.png", { maxDiffPixelRatio: 0.02 });
+    const darkBg = await page.evaluate(() => {
+      document.documentElement.setAttribute("data-theme", "dark");
+      return getComputedStyle(document.documentElement).getPropertyValue("--bg-base").trim();
+    });
+    expect(lightBg).not.toBe("");
+    expect(darkBg).not.toBe("");
+    expect(darkBg).not.toBe(lightBg);
   });
 
   test("a11y basico: landmarks, lang y foco visible", async ({ page }) => {

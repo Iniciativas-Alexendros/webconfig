@@ -148,21 +148,15 @@ for (const key of names) {
   void dark;
 }
 
-const css = `@layer tokens {
-  :root {
-    color-scheme: light dark;
-${lightDecls.join("\n")}
-  }
-  :root[data-theme="dark"] {
-${darkDecls.join("\n")}
-  }
-  @supports not (color: oklch(0% 0 0)) {
-    :root {
-${fallbackDecls.join("\n")}
-    }
-  }
-}
-`;
+const css =
+  "@layer tokens {\n  :root {\n    color-scheme: light dark;\n" +
+  lightDecls.join("\n") +
+  '\n  }\n  :root[data-theme="dark"] {\n' +
+  darkDecls.join("\n") +
+  "\n  }\n  @supports not (color: oklch(0% 0 0)) {\n    :root {\n" +
+  fallbackDecls.join("\n") +
+  "\n    }\n  }\n}\n";
+// prettier-ignore
 
 const nestedLight = {};
 const nestedDark = {};
