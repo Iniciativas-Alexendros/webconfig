@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/Iniciativas-Alexendros/webconfig/compare/v1.2.0...v1.3.0) (2026-09-11)
+
+
+### Features
+
+* **ds:** design system OKLCH DTCG con showcase y validación completa ([#5](https://github.com/Iniciativas-Alexendros/webconfig/issues/5)) ([775467e](https://github.com/Iniciativas-Alexendros/webconfig/commit/775467e972a8e7c7709f86305247deb23019d272))
+
 # [1.2.0](https://github.com/Iniciativas-Alexendros/webconfig/compare/v1.1.0...v1.2.0) (2026-09-11)
 
 
