@@ -1,0 +1,172 @@
+@layer block {
+  .hero {
+    background: var(--bg-surface);
+    color: var(--text-base);
+    border: var(--border-width-thin) solid var(--border-base);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+  }
+  .hero h1 {
+    font-size: var(--font-size-h1);
+    line-height: var(--font-leading-tight);
+    letter-spacing: var(--font-tracking-tight);
+  }
+  .site-header {
+    background: var(--bg-surface);
+  }
+  .site-header nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    list-style: none;
+    padding: 0;
+  }
+  .site-footer {
+    background: var(--bg-surface);
+    border-top: var(--border-width-thin) solid var(--border-base);
+    padding: var(--space-6) var(--space-4);
+  }
+  .nav-main ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+  }
+  .breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+  }
+  .text-block[data-variant="lead"] {
+    font-size: var(--font-size-lead);
+  }
+  .text-block[data-variant="caption"] {
+    font-size: var(--font-size-caption);
+    color: var(--text-muted);
+  }
+  .card {
+    background: var(--card-bg);
+    border: var(--border-width-thin) solid var(--card-border);
+    border-radius: var(--card-radius);
+    padding: var(--card-padding);
+    box-shadow: var(--card-shadow);
+  }
+  .card img {
+    border-radius: var(--radius-md);
+  }
+  .price-table {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .price-plan {
+    background: var(--card-bg);
+    border: var(--border-width-thin) solid var(--card-border);
+    border-radius: var(--card-radius);
+    padding: var(--card-padding);
+  }
+  .price-plan[data-highlighted="true"] {
+    border-color: var(--action-primary-bg);
+    border-width: var(--border-width-medium);
+  }
+  .icon-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .icon-list li {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+  }
+  .testimonial {
+    background: var(--bg-surface);
+    border: var(--border-width-thin) solid var(--border-base);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+  }
+  .testimonial blockquote {
+    font-size: var(--font-size-lead);
+  }
+  .form-field {
+    display: grid;
+    gap: var(--space-1);
+    margin-bottom: var(--space-3);
+  }
+  .form-field label {
+    font-weight: var(--font-weight-medium);
+  }
+  .form-field input,
+  .form-field select,
+  .form-field textarea {
+    background: var(--input-bg);
+    border: var(--border-width-thin) solid var(--input-border);
+    border-radius: var(--input-radius);
+    padding: var(--input-padding-y) var(--input-padding-x);
+    color: var(--text-base);
+    font: inherit;
+  }
+  .form-field input:focus,
+  .form-field select:focus,
+  .form-field textarea:focus {
+    border-color: var(--input-border-focus);
+    outline: 2px solid var(--action-focus-ring);
+    outline-offset: 1px;
+  }
+  .gallery {
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(12rem, 100%), 1fr));
+  }
+  .gallery figure {
+    background: var(--bg-surface);
+    border: var(--border-width-thin) solid var(--border-base);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .gallery figcaption {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-caption);
+    color: var(--text-muted);
+  }
+  .video-wrap video {
+    width: 100%;
+    border-radius: var(--radius-md);
+    background: var(--bg-muted);
+  }
+  .carousel {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .carousel-track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(min(20rem, 90%), 1fr);
+    gap: var(--space-3);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+  .carousel-track > * {
+    scroll-snap-align: start;
+  }
+  figure.image-block {
+    display: grid;
+    gap: var(--space-2);
+  }
+  figure.image-block figcaption {
+    font-size: var(--font-size-caption);
+    color: var(--text-muted);
+  }
+  @media (forced-colors: active) {
+    .card,
+    .price-plan,
+    .testimonial,
+    .hero,
+    .gallery figure {
+      border: 1px solid CanvasText;
+    }
+  }
+}

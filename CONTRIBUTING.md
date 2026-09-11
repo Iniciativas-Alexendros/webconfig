@@ -19,9 +19,12 @@ Los hooks `husky` exigen mensajes convencionales (`feat:`, `fix:`, `docs:`, …)
 ```bash
 npm run typecheck:all && npm run lint && npm run format:check
 npm run build && npm test && npm run verify:fixtures
+npm run tokens:build && npm run tokens:check && npx playwright test && npm run ds:build
 node dist/cli.js validate fixtures/golden/clinica-dental-sur --ds ./ds-catalog.yaml
 node dist/cli.js normalize fixtures/golden/clinica-dental-sur --check
 ```
+
+Comandos del Design System: `tokens:build` (genera `dist-tokens/` + copia del showcase), `tokens:check` (contraste + cobertura), `verify:ds` (cobertura 1:1), `ds:dev` (showcase local), `ds:build` (build estático `dist-showcase/`), `e2e` (Playwright).
 
 ## Reglas
 

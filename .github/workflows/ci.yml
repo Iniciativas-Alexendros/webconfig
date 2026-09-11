@@ -54,6 +54,53 @@ jobs:
           node dist/cli.js export fixtures/golden/clinica-dental-sur /tmp/test2.tar.gz
           sha256sum /tmp/test1.tar.gz /tmp/test2.tar.gz | awk '{print $1}' | sort -u | wc -l | grep -q '^1$' && echo "Exports are deterministic"
 
+  ds-and-showcase:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['20', '22']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build tokens
+        run: npm run tokens:build
+
+      - name: Check contrast + DS coverage
+        run: npm run tokens:check
+
+      - name: Typecheck all
+        run: npm run typecheck:all
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build CLI
+        run: npm run build
+
+      - name: Run tests with coverage
+        run: npm test -- --coverage
+
+      - name: Install Playwright chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E + visual showcase
+        run: npx playwright test
+
+      - name: Build showcase
+        run: npm run ds:build
+
+      - name: Verify DS coverage
+        run: npm run verify:ds
+
   validate-all-fixtures:
     runs-on: ubuntu-latest
     steps:

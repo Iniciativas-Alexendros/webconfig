@@ -1,0 +1,86 @@
+{
+  "$meta": {
+    "ds": "webconfig",
+    "tier": "primitive",
+    "colorSpace": "oklch",
+    "spec": "W3C DTCG Format Module",
+    "version": "1.0"
+  },
+  "color": {
+    "brand": {
+      "100": {
+        "$value": "oklch(0.9 0.05 262)",
+        "$type": "color",
+        "$description": "Brand claro — fondos tintados"
+      },
+      "200": {
+        "$value": "oklch(0.83 0.08 262)",
+        "$type": "color"
+      },
+      "300": {
+        "$value": "oklch(0.74 0.12 262)",
+        "$type": "color"
+      },
+      "400": {
+        "$value": "oklch(0.64 0.15 262)",
+        "$type": "color"
+      },
+      "500": {
+        "$value": "oklch(0.55 0.17 262)",
+        "$type": "color",
+        "$description": "Brand base"
+      },
+      "600": {
+        "$value": "oklch(0.48 0.16 262)",
+        "$type": "color",
+        "$description": "Brand acción — AA sobre blanco"
+      },
+      "700": {
+        "$value": "oklch(0.41 0.14 262)",
+        "$type": "color",
+        "$description": "Brand texto y enlaces"
+      },
+      "800": {
+        "$value": "oklch(0.34 0.11 262)",
+        "$type": "color"
+      },
+      "900": {
+        "$value": "oklch(0.28 0.08 262)",
+        "$type": "color"
+      }
+    },
+    "neutral": {
+      "0": { "$value": "oklch(1 0 0)", "$type": "color", "$description": "Blanco" },
+      "50": { "$value": "oklch(0.97 0.005 260)", "$type": "color" },
+      "100": { "$value": "oklch(0.93 0.01 260)", "$type": "color" },
+      "200": { "$value": "oklch(0.87 0.015 260)", "$type": "color" },
+      "300": { "$value": "oklch(0.79 0.02 260)", "$type": "color" },
+      "400": { "$value": "oklch(0.68 0.025 260)", "$type": "color" },
+      "500": { "$value": "oklch(0.56 0.03 260)", "$type": "color" },
+      "600": { "$value": "oklch(0.45 0.03 260)", "$type": "color" },
+      "700": { "$value": "oklch(0.36 0.025 260)", "$type": "color" },
+      "800": { "$value": "oklch(0.3 0.02 260)", "$type": "color" },
+      "900": { "$value": "oklch(0.25 0.015 260)", "$type": "color", "$description": "Tinta — texto sobre claro" },
+      "950": { "$value": "oklch(0.19 0.01 260)", "$type": "color" },
+      "1000": { "$value": "oklch(0 0 0)", "$type": "color", "$description": "Negro" }
+    },
+    "success": {
+      "100": { "$value": "oklch(0.9 0.06 150)", "$type": "color" },
+      "600": { "$value": "oklch(0.55 0.15 150)", "$type": "color", "$description": "Éxito — AA sobre blanco" },
+      "700": { "$value": "oklch(0.45 0.13 150)", "$type": "color" }
+    },
+    "warning": {
+      "100": { "$value": "oklch(0.92 0.06 80)", "$type": "color" },
+      "600": { "$value": "oklch(0.6 0.14 80)", "$type": "color", "$description": "Aviso" },
+      "700": { "$value": "oklch(0.48 0.12 80)", "$type": "color", "$description": "Aviso texto (AA)" }
+    },
+    "danger": {
+      "100": { "$value": "oklch(0.9 0.05 25)", "$type": "color" },
+      "600": { "$value": "oklch(0.5 0.18 25)", "$type": "color", "$description": "Peligro — AA sobre blanco" },
+      "700": { "$value": "oklch(0.42 0.16 25)", "$type": "color" }
+    },
+    "focus": {
+      "ring": { "$value": "oklch(0.6 0.18 262)", "$type": "color", "$description": "Anillo de foco visible" }
+    }
+  }
+}
