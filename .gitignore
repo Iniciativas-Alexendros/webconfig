@@ -6,6 +6,10 @@ dist
 .DS_Store
 coverage
 
+# Package manager artifacts (project standard: npm)
+pnpm-lock.yaml
+pnpm-workspace.yaml
+
 # Work-state files: NEVER committed. Decisions live in DECISIONS.md only.
 findings.md
 progress.md

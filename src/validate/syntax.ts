@@ -56,12 +56,12 @@ function mapAjvErrors(
   errors: Array<{ keyword?: string; instancePath?: string; message?: string }> | null | undefined,
   file: string
 ): ValidationIssue[] {
-  if (!errors) return [];
+  if (!errors || errors.length === 0) return [];
   return errors.map((err) => ({
-    code: `SYNTAX_${err.keyword?.toUpperCase() || "ERROR"}`,
+    code: `SYNTAX_${(err.keyword ?? "ERROR").toUpperCase()}`,
     severity: "error" as const,
     file,
-    message: `${err.instancePath || "/"} ${err.message}`,
+    message: `${err.instancePath || "/"} ${err.message ?? "invalid value"}`,
     location: undefined,
   }));
 }
@@ -70,7 +70,7 @@ function mapManifestErrors(
   errors: Array<{ keyword?: string; instancePath?: string; message?: string; params?: unknown }> | null | undefined,
   file: string
 ): ValidationIssue[] {
-  if (!errors) return [];
+  if (!errors || errors.length === 0) return [];
   return errors.map((err) => {
     if (err.keyword === "required") {
       const missing = (err.params as { missingProperty?: string }).missingProperty ?? "field";
@@ -83,10 +83,10 @@ function mapManifestErrors(
       };
     }
     return {
-      code: `SYNTAX_${err.keyword?.toUpperCase() || "ERROR"}`,
+      code: `SYNTAX_${(err.keyword ?? "ERROR").toUpperCase()}`,
       severity: "error" as const,
       file,
-      message: `${err.instancePath || "/"} ${err.message}`,
+      message: `${err.instancePath || "/"} ${err.message ?? "invalid value"}`,
       location: undefined,
     };
   });
