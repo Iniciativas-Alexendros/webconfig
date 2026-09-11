@@ -1,12 +1,22 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
 import { contrastRatio, apcaLc } from "../../showcase/src/lib/contrast.js";
 
-const fallback = JSON.parse(readFileSync(resolve("dist-tokens/json/fallback-hex.json"), "utf-8")) as {
-  light: Record<string, string>;
-  dark: Record<string, string>;
-};
+let fallback: { light: Record<string, string>; dark: Record<string, string> };
+
+beforeAll(() => {
+  try {
+    execFileSync("node", ["scripts/build-tokens.mjs"], { stdio: "ignore", timeout: 30000 });
+  } catch {
+    // Si el build falla, el readFileSync siguiente da el error real.
+  }
+  fallback = JSON.parse(readFileSync(resolve("dist-tokens/json/fallback-hex.json"), "utf-8")) as {
+    light: Record<string, string>;
+    dark: Record<string, string>;
+  };
+});
 
 const PAIRS: Array<{ name: string; fg: string; bg: string; min: number; apca: number }> = [
   { name: "text/base sobre bg/base", fg: "--text-base", bg: "--bg-base", min: 4.5, apca: 60 },

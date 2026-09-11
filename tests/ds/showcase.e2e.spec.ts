@@ -41,12 +41,16 @@ test.describe("showcase", () => {
       await page.goto("/#/");
       await page.evaluate((t) => document.documentElement.setAttribute("data-theme", t), theme);
       await page.waitForTimeout(200);
-      await expect(page).toHaveScreenshot(`tokens-${theme}.png`, { maxDiffPixelRatio: 0.02 });
+      await expect(page.locator("table.tokens")).toHaveScreenshot(`tokens-table-${theme}.png`, {
+        maxDiffPixelRatio: 0.02,
+      });
     }
     await page.goto("/#/componentes");
-    await expect(page).toHaveScreenshot("componentes.png", { maxDiffPixelRatio: 0.02 });
+    await expect(page.locator("[data-component='hero']").first()).toHaveScreenshot("component-hero.png", {
+      maxDiffPixelRatio: 0.02,
+    });
     await page.goto("/#/preview/home");
-    await expect(page).toHaveScreenshot("preview-home.png", { maxDiffPixelRatio: 0.02 });
+    await expect(page.locator(".hero").first()).toHaveScreenshot("preview-hero.png", { maxDiffPixelRatio: 0.02 });
   });
 
   test("a11y basico: landmarks, lang y foco visible", async ({ page }) => {

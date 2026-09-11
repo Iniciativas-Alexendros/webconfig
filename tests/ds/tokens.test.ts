@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { readdirSync, readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { join, resolve } from "node:path";
 
 const TOKENS_DIR = resolve("tokens");
@@ -113,6 +114,11 @@ describe("tokens DTCG", () => {
   });
 
   it("tokens generados existen y cubren 1:1 las custom properties", () => {
+    try {
+      execFileSync("node", ["scripts/build-tokens.mjs"], { stdio: "ignore", timeout: 30000 });
+    } catch {
+      // Si el build falla, los readFileSync siguientes dan el error real.
+    }
     const css = readFileSync(resolve("dist-tokens/css/variables.css"), "utf-8");
     const tokensJson = JSON.parse(readFileSync(resolve("dist-tokens/json/tokens.json"), "utf-8")) as {
       light: unknown;

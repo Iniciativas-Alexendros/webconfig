@@ -16,7 +16,7 @@
   "scripts": {
     "build": "tsup src/cli.ts --format esm --dts",
     "dev": "tsup src/cli.ts --format esm --dts --watch",
-    "pretest": "npm run build",
+    "pretest": "npm run tokens:build && npm run build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
