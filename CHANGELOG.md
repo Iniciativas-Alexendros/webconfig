@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/Iniciativas-Alexendros/webconfig/compare/v1.1.0...v1.2.0) (2026-09-11)
+
+
+### Bug Fixes
+
+* **commitlint:** ignorar commits chore(release) de semantic-release ([#3](https://github.com/Iniciativas-Alexendros/webconfig/issues/3)) ([1ffe1c3](https://github.com/Iniciativas-Alexendros/webconfig/commit/1ffe1c34262c285204efe5ecfce6c8725dbf4263))
+
+
+### Features
+
+* **init:** scaffold starter bundle válido ([#1](https://github.com/Iniciativas-Alexendros/webconfig/issues/1)) ([24a8ac7](https://github.com/Iniciativas-Alexendros/webconfig/commit/24a8ac7a2b52ff501808a3d5fa97972b2bf9f9f6))
+
 # [1.1.0](https://github.com/Iniciativas-Alexendros/webconfig/compare/v1.0.4...v1.1.0) (2026-09-07)
 
 

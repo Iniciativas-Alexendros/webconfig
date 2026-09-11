@@ -1,6 +1,6 @@
 {
   "name": "webconfig",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "CLI validator and exporter for site.bundle v1.0.0 format",
   "type": "module",
   "private": true,
