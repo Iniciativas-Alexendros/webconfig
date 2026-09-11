@@ -1,11 +1,22 @@
-import Ajv from "ajv/dist/2020.js";
-import addFormats from "ajv-formats";
+import AjvModule from "ajv/dist/2020.js";
+import addFormatsModule from "ajv-formats";
 
-const AjvConstructor = Ajv.default;
-const addFormatsFn = addFormats.default;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AjvClass = new (opts: any) => {
+  compile: (schema: object) => ValidateFn;
+  addFormat?: unknown;
+  addKeyword?: unknown;
+};
+interface ValidateFn {
+  (data: unknown): boolean;
+  errors?: Array<{ keyword?: string; instancePath?: string; message?: string; params?: unknown }> | null;
+}
+const AjvConstructor = (AjvModule as unknown as { default: AjvClass; Ajv2020?: AjvClass }).default;
+const addFormatsFn = (addFormatsModule as unknown as { default: (ajv: unknown) => unknown }).default;
 
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { parse as parseYaml } from "yaml";
 import type { ValidationIssue } from "./errors.js";
 
 import manifestSchema from "../../schemas/manifest.schema.json" with { type: "json" };
@@ -17,7 +28,8 @@ import seoSchema from "../../schemas/seo.schema.json" with { type: "json" };
 const ajv = new AjvConstructor({ strict: false, allErrors: true, verbose: true });
 addFormatsFn(ajv);
 
-const schemaCache = new Map<string, Ajv.ValidateFunction>();
+type AjvInstance = typeof ajv;
+const schemaCache = new Map<string, ReturnType<AjvInstance["compile"]>>();
 
 const SCHEMAS: Record<string, object> = {
   manifest: manifestSchema,
@@ -27,7 +39,7 @@ const SCHEMAS: Record<string, object> = {
   seo: seoSchema,
 };
 
-async function loadSchema(name: string): Promise<Ajv.ValidateFunction> {
+async function loadSchema(name: string): Promise<ReturnType<AjvInstance["compile"]>> {
   if (schemaCache.has(name)) {
     return schemaCache.get(name)!;
   }
@@ -40,7 +52,10 @@ async function loadSchema(name: string): Promise<Ajv.ValidateFunction> {
   return validate;
 }
 
-function mapAjvErrors(errors: Ajv.ErrorObject[] | null | undefined, file: string): ValidationIssue[] {
+function mapAjvErrors(
+  errors: Array<{ keyword?: string; instancePath?: string; message?: string }> | null | undefined,
+  file: string
+): ValidationIssue[] {
   if (!errors) return [];
   return errors.map((err) => ({
     code: `SYNTAX_${err.keyword?.toUpperCase() || "ERROR"}`,
@@ -51,7 +66,10 @@ function mapAjvErrors(errors: Ajv.ErrorObject[] | null | undefined, file: string
   }));
 }
 
-function mapManifestErrors(errors: Ajv.ErrorObject[] | null | undefined, file: string): ValidationIssue[] {
+function mapManifestErrors(
+  errors: Array<{ keyword?: string; instancePath?: string; message?: string; params?: unknown }> | null | undefined,
+  file: string
+): ValidationIssue[] {
   if (!errors) return [];
   return errors.map((err) => {
     if (err.keyword === "required") {
@@ -82,8 +100,7 @@ export async function validateSyntax(bundleDir: string): Promise<ValidationIssue
 
   try {
     const manifestContent = await fs.readFile(manifestPath, "utf-8");
-    const yaml = await import("yaml");
-    const manifest = yaml.parse(manifestContent);
+    const manifest = parseYaml(manifestContent);
     const validateManifest = await loadSchema("manifest");
     const valid = validateManifest(manifest);
     if (!valid) {
@@ -100,8 +117,7 @@ export async function validateSyntax(bundleDir: string): Promise<ValidationIssue
 
   try {
     const siteConfigContent = await fs.readFile(siteConfigPath, "utf-8");
-    const yaml = await import("yaml");
-    const siteConfig = yaml.parse(siteConfigContent);
+    const siteConfig = parseYaml(siteConfigContent);
     const validateSiteConfig = await loadSchema("siteConfig");
     const valid = validateSiteConfig(siteConfig);
     if (!valid) {
@@ -125,8 +141,7 @@ export async function validateSyntax(bundleDir: string): Promise<ValidationIssue
       const filePath = path.join(compositionDir, entry);
       try {
         const content = await fs.readFile(filePath, "utf-8");
-        const yaml = await import("yaml");
-        const data = yaml.parse(content);
+        const data = parseYaml(content);
         const valid = validateComposition(data);
         if (!valid) {
           issues.push(...mapAjvErrors(validateComposition.errors, `composition/${entry}`));
@@ -171,8 +186,7 @@ export async function validateSyntax(bundleDir: string): Promise<ValidationIssue
           if (file.endsWith(".json")) {
             data = JSON.parse(content);
           } else {
-            const yaml = await import("yaml");
-            data = yaml.parse(content);
+            data = parseYaml(content);
           }
 
           const valid = validateContent(data);
@@ -218,8 +232,7 @@ export async function validateSyntax(bundleDir: string): Promise<ValidationIssue
         const filePath = path.join(localeDir, file);
         try {
           const content = await fs.readFile(filePath, "utf-8");
-          const yaml = await import("yaml");
-          const data = yaml.parse(content);
+          const data = parseYaml(content);
           const valid = validateSeo(data);
           if (!valid) {
             const relPath = path.relative(bundleDir, filePath);

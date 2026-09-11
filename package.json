@@ -16,22 +16,28 @@
   "scripts": {
     "build": "tsup src/cli.ts --format esm --dts",
     "dev": "tsup src/cli.ts --format esm --dts --watch",
+    "pretest": "npm run build",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "verify:fixtures": "node scripts/verify-fixture-coverage.mjs",
     "typecheck": "tsc --noEmit",
+    "typecheck:all": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "dependencies": {
     "ajv": "8.20.0",
     "ajv-formats": "2.1.1",
     "commander": "11.1.0",
     "tar-stream": "3.1.6",
-    "yaml": "2.9.0",
-    "zod": "3.22.4"
+    "yaml": "2.9.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@eslint/js": "^10.0.1",
     "@types/node": "20.11.0",
     "@types/tar-stream": "^3.1.4",
@@ -40,6 +46,8 @@
     "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.12.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.9.6",
     "tsup": "^8.5.1",
     "typescript": "5.3.3",
@@ -47,5 +55,14 @@
     "vite": "^6.4.2",
     "vite-node": "^3.0.0",
     "vitest": "^3.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,mjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,yaml,yml,md}": [
+      "prettier --write"
+    ]
   }
 }

@@ -1,3 +1,7 @@
+# webconfig ds-catalog ejemplo (18 componentes: layout/nav/content/form/media)
+# cp ds-catalog.example.yaml ds-catalog.yaml
+# Starter mínimo (4 comps: header/hero/footer/text-block): webconfig init ./mi-sitio
+# Ref: README.md#ds-catalog, schemas/, src/validate/ds-catalog.ts
 components:
   - id: "hero"
     name: "Hero Section"

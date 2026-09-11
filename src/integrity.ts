@@ -19,6 +19,17 @@ function sha256File(filePath: string): string {
   return createHash("sha256").update(content).digest("hex");
 }
 
+export function computeGlobalHash(files: Record<string, string>): string {
+  return createHash("sha256")
+    .update(
+      Object.keys(files)
+        .sort()
+        .map((p) => `${p}\0${files[p]}`)
+        .join("")
+    )
+    .digest("hex");
+}
+
 export function computeIntegrity(bundleDir: string): BundleIntegrity {
   const absoluteDir = resolve(bundleDir);
   const files = walkDirSync(absoluteDir);
@@ -36,9 +47,11 @@ export function computeIntegrity(bundleDir: string): BundleIntegrity {
     });
   }
 
-  const globalHash = createHash("sha256")
-    .update(fileIntegrities.map((f) => `${f.path}\0${f.hash}`).join(""))
-    .digest("hex");
+  const fileHashes: Record<string, string> = {};
+  for (const f of fileIntegrities) {
+    fileHashes[f.path] = f.hash;
+  }
+  const globalHash = computeGlobalHash(fileHashes);
 
   return {
     files: fileIntegrities,

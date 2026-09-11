@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { execFile } from "node:child_process";
-import { cp, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { createWriteStream } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -8,25 +8,39 @@ import { promisify } from "node:util";
 import { createGzip } from "node:zlib";
 import { pack } from "tar-stream";
 import { pipeline } from "node:stream/promises";
+import { randomUUID } from "node:crypto";
 
 const execFileAsync = promisify(execFile);
 const cliPath = resolve("dist/cli.js");
 
-async function createTarGz(entries: Array<{ name: string; content: string }>): Promise<string> {
+async function createTarGz(
+  entries: Array<{ name: string; content: string }>
+): Promise<{ tarPath: string; dir: string }> {
   const dir = await mkdtemp(join(tmpdir(), "webconfig-test-"));
-  const tarPath = join(dir, "test.tar.gz");
+  const tarPath = join(dir, `test-${randomUUID()}.tar.gz`);
   const packer = pack();
   for (const e of entries) {
     packer.entry({ name: e.name, size: Buffer.byteLength(e.content) }, e.content);
   }
   packer.finalize();
   await pipeline(packer, createGzip(), createWriteStream(tarPath));
-  return tarPath;
+  return { tarPath, dir };
 }
 
 describe("integration tests", () => {
   const goldenBundle = resolve("fixtures/golden/clinica-dental-sur");
   const dsCatalog = resolve("ds-catalog.example.yaml");
+  let scratchDir: string;
+  let exportedTar: string;
+
+  beforeAll(async () => {
+    scratchDir = await mkdtemp(join(tmpdir(), "webconfig-integration-"));
+    exportedTar = join(scratchDir, `export-${randomUUID()}.tar.gz`);
+  });
+
+  afterAll(async () => {
+    await rm(scratchDir, { recursive: true, force: true });
+  });
 
   it("validate command works via CLI", async () => {
     const { stdout, stderr } = await execFileAsync("node", [cliPath, "validate", goldenBundle, "--ds", dsCatalog]);
@@ -59,20 +73,14 @@ describe("integration tests", () => {
       cliPath,
       "export",
       "fixtures/golden/clinica-dental-sur",
-      "/tmp/integration-test.tar.gz",
+      exportedTar,
     ]);
     expect(stderr).toBe("");
     expect(stdout).toContain("Exported to");
   });
 
   it("validate works on exported tar.gz", async () => {
-    const { stdout, stderr } = await execFileAsync("node", [
-      cliPath,
-      "validate",
-      "/tmp/integration-test.tar.gz",
-      "--ds",
-      dsCatalog,
-    ]);
+    const { stdout, stderr } = await execFileAsync("node", [cliPath, "validate", exportedTar, "--ds", dsCatalog]);
     expect(stderr).toBe("");
     expect(stdout).toContain("Valid bundle");
   });
@@ -121,7 +129,7 @@ describe("integration tests", () => {
   });
 
   it("rejects tar entries that escape the bundle directory (tar-slip)", async () => {
-    const tarPath = await createTarGz([{ name: "../../../../etc/evil.txt", content: "pwned" }]);
+    const { tarPath, dir } = await createTarGz([{ name: "../../../../etc/evil.txt", content: "pwned" }]);
     try {
       await execFileAsync("node", [cliPath, "validate", tarPath, "--ds", dsCatalog]);
       expect.unreachable("expected validate to fail");
@@ -129,13 +137,14 @@ describe("integration tests", () => {
       const e = err as { code?: number; stdout?: string };
       expect(e.code).toBe(1);
       expect(e.stdout ?? "").toContain("escapes bundle directory");
+    } finally {
+      await rm(dir, { recursive: true, force: true });
     }
   });
 
   it("fails with exit 1 on corrupted gzip (no crash)", async () => {
     const dir = await mkdtemp(join(tmpdir(), "webconfig-test-"));
     const tarPath = join(dir, "corrupt.tar.gz");
-    const { writeFile } = await import("node:fs/promises");
     await writeFile(tarPath, Buffer.from("not-a-valid-gzip-archive"));
     try {
       await execFileAsync("node", [cliPath, "validate", tarPath, "--ds", dsCatalog]);
@@ -144,6 +153,8 @@ describe("integration tests", () => {
       const e = err as { code?: number; stdout?: string };
       expect(e.code).toBe(1);
       expect(e.stdout ?? "").toContain("failed to decompress");
+    } finally {
+      await rm(dir, { recursive: true, force: true });
     }
   });
 
@@ -163,6 +174,8 @@ describe("integration tests", () => {
       expect(out).toContain("possible GitHub token detected");
       expect(out).toContain("site.config.yaml");
       expect(out).not.toContain("ghp_123456789012345678901234567890123456");
+    } finally {
+      await rm(dir, { recursive: true, force: true });
     }
   });
 });

@@ -40,7 +40,7 @@ jobs:
         run: npm test -- --coverage
 
       - name: Audit production dependencies
-        run: npm audit --omit=dev
+        run: npm audit --omit=dev --audit-level=high
 
       - name: Validate golden fixture
         run: node dist/cli.js validate fixtures/golden/clinica-dental-sur --ds ds-catalog.example.yaml

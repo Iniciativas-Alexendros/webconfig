@@ -2,7 +2,7 @@ import path from "node:path";
 import { validateSyntax } from "./syntax.js";
 import { runSemanticValidation } from "./semantic.js";
 import { loadDSCatalog, type DSCatalog } from "./ds-catalog.js";
-import { extractTar } from "../tar.js";
+import { loadBundle } from "../load.js";
 import type { ValidationResult } from "./errors.js";
 import { groupBySeverity, createIssue, ErrorCode as EC } from "./errors.js";
 
@@ -15,10 +15,6 @@ function findDSCatalog(bundleDir: string, explicitPath?: string): string {
   return defaultPath;
 }
 
-async function loadBundleFromTar(tarPath: string): Promise<{ dir: string; cleanup: () => Promise<void> }> {
-  return extractTar(tarPath);
-}
-
 export interface ValidateOptions {
   bundlePath: string;
   dsCatalogPath?: string | undefined;
@@ -27,14 +23,8 @@ export interface ValidateOptions {
 }
 
 export async function validateBundle(options: ValidateOptions): Promise<ValidationResult> {
-  let bundleDir = options.bundlePath;
-  let cleanupTemp: (() => Promise<void>) | null = null;
-
-  if (bundleDir.endsWith(".tar.gz") || bundleDir.endsWith(".tgz")) {
-    const { dir, cleanup } = await loadBundleFromTar(bundleDir);
-    bundleDir = dir;
-    cleanupTemp = cleanup;
-  }
+  const loaded = await loadBundle(options.bundlePath);
+  const bundleDir = loaded.bundleDir;
 
   try {
     const dsCatalogPath = findDSCatalog(bundleDir, options.dsCatalogPath);
@@ -60,9 +50,7 @@ export async function validateBundle(options: ValidateOptions): Promise<Validati
 
     return result;
   } finally {
-    if (cleanupTemp) {
-      await cleanupTemp();
-    }
+    await loaded.cleanup();
   }
 }
 

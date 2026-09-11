@@ -36,8 +36,14 @@ function listFixtures() {
 function validateFixture(fixture) {
   const out = execFileSync(
     "node",
-    [join(repoRoot, "dist/cli.js"), "validate", join(repoRoot, "fixtures/invalid", fixture), "--ds", join(repoRoot, "ds-catalog.example.yaml")],
-    { encoding: "utf-8", stdio: ["ignore", "pipe", "pipe"] }
+    [
+      join(repoRoot, "dist/cli.js"),
+      "validate",
+      join(repoRoot, "fixtures/invalid", fixture),
+      "--ds",
+      join(repoRoot, "ds-catalog.example.yaml"),
+    ],
+    { encoding: "utf-8", stdio: ["ignore", "pipe", "pipe"], timeout: 30000 }
   );
   return out;
 }
