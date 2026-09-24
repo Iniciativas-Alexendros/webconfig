@@ -1,5 +1,11 @@
 # Guía: calidad y cobertura
 
+### Propósito de este documento
+
+- **Objetivos:** Fijar umbrales de cobertura, el contrato de fixtures y el significado de los jobs `quality` / `test` / `build` / `smoke`.
+- **Estructura:** Gate de cobertura → fixtures golden/inválidas → tabla de jobs del pipeline principal (release queda aparte).
+- **Contenido a integrar según contexto:** Adapta umbrales (este repo 80/75/80/80; flota ≥ 70 %). No copies gates de otro paquete público. El job `quality` incluye `tokens:check`; no bajes coverage para “arreglar” drift de tokens ni regeneres fixtures inválidas.
+
 ## Gate de cobertura
 
 Vitest (`vitest.config.ts`) exige:

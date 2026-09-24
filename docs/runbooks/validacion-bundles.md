@@ -1,5 +1,11 @@
 # Runbook: validación y exportación de bundles
 
+### Propósito de este documento
+
+- **Objetivos:** Diagnosticar fallos habituales de `validate`, `normalize`, `export` e `integrity` sobre un `site.bundle`.
+- **Estructura:** Catálogo ausente (`COMP_001`) → warnings vs `--strict` → JSON fail-closed → normalize → export no bit-idéntico → integridad → secretos.
+- **Contenido a integrar según contexto:** Adapta códigos y rutas de esta CLI. No copies runbooks de otro paquete público. El DS catalog (`--ds`) no viaja dentro del bundle; no incrustes tokens ni claves reales en fixtures.
+
 ## `validate` falla con `COMP_001`
 
 Causa habitual: no encuentra `ds-catalog.yaml`. Pasa `--ds` explícito o coloca el catálogo en el directorio padre del paquete.

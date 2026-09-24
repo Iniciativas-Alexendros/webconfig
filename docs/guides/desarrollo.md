@@ -1,5 +1,11 @@
 # Guía: desarrollo local
 
+### Propósito de este documento
+
+- **Objetivos:** Arrancar el repo en local (npm, no pnpm), validar un sitio starter y saber qué documento actualizar según el tipo de cambio.
+- **Estructura:** Requisitos → arranque → comprobaciones antes del PR → tabla «dónde documentar».
+- **Contenido a integrar según contexto:** Adapta Node, lockfile y scripts de esta CLI. No copies un setup pnpm/monorepo ni tokens de otro paquete público. Cambios de tokens/Showcase van a `guides/design-system.md`; no metas tokens en el bundle.
+
 ## Requisitos
 
 - Node.js ≥ 20.10 (`nvm use` lee `.nvmrc` → 22)

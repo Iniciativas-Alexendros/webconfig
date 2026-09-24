@@ -1,5 +1,11 @@
 # Política de seguridad
 
+### Propósito de este documento
+
+- **Objetivos:** Declarar versiones soportadas, el canal privado de avisos y la superficie de la CLI (validador, export, integridad).
+- **Estructura:** Versiones soportadas → cómo reportar → superficie relevante → alcance (CLI local, no SaaS).
+- **Contenido a integrar según contexto:** Adapta versiones de la herramienta y del formato `site.bundle`. No copies la política de un SaaS ni un desk de comunidad. No reutilices fixtures o tokens de ejemplo con secretos reales; no commitees `.env` ni claves.
+
 ## Versiones soportadas
 
 | Versión                     | Soportada                                          |

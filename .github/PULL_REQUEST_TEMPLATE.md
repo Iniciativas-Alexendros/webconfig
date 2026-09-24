@@ -1,5 +1,11 @@
 <!-- canon-managed: true -->
 
+### Propósito de este documento
+
+- **Objetivos:** Plantilla de PR para describir el cambio y exigir las comprobaciones de calidad, tests, golden y jobs `quality` / `test` / `smoke`.
+- **Estructura:** Qué cambia → checklist (typecheck/lint, build/test/fixtures, validate/normalize, docs, artefactos, CI).
+- **Contenido a integrar según contexto:** Adapta el checklist a los scripts de esta CLI. No copies plantillas de otro paquete público. Si el PR toca tokens/DS, actualiza `docs/guides/design-system.md` y commitea `dist-tokens/`; no metas tokens en el bundle.
+
 ## Qué cambia
 
 <!-- feat/fix/docs + alcance en una o dos frases -->
