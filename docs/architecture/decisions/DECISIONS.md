@@ -130,7 +130,7 @@ This separation allows:
 
 ### DS Tokens v1.1 Proposal (no format change)
 - **Date**: 2026-09-11
-- **Status**: PROPOSAL — see `docs/adr/ds-tokens-v1.1-proposal.md`. `schemas/` untouched; `theme` v1.0 (`colorScheme/fontFamily/radius`) stays required.
+- **Status**: PROPOSAL — see `docs/architecture/decisions/0001-ds-tokens-v1.1-proposal.md`. `schemas/` untouched; `theme` v1.0 (`colorScheme/fontFamily/radius`) stays required.
 - **Scope**: opt-in `theme.tokensVersion` / `theme.tokensRef` (external file, like `ds-catalog.yaml`); fallback to this repo's generated tokens (`dist-tokens/json/tokens.json`); future `DS_001` warning only.
 - **Design system source**: `tokens/*.tokens.json` (W3C DTCG, OKLCH) built by `scripts/build-tokens.mjs` to `dist-tokens/`; GUI in `showcase/` (Vite static, dev-only, no CLI runtime deps).
 
@@ -161,12 +161,12 @@ This separation allows:
 ## CI/CD
 
 ### GitHub Actions Workflow
-- Runs on push/PR to main
-- Node.js 20, npm ci
-- Typecheck (tsc --noEmit)
-- Tests (npm test)
-- Validate golden fixture
-- Normalize --check golden fixture
+- Pipeline principal (`ci.yml`): jobs canónicos `quality`, `test`, `build` (artefacto `dist/`), `smoke`
+- Node.js 20 + 22 en `test`; `.nvmrc` (22) en quality/build/smoke
+- Typecheck, lint, format, tokens:check, audit (quality)
+- Tests + coverage + fixtures (test)
+- Validate golden + normalize --check + export determinista + Playwright (smoke)
+- `release.yml` / `release-validation.yml` permanecen aparte (semantic-release)
 
 ### Release (semantic-release)
 - Package is `private: true`; release = git tag + GitHub Release only (no npm publish)
