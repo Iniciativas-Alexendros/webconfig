@@ -1,6 +1,10 @@
 import { TokensView, ComponentesView, PreviewView } from "./views/views.js";
+import { ValidateView } from "./views/validate.js";
 import { parseCompositionYaml } from "./lib/yaml.js";
 import { renderByType } from "./lib/registry.js";
+import { exampleBundleMap } from "./lib/example-bundle.js";
+import { bundleMapFromRelativePaths } from "./lib/bundle-files.js";
+import { validateSyntaxDocuments } from "../../src/validate/syntax-documents.js";
 
 declare const __GOLDEN__: Record<string, string>;
 declare const __TOKENS__: { light: Record<string, string>; dark: Record<string, string> };
@@ -77,11 +81,53 @@ function goldenPages(): Array<{ slug: string; html: string }> {
   });
 }
 
+function validationModel(files: ReadonlyMap<string, string>, sourceLabel: string) {
+  const issues = validateSyntaxDocuments(files).map((issue) => ({
+    code: issue.code,
+    severity: issue.severity,
+    file: issue.file,
+    message: issue.message,
+  }));
+  return { sourceLabel, issues };
+}
+
+function showValidation(files: ReadonlyMap<string, string>, sourceLabel: string): void {
+  app.innerHTML = ValidateView(validationModel(files, sourceLabel));
+  wireBundleForm();
+}
+
+function wireBundleForm(): void {
+  const input = document.getElementById("bundle-files") as HTMLInputElement | null;
+  input?.addEventListener("change", () => {
+    const list = input.files;
+    if (!list || list.length === 0) {
+      showValidation(exampleBundleMap(), "ejemplo local");
+      return;
+    }
+    void (async () => {
+      const entries = await Promise.all(
+        [...list].map(async (file) => {
+          const relative = (file as File & { webkitRelativePath?: string }).webkitRelativePath || file.name;
+          return { path: relative, text: await file.text() };
+        })
+      );
+      const map = bundleMapFromRelativePaths(entries);
+      const label = map.size === 0 ? "ejemplo local" : "archivos locales";
+      showValidation(map.size === 0 ? exampleBundleMap() : map, label);
+    })();
+  });
+  document.getElementById("bundle-example")?.addEventListener("click", () => {
+    showValidation(exampleBundleMap(), "ejemplo local");
+  });
+}
+
 function route(): void {
   const hash = location.hash || "#/";
   const previewMatch = hash.match(/^#\/preview\/([A-Za-z0-9-]+)/);
   if (hash.startsWith("#/componentes")) {
     app.innerHTML = ComponentesView();
+  } else if (hash.startsWith("#/validar")) {
+    showValidation(exampleBundleMap(), "ejemplo local");
   } else if (hash.startsWith("#/preview")) {
     const pages = goldenPages();
     const active = previewMatch ? (previewMatch[1] as string) : "home";

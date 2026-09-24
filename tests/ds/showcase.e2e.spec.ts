@@ -93,6 +93,16 @@ test.describe("showcase", () => {
     expect(darkBg).not.toBe(lightBg);
   });
 
+  test("validar usa el ejemplo local sin archivo y sin servidor", async ({ page }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (e) => errors.push(String(e)));
+    await page.goto("/#/validar");
+    await expect(page.locator("#validation-source")).toHaveText("ejemplo local");
+    await expect(page.locator("#validation-status")).toHaveText("Esquema válido");
+    await expect(page.locator("#app")).toContainText("sin servidor");
+    expect(errors).toEqual([]);
+  });
+
   test("a11y basico: landmarks, lang y foco visible", async ({ page }) => {
     await page.goto("/#/");
     await expect(page.locator("html")).toHaveAttribute("lang", "es");

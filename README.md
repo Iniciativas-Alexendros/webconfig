@@ -94,7 +94,9 @@ Sistema de diseño tokenizado desde colores hasta componentes:
 
 - **Fuente:** `tokens/*.tokens.json` en formato **W3C DTCG** (`$value/$type/$description`), color autorado en **OKLCH** (CSS Color 4). Metodología CSS **CUBE + Every Layout**, sin frameworks JS.
 - **Build:** `npm run tokens:build` genera `dist-tokens/{css,variables.css · ts/tokens.ts · json/tokens.json}` + fallback hex sRGB para navegadores sin `oklch()`. `npm run tokens:check` verifica contraste **WCAG 2.2 AA + APCA** y cobertura 1:1.
-- **GUI:** `npm run ds:dev` abre el Showcase (Vite): `/` tabla de tokens con swatches y toggle light/dark/auto · `/#/componentes` los 18 componentes de `ds-catalog.example.yaml` · `/#/preview/home` render del bundle golden + selector de fixtures inválidas.
+- **Contrato:** [`tokens/CONTRACT.md`](tokens/CONTRACT.md) y [`tokens/contract.schema.json`](tokens/contract.schema.json) (v1.0, fuera de `schemas/`).
+- **Landing:** `landing/index.html` es HTML estático (sin Node en runtime) y consume el CSS generado.
+- **GUI:** `npm run ds:dev` abre el Showcase (Vite): `/` tabla de tokens con swatches y toggle light/dark/auto · `/#/componentes` los 18 componentes de `ds-catalog.example.yaml` · `/#/preview/home` render del bundle golden + selector de fixtures inválidas · `/#/validar` comprueba el esquema AJV de un bundle abierto en local (File API). El export tar sigue en la CLI.
 - **E2E/visual:** `npx playwright test` (chromium: 3 rutas sin errores, toggle de tema, 18 tarjetas, preview golden, screenshots light/dark, checks a11y). Baseline en `tests/ds/showcase.e2e.spec.ts-snapshots/`.
 - **Compat:** el formato `site.bundle v1.0.0` no cambia (`schemas/` congelado). Extensión opt-in documentada en [`docs/architecture/decisions/0001-ds-tokens-v1.1-proposal.md`](docs/architecture/decisions/0001-ds-tokens-v1.1-proposal.md).
 

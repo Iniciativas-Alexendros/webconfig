@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Constructor de tokens DTCG sin dependencias externas.
 // Lee tokens/*.tokens.json (formato W3C DTCG, color en OKLCH) y genera:
-//   dist-tokens/css/variables.css  (custom properties + dark + fallback hex)
+//   dist-tokens/css/variables.css  (custom properties + dark + prefers-color-scheme;
+//                                  fallback hex SOLO dentro de @supports)
 //   dist-tokens/ts/tokens.ts        (mapas tipados light/dark)
 //   dist-tokens/json/tokens.json    (valores resueltos por modo)
 //   dist-tokens/json/fallback-hex.json (hex sRGB por variable y modo)
@@ -191,11 +192,15 @@ const css =
   lightDecls.join("\n") +
   '\n  }\n  :root[data-theme="dark"] {\n' +
   darkDecls.join("\n") +
-  "\n  }\n  @supports not (color: oklch(0% 0 0)) {\n    :root {\n" +
+  '\n  }\n  @media (prefers-color-scheme: dark) {\n    :root:not([data-theme="light"]) {\n' +
+  darkDecls.join("\n") +
+  "\n    }\n  }\n  @supports not (color: oklch(0% 0 0)) {\n    :root {\n" +
   fallbackLight.join("\n") +
   '\n    }\n    :root[data-theme="dark"] {\n' +
   fallbackDark.join("\n") +
-  "\n    }\n  }\n}\n";
+  '\n    }\n    @media (prefers-color-scheme: dark) {\n      :root:not([data-theme="light"]) {\n' +
+  fallbackDark.join("\n") +
+  "\n      }\n    }\n  }\n}\n";
 // prettier-ignore
 
 const nestedLight = {};

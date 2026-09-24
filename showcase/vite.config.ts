@@ -50,9 +50,18 @@ export default defineConfig({
   build: {
     outDir: join(root, "dist-showcase"),
     emptyOutDir: true,
+    target: "es2022",
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: "es2022",
+    },
   },
   server: {
     port: 5173,
+    fs: {
+      allow: [root],
+    },
   },
   preview: {
     port: 4173,
