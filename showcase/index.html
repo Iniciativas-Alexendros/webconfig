@@ -5,28 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
     <title>webconfig Design System — Showcase</title>
-    <link rel="stylesheet" href="./src/styles.css" />
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem("ds-theme");
+          if (theme === "dark") {
+            document.documentElement.setAttribute("data-theme", "dark");
+            document.documentElement.classList.add("dark");
+          } else if (theme === "light") {
+            document.documentElement.setAttribute("data-theme", "light");
+            document.documentElement.classList.remove("dark");
+          } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
-    <div class="ds-shell">
-      <header class="ds-header">
-        <div class="ds-header-inner">
-          <strong>webconfig DS</strong>
-          <nav aria-label="Showcase">
-            <a class="btn" data-variant="secondary" href="#/">Tokens</a>
-            <a class="btn" data-variant="secondary" href="#/componentes">Componentes</a>
-            <a class="btn" data-variant="secondary" href="#/preview/home">Preview</a>
-            <a class="btn" data-variant="secondary" href="#/validar">Validar</a>
-          </nav>
-          <span style="flex: 1"></span>
-          <button class="btn" data-variant="outline" id="theme-toggle" type="button" aria-live="polite">
-            <span id="theme-label">Tema: auto</span>
-          </button>
-        </div>
-      </header>
-      <main class="ds-main" id="app" aria-live="polite"></main>
-      <footer class="ds-footer">webconfig Design System · OKLCH · W3C DTCG · WCAG 2.2 AA</footer>
-    </div>
-    <script type="module" src="./src/main.ts"></script>
+    <div id="root"></div>
+    <script type="module" src="/showcase/src/main.tsx"></script>
   </body>
 </html>

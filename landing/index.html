@@ -9,167 +9,25 @@
       name="description"
       content="CLI para crear, validar, normalizar y exportar paquetes site.bundle, con un design system de tokens."
     />
-    <link rel="stylesheet" href="../dist-tokens/css/variables.css" />
-    <link rel="stylesheet" href="./landing.css" />
     <script>
       (function () {
         try {
-          var theme = localStorage.getItem("webconfig-theme");
-          if (theme === "light" || theme === "dark") document.documentElement.setAttribute("data-theme", theme);
-        } catch (e) {
-          /* sin almacenamiento el tema sigue el sistema */
-        }
+          var theme = localStorage.getItem("ds-theme");
+          if (theme === "dark") {
+            document.documentElement.setAttribute("data-theme", "dark");
+            document.documentElement.classList.add("dark");
+          } else if (theme === "light") {
+            document.documentElement.setAttribute("data-theme", "light");
+            document.documentElement.classList.remove("dark");
+          } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (e) {}
       })();
     </script>
   </head>
   <body>
-    <a class="skip" href="#contenido">Saltar al contenido</a>
-    <header class="header">
-      <div class="header-bar">
-        <a class="wordmark" href="#contenido">webconfig</a>
-        <nav aria-label="Secciones">
-          <a href="#caracteristicas">Características</a>
-          <a href="#funcionalidades">Funcionalidades</a>
-          <a href="#roadmap">Roadmap</a>
-        </nav>
-        <span class="header-spacer"></span>
-        <button class="button" data-variant="secondary" id="theme-toggle" type="button">
-          <span id="theme-label">Tema: sistema</span>
-        </button>
-      </div>
-    </header>
-    <main id="contenido">
-      <section class="hero" aria-labelledby="propuesta">
-        <p class="kicker">CLI de site.bundle y design system</p>
-        <h1 id="propuesta">
-          Comprueba y empaqueta sitios en el formato site.bundle, con tokens de diseño que puedes reutilizar.
-        </h1>
-      </section>
-      <section class="features" id="caracteristicas" aria-labelledby="caracteristicas-titulo">
-        <h2 id="caracteristicas-titulo">Características</h2>
-        <ul class="features-list">
-          <li class="feature">
-            <h3>Determinista</h3>
-            <p>El mismo bundle produce el mismo archivo y los mismos hashes. Sirve para comparar versiones en CI.</p>
-          </li>
-          <li class="feature">
-            <h3>Formato congelado</h3>
-            <p>
-              site.bundle v1.0.0 no cambia de esquema sin una decisión explícita. Los códigos de error se mantienen.
-            </p>
-          </li>
-          <li class="feature">
-            <h3>Tokens con contraste</h3>
-            <p>Color en OKLCH, claro y oscuro, texto sobre fondo al menos 4.5:1 y bordes al menos 3:1.</p>
-          </li>
-          <li class="feature">
-            <h3>Local</h3>
-            <p>
-              La comprobación de esquema puede hacerse en el navegador, con un archivo que abres tú. No hay cuentas.
-            </p>
-          </li>
-        </ul>
-      </section>
-      <section class="functions" id="funcionalidades" aria-labelledby="funcionalidades-titulo">
-        <h2 id="funcionalidades-titulo">Funcionalidades</h2>
-        <ul class="functions-list">
-          <li class="function">
-            <h3><code>init</code></h3>
-            <p>Crea un site.bundle starter válido.</p>
-          </li>
-          <li class="function">
-            <h3><code>validate</code></h3>
-            <p>Comprueba esquema y reglas semánticas, y devuelve códigos estables.</p>
-          </li>
-          <li class="function">
-            <h3><code>normalize</code></h3>
-            <p>Ordena YAML y JSON para que el diff muestre cambios reales.</p>
-          </li>
-          <li class="function">
-            <h3><code>export</code></h3>
-            <p>Empaqueta el sitio en un <code>.tar.gz</code> reproducible.</p>
-          </li>
-          <li class="function">
-            <h3><code>integrity</code></h3>
-            <p>Calcula huellas SHA-256 por fichero y un hash global.</p>
-          </li>
-        </ul>
-      </section>
-      <section class="roadmap" id="roadmap" aria-labelledby="roadmap-titulo">
-        <h2 id="roadmap-titulo">Roadmap</h2>
-        <ol class="roadmap-list">
-          <li class="roadmap-item" data-status="now">
-            <p class="roadmap-status">Disponible</p>
-            <h3>CLI de bundles</h3>
-            <p>init, validate, normalize, export e integrity sobre site.bundle v1.0.0.</p>
-          </li>
-          <li class="roadmap-item" data-status="now">
-            <p class="roadmap-status">Disponible</p>
-            <h3>Design system</h3>
-            <p>Hojas DTCG v1.0, variables CSS, contraste y showcase de tokens. La landing usa esas variables.</p>
-          </li>
-          <li class="roadmap-item" data-status="now">
-            <p class="roadmap-status">Disponible</p>
-            <h3>Esquema en el navegador</h3>
-            <p>
-              La vista Validar del showcase abre un bundle con la File API y lo comprueba con AJV. No necesita servidor.
-              El export tar y la validación semántica siguen en la CLI.
-            </p>
-          </li>
-          <li class="roadmap-item" data-status="out">
-            <p class="roadmap-status">Fuera de alcance</p>
-            <h3>Sin VPS ni alojamiento</h3>
-            <p>
-              webconfig no despliega sitios, no administra un VPS y no promete cuentas, colaboración ni publicación.
-            </p>
-          </li>
-        </ol>
-      </section>
-    </main>
-    <footer class="close" id="cierre">
-      <div class="close-inner">
-        <h2>Empieza por la CLI</h2>
-        <p>init, validate y export cubren el flujo. El design system es opt-in y no entra dentro del bundle.</p>
-        <a class="button" href="#funcionalidades">Ver funcionalidades</a>
-      </div>
-    </footer>
-    <script>
-      (function () {
-        var key = "webconfig-theme";
-        var root = document.documentElement;
-        var button = document.getElementById("theme-toggle");
-        var label = document.getElementById("theme-label");
-        function name(theme) {
-          if (theme === "light") return "claro";
-          if (theme === "dark") return "oscuro";
-          return "sistema";
-        }
-        function apply(theme) {
-          if (theme === "light" || theme === "dark") root.setAttribute("data-theme", theme);
-          else root.removeAttribute("data-theme");
-          var text = "Tema: " + name(theme);
-          if (label) label.textContent = text;
-          if (button) button.setAttribute("aria-label", "Cambiar tema. Ahora: " + name(theme));
-        }
-        var saved = null;
-        try {
-          saved = localStorage.getItem(key);
-        } catch (e) {
-          saved = null;
-        }
-        apply(saved === "light" || saved === "dark" ? saved : "auto");
-        if (!button) return;
-        button.addEventListener("click", function () {
-          var current = root.getAttribute("data-theme");
-          var next = current === "light" ? "dark" : current === "dark" ? "auto" : "light";
-          try {
-            localStorage.setItem(key, next);
-          } catch (e) {
-            /* el tema cambia igual en esta visita */
-          }
-          apply(next);
-        });
-      })();
-    </script>
+    <div id="root"></div>
+    <script type="module" src="/landing/src/main.tsx"></script>
   </body>
 </html>

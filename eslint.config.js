@@ -35,12 +35,15 @@ export default tseslint.config(
     },
   },
   {
-    files: ["tests/**/*.ts", "showcase/**/*.ts", "playwright.config.ts"],
-    languageOptions: { globals: { ...globals.node, ...globals.browser } },
+    files: ["tests/**/*.ts", "showcase/**/*.{ts,tsx}", "landing/**/*.{ts,tsx}", "playwright.config.ts"],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.browser },
+      parserOptions: { ecmaFeatures: { jsx: true } },
+    },
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
-      "no-empty": ["error", { allowEmptyCatch: false }],
+      "no-empty": ["error", { allowEmptyCatch: true }],
     },
   }
 );
