@@ -63,7 +63,11 @@ function siteConfig(name: string): string {
         { href: "/contacto", label: "Contacto" },
       ],
     },
-    theme: { colorScheme: "light", fontFamily: "Inter, system-ui, sans-serif", radius: "md" },
+    theme: {
+      colorScheme: "light",
+      fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      radius: "md",
+    },
     timezone: "Europe/Madrid",
     version: "1.0.0",
   });

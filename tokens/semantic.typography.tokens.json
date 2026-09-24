@@ -2,12 +2,12 @@
   "$meta": { "ds": "webconfig", "tier": "semantic", "version": "1.0" },
   "font": {
     "sans": {
-      "$value": "\"Inter\", system-ui, -apple-system, sans-serif",
+      "$value": "system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
       "$type": "fontFamily",
-      "$description": "Familia por defecto (mapea theme.fontFamily v1.0)"
+      "$description": "Pila de flota (neubat/protonsuite). Sin webfonts."
     },
     "mono": {
-      "$value": "ui-monospace, SFMono-Regular, Menlo, monospace",
+      "$value": "ui-monospace, \"Fira Code\", Consolas, monospace",
       "$type": "fontFamily"
     },
     "weight": {

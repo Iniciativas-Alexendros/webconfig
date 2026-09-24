@@ -35,7 +35,7 @@ navigation:
       label: Inicio
 theme:
   colorScheme: light
-  fontFamily: Inter, system-ui, sans-serif
+  fontFamily: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif
   radius: md
 timezone: Europe/Madrid
 version: 1.0.0
