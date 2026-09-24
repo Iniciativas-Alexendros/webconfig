@@ -13,4 +13,4 @@ description: Propuesta de mejora para webconfig
 
 ## Impacto en formato
 
-<!-- TOOL-only o ADDITION-vX: ¿toca schemas/, códigos o contrato? Si sí, exige ADR en DECISIONS.md -->
+<!-- TOOL-only o ADDITION-vX: ¿toca schemas/, códigos o contrato? Si sí, exige ADR en docs/architecture/decisions/ -->

@@ -13,7 +13,7 @@ coverage
 pnpm-lock.yaml
 pnpm-workspace.yaml
 
-# Work-state files: NEVER committed. Decisions live in DECISIONS.md only.
+# Work-state files: NEVER committed. Decisions live in docs/architecture/decisions/.
 findings.md
 progress.md
 task_plan.md
