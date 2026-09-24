@@ -168,15 +168,16 @@ body {
 }
 
 .close {
+  max-width: none;
   border-top: var(--border-width-thin) solid var(--border-base);
   background: var(--bg-surface);
-  max-width: none;
+  padding: 0;
 }
 
-.close h2,
-.close p,
-.close .button {
+.close-inner {
   max-width: var(--breakpoint-xl);
+  margin-inline: auto;
+  padding: var(--space-6) var(--space-4);
 }
 
 .close p {

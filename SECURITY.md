@@ -20,7 +20,7 @@ La versión de la **herramienta** (`package.json`) y la del **formato** (`schema
 
 **No abras un issue público** si el hallazgo puede filtrar secretos, romper integridad de paquetes o facilitar inyección en un bundle.
 
-1. Preferible: [GitHub Security Advisory](https://github.com/Iniciativas-Alexendros/webconfig/security/advisories/new) en este repositorio.
+1. Preferible: [GitHub Security Advisory](https://github.com/Soluciones-Alexendros/webconfig/security/advisories/new) en este repositorio.
 2. Alternativa: correo a [operaciones@alexendros.dev](mailto:operaciones@alexendros.dev).
 
 Incluye: versión o commit, comando reproducido (`validate` / `export` / `init`…), sistema operativo, y un bundle **mínimo sintético** (nunca claves reales). Responderemos en un plazo máximo de 7 días naturales.
