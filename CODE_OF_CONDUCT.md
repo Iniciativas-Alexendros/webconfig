@@ -1,5 +1,11 @@
 # Código de conducta
 
+### Propósito de este documento
+
+- **Objetivos:** Definir el estándar de conducta del proyecto y el canal privado para denunciar acoso o abuso.
+- **Estructura:** Compromiso → estándares (aceptable / inaceptable) → alcance → aplicación y contacto.
+- **Contenido a integrar según contexto:** Adapta el correo de aplicación (`operaciones@alexendros.dev`). No copies el CoC de un SaaS con desk de comunidad. Sin relación con design-system, tokens ni packages públicos: no se reutiliza UI ni catálogos aquí.
+
 ## Compromiso
 
 Como personas contribuyentes y mantenedoras de este proyecto, nos comprometemos a hacer de la participación una experiencia libre de acoso para todas las personas, con independencia de edad, cuerpo, discapacidad, etnia, identidad o expresión de género, nivel de experiencia, nacionalidad, apariencia, raza, religión u orientación sexual.

@@ -1,5 +1,11 @@
 # Arquitectura de webconfig
 
+### Propósito de este documento
+
+- **Objetivos:** Describir capas, fronteras de módulos y no-objetivos de la CLI para que un cambio no rompa el formato congelado ni el determinismo de `export` / `integrity`.
+- **Estructura:** Propósito del producto → capas → módulos `src/` → contratos de versión → calidad → no-objetivos → stack.
+- **Contenido a integrar según contexto:** Adapta módulos y stack de este repo. No copies tokens OKLCH, Showcase ni `dist-tokens/` a la arquitectura de otro paquete público. No metas tokens dentro del bundle (rompe determinismo). `schemas/` solo se mueve con ADR.
+
 CLI que **crea, valida, normaliza y exporta** paquetes `site.bundle v1.0.0` para que un generador o un LLM produzca sitios sin desviarse del formato.
 
 El [README.md](./README.md) cubre el uso. Las decisiones viven en [`docs/architecture/decisions/`](./docs/architecture/decisions/). Este documento describe capas, fronteras y lo que no se toca.

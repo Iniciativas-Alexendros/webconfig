@@ -1,5 +1,11 @@
 # Guía: Design System
 
+### Propósito de este documento
+
+- **Objetivos:** Explicar cómo construir, comprobar y previsualizar los tokens OKLCH (DTCG) y el Showcase sin alterar el formato `site.bundle v1.0.0`.
+- **Estructura:** Fuente y propuesta 0001 → tabla de comandos → contrato (`dist-tokens/` commiteado, catálogo, tokens fuera del bundle).
+- **Contenido a integrar según contexto:** Adapta scripts y rutas de este repo. No copies `tokens/*.tokens.json`, `dist-tokens/` ni el catálogo de 18 componentes a otro paquete público. No metas tokens dentro del bundle (rompe `export` / `integrity`). La extensión `theme.tokensRef` no se implementa hasta aprobar [0001](../architecture/decisions/0001-ds-tokens-v1.1-proposal.md).
+
 Fuente: `tokens/*.tokens.json` (W3C DTCG, color OKLCH). El formato `site.bundle v1.0.0` **no** cambia; la extensión `theme.tokensRef` está propuesta en [0001](../architecture/decisions/0001-ds-tokens-v1.1-proposal.md).
 
 ## Comandos

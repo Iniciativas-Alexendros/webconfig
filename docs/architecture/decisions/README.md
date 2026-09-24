@@ -1,5 +1,11 @@
 # Decisiones de arquitectura
 
+### Propósito de este documento
+
+- **Objetivos:** Indexar ADRs y el registro histórico; exigir propuesta numerada antes de tocar `schemas/` o la tabla de códigos.
+- **Estructura:** Tabla de documentos y estado → regla para nuevas decisiones → enlace al stub de la raíz.
+- **Contenido a integrar según contexto:** Adapta el índice a las decisiones de este repo. No copies ADRs de tokens o packages públicos ajenos. La propuesta 0001 (tokens DS) es local y no autoriza a incrustar tokens en el bundle.
+
 Registro de decisiones de implementación que no están en la especificación congelada de `site.bundle v1.0.0`.
 
 | Documento | Estado |

@@ -1,5 +1,11 @@
 # Contribuir a webconfig
 
+### Propósito de este documento
+
+- **Objetivos:** Explicar setup, flujo de rama/PR y reglas locales para contribuir sin romper contratos, fixtures ni el Design System opt-in.
+- **Estructura:** Idioma → setup → flujo de trabajo → comprobaciones antes del PR → reglas (schemas, coverage, fixtures, artefactos, seguridad).
+- **Contenido a integrar según contexto:** Adapta scripts npm, hooks husky y umbrales de este repo. No copies un flujo pnpm/monorepo ni tokens de otro paquete público. Si hay drift de tokens, commitea `dist-tokens/`; no metas tokens dentro del bundle.
+
 Idioma: este fichero en español, `README.md` y `docs/guides|runbooks` en español. El registro histórico de decisiones permanece en inglés. No re-traducir sin motivo.
 
 Lee también [AGENTS.md](AGENTS.md), [ARCHITECTURE.md](ARCHITECTURE.md) y [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).

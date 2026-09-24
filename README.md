@@ -1,5 +1,11 @@
 # webconfig
 
+### Propósito de este documento
+
+- **Objetivos:** Presentar la CLI webconfig, el formato `site.bundle v1.0.0` y los contratos públicos (comandos, códigos de error, Design System opt-in) para humanos, CI y agentes.
+- **Estructura:** Identidad y TL;DR → qué hace → requisitos e instalación → tokens/Showcase → comandos → troubleshooting y códigos → catálogo DS → determinismo, árbol del paquete, contrato de versión y comunidad.
+- **Contenido a integrar según contexto:** Adapta nombre, badges, ejemplos y enlaces de este producto. No copies `tokens/*.tokens.json`, `dist-tokens/` ni el Showcase a otro paquete público: el DS es opt-in de este repo y no forma parte del bundle. No copies `schemas/` ni la tabla de códigos a otro producto.
+
 [![CI](https://github.com/Iniciativas-Alexendros/webconfig/actions/workflows/ci.yml/badge.svg)](https://github.com/Iniciativas-Alexendros/webconfig/actions/workflows/ci.yml)
 [![Release](https://github.com/Iniciativas-Alexendros/webconfig/actions/workflows/release.yml/badge.svg)](https://github.com/Iniciativas-Alexendros/webconfig/releases)
 ![Node >=20](https://img.shields.io/badge/node-%3E%3D20-339933)

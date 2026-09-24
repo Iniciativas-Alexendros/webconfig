@@ -1,5 +1,11 @@
 # ADR: Extensión de theme con tokens del Design System (propuesta v1.1)
 
+### Propósito de este documento
+
+- **Objetivos:** Proponer una extensión opt-in de `theme` (`tokensVersion` / `tokensRef`) sin romper `site.bundle v1.0.0` ni el determinismo de `export` / `integrity`.
+- **Estructura:** Fecha y estado → contexto → decisión (YAML) → reglas → consecuencias → alternativas descartadas.
+- **Contenido a integrar según contexto:** Adapta solo si este repo aprueba la v1.1. No copies `tokens/*.tokens.json` ni `dist-tokens/` a otro paquete público. No metas tokens dentro del bundle; `tokensRef` apunta fuera. Hasta la aprobación, `schemas/` no cambia.
+
 - **Fecha**: 2026-09-11
 - **Estado**: PROPUESTA (no cambia `schemas/` ni el validador v1.x)
 - **Contexto**: `site.bundle v1.0.0` congela `theme` en 3 claves (`colorScheme/fontFamily/radius`, ver `schemas/site-config.schema.json:92-124`). El nuevo Design System (`tokens/*.tokens.json`, formato W3C DTCG, color OKLCH) necesita una referencia opcional desde el bundle sin romper paquetes existentes.

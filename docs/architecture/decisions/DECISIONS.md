@@ -1,5 +1,11 @@
 # Implementation Decisions
 
+### Propósito de este documento
+
+- **Objetivos:** Conservar el registro histórico de decisiones de implementación que no cubre la especificación congelada `site.bundle v1.0.0`.
+- **Estructura:** Arquitectura (ESM, dependencias, npm) → diseño del validador → export/integrity → Design System y catálogo → tooling y release.
+- **Contenido a integrar según contexto:** El cuerpo histórico permanece en inglés. No copies este registro a otro paquete público ni reutilices sus tokens/DS. Nuevas decisiones van en ADR numerado; no incrustes tokens en el bundle.
+
 This document records implementation decisions not explicitly covered by the frozen specification.
 
 ## Architecture

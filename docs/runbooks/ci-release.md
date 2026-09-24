@@ -1,5 +1,11 @@
 # Runbook: CI y release
 
+### Propósito de este documento
+
+- **Objetivos:** Diagnosticar jobs rojos del pipeline principal y el ciclo semantic-release sin tocar los workflows de publicación.
+- **Estructura:** Fallos `quality` / `test` / `smoke` → release (tag + GitHub Release, sin npm) → Renovate.
+- **Contenido a integrar según contexto:** Adapta comandos y secretos de este repo (`GITHUB_TOKEN`; no `NPM_TOKEN`). No copies un pipeline de otro paquete público ni reescribas `release.yml`. Si `quality` falla por tokens, regenera y commitea `dist-tokens/`; no hagas force-push.
+
 ## Jobs `quality` / `test` / `smoke` en rojo
 
 1. Reproduce en local los comandos del [job](../guides/calidad.md).
