@@ -21,11 +21,11 @@ No hagas force-push para “arreglar” CI. No toques `release.yml` ni `.release
 
 - Disparo: push a `main` / `beta` / `alpha` con Conventional Commits.
 - Paquete `private: true` → tag + GitHub Release, **sin** publicar a npm.
-- Commit generado: `chore(release): x.y.z [skip ci]` (commitlint lo ignora).
+- **No** hay commit `chore(release):` a `main`: branch protection (PR + checks) provoca GH006 si `@semantic-release/git` intenta pushear. El tag es canónico; `package.json` puede rezagarse.
 - Secretos esperados: `GITHUB_TOKEN` del workflow. No hace falta `NPM_TOKEN`.
-- Tras publicar, `release-validation.yml` valida golden, fixtures inválidas, determinismo y que el tag coincide con `package.json`.
+- Tras publicar, `release-validation.yml` valida golden, fixtures inválidas, determinismo y que el tag no queda por debajo de `package.json`.
 
-Si el release no recorta versión: el commit no es `feat`/`fix` (o breaking). No edites `CHANGELOG.md` a mano.
+Si el release no recorta versión: el commit no es `feat`/`fix` (o breaking). No edites `CHANGELOG.md` a mano para “forzar” versión.
 
 ## Renovate
 
