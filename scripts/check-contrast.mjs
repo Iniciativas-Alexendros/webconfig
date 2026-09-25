@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Puerta de contraste WCAG 2.2 AA (+ informe APCA-W3).
 // Lee dist-tokens/json/tokens.json y fallback-hex.json, evalua pares
-// texto/fondo en light y dark. Falla (exit 1) si algun par bajo umbral.
+// texto/fondo (>= 4.5:1) y UI/bordes (>= 3:1) en light y dark.
+// Falla (exit 1) si algun par bajo umbral.
 // Requiere haber ejecutado npm run tokens:build.
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -109,8 +110,8 @@ const PAIRS = [
     name: "feedback/warning-text sobre feedback/warning-bg",
     fg: ["feedback", "warning-text"],
     bg: ["feedback", "warning-bg"],
-    min: 3.0,
-    apca: 0,
+    min: 4.5,
+    apca: 45,
   },
   {
     name: "feedback/danger-text sobre feedback/danger-bg",

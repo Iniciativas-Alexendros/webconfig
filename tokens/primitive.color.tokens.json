@@ -71,7 +71,7 @@
     },
     "warning": {
       "100": { "$value": "oklch(0.92 0.06 80)", "$type": "color" },
-      "600": { "$value": "oklch(0.6 0.14 80)", "$type": "color", "$description": "Aviso" },
+      "600": { "$value": "oklch(0.55 0.14 80)", "$type": "color", "$description": "Aviso — AA sobre blanco" },
       "700": { "$value": "oklch(0.48 0.12 80)", "$type": "color", "$description": "Aviso texto (AA)" }
     },
     "danger": {

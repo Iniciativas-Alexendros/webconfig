@@ -32,8 +32,9 @@ src/cli.ts
         │
         ▼
 schemas/  (draft-2020-12, congelados en v1.0.0)
-tokens/   (DTCG → dist-tokens/; no forman parte del bundle)
-showcase/ (Vite; solo design system, no runtime de la CLI)
+tokens/   (DTCG → dist-tokens/; contrato en tokens/CONTRACT.md; no forman parte del bundle)
+landing/  (React + shadcn; build estático junto al Showcase)
+showcase/ (Vite + React + shadcn; tokens, componentes y validación AJV; no runtime de la CLI)
 ```
 
 ## 3. Módulos (`src/`)

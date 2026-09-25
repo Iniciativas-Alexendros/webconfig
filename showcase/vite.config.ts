@@ -1,4 +1,6 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 import { readFileSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -38,21 +40,59 @@ function loadBundleData() {
   return { light, dark, hex: hexJson, golden, invalid };
 }
 
+const data = loadBundleData();
+
+const rootToShowcase: Plugin = {
+  name: "webconfig-root-to-showcase",
+  configureServer(server) {
+    server.middlewares.use((req, _res, next) => {
+      if (!req.url) return next();
+      const pathOnly = req.url.split("?")[0] ?? "";
+      if (pathOnly === "/" || pathOnly === "/index.html") {
+        const qs = req.url.includes("?") ? `?${req.url.split("?")[1]}` : "";
+        req.url = `/showcase/index.html${qs}`;
+      }
+      next();
+    });
+  },
+};
+
 export default defineConfig({
-  root: join(root, "showcase"),
+  root,
   base: "./",
+  plugins: [react(), tailwindcss(), rootToShowcase],
+  resolve: {
+    alias: {
+      "@": join(root, "showcase/src"),
+    },
+  },
   define: {
-    __GOLDEN__: JSON.stringify(loadBundleData().golden),
-    __TOKENS__: JSON.stringify({ light: loadBundleData().light, dark: loadBundleData().dark }),
-    __HEX__: JSON.stringify(loadBundleData().hex),
-    __INVALID__: JSON.stringify(loadBundleData().invalid),
+    __GOLDEN__: JSON.stringify(data.golden),
+    __TOKENS__: JSON.stringify({ light: data.light, dark: data.dark }),
+    __HEX__: JSON.stringify(data.hex),
+    __INVALID__: JSON.stringify(data.invalid),
   },
   build: {
     outDir: join(root, "dist-showcase"),
     emptyOutDir: true,
+    target: "es2022",
+    rollupOptions: {
+      input: {
+        showcase: join(root, "showcase/index.html"),
+        landing: join(root, "landing/index.html"),
+      },
+    },
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: "es2022",
+    },
   },
   server: {
     port: 5173,
+    fs: {
+      allow: [root],
+    },
   },
   preview: {
     port: 4173,

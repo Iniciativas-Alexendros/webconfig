@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "rootDir": ".",
+    "allowImportingTsExtensions": false,
+    "paths": {
+      "@/*": ["showcase/src/*"]
+    }
+  },
+  "include": [
+    "showcase/src/**/*",
+    "landing/src/**/*",
+    "showcase/vite.config.ts",
+    "src/validate/syntax-documents.ts",
+    "src/validate/errors.ts"
+  ],
+  "exclude": ["node_modules", "dist", "dist-showcase"]
+}

@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://webconfig.dev/tokens/contract.schema.json",
+  "title": "Contrato de tokens DTCG v1.0",
+  "description": "Hoja W3C DTCG del contrato de tokens v1.0. No describe site.bundle. La forma canónica vive en este repositorio.",
+  "type": "object",
+  "required": ["$meta"],
+  "properties": {
+    "$meta": { "$ref": "#/$defs/meta" }
+  },
+  "additionalProperties": { "$ref": "#/$defs/node" },
+  "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "color": { "type": "object" }
+        },
+        "required": ["color"]
+      },
+      "then": {
+        "properties": {
+          "$meta": {
+            "type": "object",
+            "properties": {
+              "colorSpace": { "const": "oklch" }
+            },
+            "required": ["colorSpace"]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "meta": {
+      "type": "object",
+      "required": ["ds", "tier", "version"],
+      "additionalProperties": false,
+      "properties": {
+        "ds": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "tier": { "enum": ["primitive", "semantic", "component"] },
+        "version": { "const": "1.0" },
+        "colorSpace": { "const": "oklch" },
+        "spec": { "type": "string", "minLength": 1 },
+        "$description": { "type": "string" }
+      }
+    },
+    "node": {
+      "if": {
+        "type": "object",
+        "properties": {
+          "$value": { "type": "string" }
+        },
+        "required": ["$value"]
+      },
+      "then": { "$ref": "#/$defs/token" },
+      "else": { "$ref": "#/$defs/group" }
+    },
+    "group": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^[A-Za-z0-9][A-Za-z0-9-]*$" },
+      "additionalProperties": { "$ref": "#/$defs/node" }
+    },
+    "token": {
+      "type": "object",
+      "required": ["$value", "$type"],
+      "additionalProperties": false,
+      "properties": {
+        "$value": { "type": "string", "minLength": 1 },
+        "$type": { "type": "string", "minLength": 1 },
+        "$description": { "type": "string" },
+        "$extensions": { "$ref": "#/$defs/extensions" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "required": ["$type", "$value"],
+            "properties": {
+              "$type": { "type": "string", "const": "color" },
+              "$value": { "type": "string", "pattern": "^(?!\\{)" }
+            }
+          },
+          "then": {
+            "properties": {
+              "$value": {
+                "type": "string",
+                "pattern": "^oklch\\(\\s*[0-9.]+%?\\s+-?[0-9.]+\\s+-?[0-9.]+(?:\\s*/\\s*[0-9.]+%?)?\\s*\\)$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "extensions": {
+      "type": "object",
+      "required": ["mode"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "object",
+          "required": ["light", "dark"],
+          "additionalProperties": false,
+          "properties": {
+            "light": { "type": "string", "minLength": 1 },
+            "dark": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}

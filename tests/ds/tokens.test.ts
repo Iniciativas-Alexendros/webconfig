@@ -148,5 +148,9 @@ describe("tokens DTCG", () => {
     };
     walkDark(tokensJson.dark, []);
     expect(flatDark.sort()).toEqual(flat.sort());
+    expect(css).toContain("@media (prefers-color-scheme: dark)");
+    const supportsAt = css.indexOf("@supports not (color: oklch(0% 0 0))");
+    expect(supportsAt).toBeGreaterThan(0);
+    expect(css.slice(0, supportsAt)).not.toMatch(/#[0-9a-f]{3,8}/i);
   });
 });

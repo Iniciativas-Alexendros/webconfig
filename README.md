@@ -6,8 +6,8 @@
 - **Estructura:** Identidad y TL;DR → qué hace → requisitos e instalación → tokens/Showcase → comandos → troubleshooting y códigos → catálogo DS → determinismo, árbol del paquete, contrato de versión y comunidad.
 - **Contenido a integrar según contexto:** Adapta nombre, badges, ejemplos y enlaces de este producto. No copies `tokens/*.tokens.json`, `dist-tokens/` ni el Showcase a otro paquete público: el DS es opt-in de este repo y no forma parte del bundle. No copies `schemas/` ni la tabla de códigos a otro producto.
 
-[![CI](https://github.com/Iniciativas-Alexendros/webconfig/actions/workflows/ci.yml/badge.svg)](https://github.com/Iniciativas-Alexendros/webconfig/actions/workflows/ci.yml)
-[![Release](https://github.com/Iniciativas-Alexendros/webconfig/actions/workflows/release.yml/badge.svg)](https://github.com/Iniciativas-Alexendros/webconfig/releases)
+[![CI](https://github.com/Soluciones-Alexendros/webconfig/actions/workflows/ci.yml/badge.svg)](https://github.com/Soluciones-Alexendros/webconfig/actions/workflows/ci.yml)
+[![Release](https://github.com/Soluciones-Alexendros/webconfig/actions/workflows/release.yml/badge.svg)](https://github.com/Soluciones-Alexendros/webconfig/releases)
 ![Node >=20](https://img.shields.io/badge/node-%3E%3D20-339933)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -94,7 +94,8 @@ Sistema de diseño tokenizado desde colores hasta componentes:
 
 - **Fuente:** `tokens/*.tokens.json` en formato **W3C DTCG** (`$value/$type/$description`), color autorado en **OKLCH** (CSS Color 4). Metodología CSS **CUBE + Every Layout**, sin frameworks JS.
 - **Build:** `npm run tokens:build` genera `dist-tokens/{css,variables.css · ts/tokens.ts · json/tokens.json}` + fallback hex sRGB para navegadores sin `oklch()`. `npm run tokens:check` verifica contraste **WCAG 2.2 AA + APCA** y cobertura 1:1.
-- **GUI:** `npm run ds:dev` abre el Showcase (Vite): `/` tabla de tokens con swatches y toggle light/dark/auto · `/#/componentes` los 18 componentes de `ds-catalog.example.yaml` · `/#/preview/home` render del bundle golden + selector de fixtures inválidas.
+- **Contrato:** [`tokens/CONTRACT.md`](tokens/CONTRACT.md) y [`tokens/contract.schema.json`](tokens/contract.schema.json) (v1.0, fuera de `schemas/`).
+- **Landing / GUI:** React + shadcn/ui (Vite, build estático). `npm run ds:dev` sirve el Showcase en `/` y la landing en `/landing/`. Rutas del Showcase: tokens · `#/componentes` · `#/preview/home` · `#/validar` (AJV en el navegador). El export tar sigue en la CLI.
 - **E2E/visual:** `npx playwright test` (chromium: 3 rutas sin errores, toggle de tema, 18 tarjetas, preview golden, screenshots light/dark, checks a11y). Baseline en `tests/ds/showcase.e2e.spec.ts-snapshots/`.
 - **Compat:** el formato `site.bundle v1.0.0` no cambia (`schemas/` congelado). Extensión opt-in documentada en [`docs/architecture/decisions/0001-ds-tokens-v1.1-proposal.md`](docs/architecture/decisions/0001-ds-tokens-v1.1-proposal.md).
 
