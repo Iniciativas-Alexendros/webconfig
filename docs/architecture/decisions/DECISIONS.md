@@ -176,10 +176,10 @@ This separation allows:
 
 ### Release (semantic-release)
 - Package is `private: true`; release = git tag + GitHub Release only (no npm publish)
-- `@semantic-release/npm` is used with `npmPublish: false` to bump `package.json` version on each release (fixes the version drift that left `package.json` at 1.0.0 while tags advanced)
-- `@semantic-release/git` commits `CHANGELOG.md` (and `package.json` when the version changes)
-- `@semantic-release/github` creates the GitHub Release
-- Expected secrets: only `GH_TOKEN` (a GitHub token with repo scope). `NPM_TOKEN` is not required.
+- `@semantic-release/npm` with `npmPublish: false` actualiza `package.json` solo en el workspace del job (no se pushea)
+- **Sin `@semantic-release/git`:** `main` exige PR + status checks (`enforce_admins`); un push directo provoca GH006. Tag + GitHub Release son la fuente de verdad; `package.json` / `CHANGELOG.md` en `main` pueden rezagarse (mismo patrón que protonsuite-tools)
+- `@semantic-release/github` creates the GitHub Release and tag
+- Expected secrets: `GITHUB_TOKEN` del workflow. `NPM_TOKEN` is not required
 
 ## Package Configuration
 

@@ -71,14 +71,25 @@ jobs:
       
       - name: Verify version consistency
         run: |
+          set -euo pipefail
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
           RELEASE_TAG=${{ github.event.inputs.tag || github.event.release.tag_name || github.ref }}
+          RELEASE_TAG=${RELEASE_TAG#refs/tags/}
           RELEASE_VERSION=${RELEASE_TAG#v}
-          if [ "$PACKAGE_VERSION" != "$RELEASE_VERSION" ]; then
-            echo "Version mismatch: package.json=$PACKAGE_VERSION, tag=$RELEASE_VERSION"
+          echo "tag=$RELEASE_VERSION package.json=$PACKAGE_VERSION"
+          # Canon: el tag. Sin @semantic-release/git (GH006) package.json puede ir detrás.
+          if [ "$PACKAGE_VERSION" = "$RELEASE_VERSION" ]; then
+            echo "Version consistent: $PACKAGE_VERSION"
+            exit 0
+          fi
+          echo "::notice title=version drift::package.json=$PACKAGE_VERSION rezaga al tag $RELEASE_VERSION (esperado sin push a main)."
+          # Comparación lexicográfica semver vía sort -V (sin dep semver en runtime).
+          NEWEST=$(printf '%s\n%s\n' "$PACKAGE_VERSION" "$RELEASE_VERSION" | sort -V | tail -n1)
+          if [ "$NEWEST" != "$RELEASE_VERSION" ]; then
+            echo "FAIL: package.json ($PACKAGE_VERSION) no puede ser mayor que el tag ($RELEASE_VERSION)"
             exit 1
           fi
-          echo "Version consistent: $PACKAGE_VERSION"
+          echo "OK: tag $RELEASE_VERSION es canónico"
       
       - name: Verify no secrets in codebase
         run: |

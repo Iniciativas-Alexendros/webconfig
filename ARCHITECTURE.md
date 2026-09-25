@@ -60,7 +60,7 @@ El Design System (tokens OKLCH + Showcase) es **opt-in** y no cambia `schemas/` 
 | Herramienta | `package.json` → `version`   | semantic-release           |
 | Formato     | `schemas/` + `schema_compat` | Solo decisión manual + ADR |
 
-Release = tag + GitHub Release (`npmPublish: false`). Los workflows `release.yml` y `release-validation.yml` no forman parte del pipeline `quality/test/build/smoke`.
+Release = tag + GitHub Release (`npmPublish: false`). Sin push de `@semantic-release/git` a `main` (GH006 / branch protection). Los workflows `release.yml` y `release-validation.yml` no forman parte del pipeline `quality/test/build/smoke`.
 
 ## 5. Calidad
 
