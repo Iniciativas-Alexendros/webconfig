@@ -3,7 +3,7 @@ createdAt: 2026-09-04T10:00:00.000Z
 description: Sitio web de la Clínica Dental Sur - Servicios odontológicos integrales
 integrity:
   files:
-    assets/brand/logo.svg: e3d460de60cfbe893fa43816f28acd7038eb290fcde1b83b34ee9697fb43ba35
+    assets/brand/logo.svg: 31fe68372339ec8a717169c2b48cf3d8dfe3118a96abfdba91d740ac02dc53ca
     assets/media/images/all-on-4.jpg: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
     assets/media/images/blanqueamiento.jpg: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
     assets/media/images/brackets-esteticos.jpg: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
@@ -40,8 +40,8 @@ integrity:
     content/seo/es/contacto.yaml: 94b8caa13c0c9c93c0547736ae21c67ab2f52b50d65918623bb8aec2c30a5cd6
     content/seo/es/home.yaml: 9cd3acf8503524e75999fb4bd4bd6afec3f6de3347c044997bfe7ff380c13148
     content/seo/es/servicios.yaml: 7c861cc7d3658851c91e3eba4f0291c9802a3ac6fb629ced228d882072b5fcf1
-    site.config.yaml: aa7aa42ece45fd7073cc1086dcc66e2a37b4d6ac9c1d8d7116a259493bfe0662
-  global: d127e39777c21890a1b90dc0cb83e9e0c9ab0514b64c854212b179eaf747649e
+    site.config.yaml: c3cbd26037992297eb106f273a1f32493be7dfcea2e10fc8858f2f39afa2dfde
+  global: 582f224f4845c20b9045b2ad61273394e9f7118b1da0640edd396d38e2299002
 name: clinica-dental-sur
 schema_compat: ^1.0.0
 siteConfig: site.config.yaml
